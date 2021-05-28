@@ -1,0 +1,128 @@
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  font-weight: 300;
+  /* display: flex; */
+}
+
+.document {
+  width: 60%;
+  height: 1000px;
+  margin: 10px 10px;
+  border: 1px solid #d8d8d8;
+  overflow-y: auto;  /* this makes the div scrollable  */
+  float: left;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+}
+
+
+.annotationBar {
+  background-color: #F8F8F8;
+  margin-left: 5px;
+  width: 25%;
+  height: 1000px;
+  float: left;
+  border: 1px solid #d8d8d8;
+  margin: 10px 10px;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: auto;  /* this makes the div scrollable  */
+}
+
+.saved {
+  border-radius: 5px;
+  border: none;
+  color: rgb(0, 0, 0);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 20px 20px;
+}
+
+.button {
+  /* border-radius: 15px;
+  background-color: #e80505;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 20px 20px;
+  cursor: pointer; */
+
+  background-color: rgb();
+  /* color: #ffffff; */
+  padding: 5px 10px;
+  margin: 5px 5px 10px 5px; 
+  cursor: pointer;
+  border-radius: 15px;
+  border: 1px solid #999999;
+}
+
+
+.button:hover {
+  /* background-color: #ffffff;
+  box-shadow: 0px 15px 20px rgba(219, 26, 12, 0.4);
+  color: #e80505; */
+
+  background-color: rgb(88, 88, 88)	;
+  color: #ffffff;
+  padding: 5px 10px;
+  border: 1px solid #999999;
+
+}
+
+.button:disabled {
+  /* cursor: not-allowed;
+  background-color: #887474;
+  box-shadow: 0px 0px 0px rgba(219, 26, 12, 0.4);
+  color: #887474;
+  transform: translateY(0px); */
+
+  cursor: not-allowed;
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #8f8f8f;
+}
+
+.notes {
+  margin: 0px;
+  width: 70%;
+  height: 100px;
+  margin: 0px 10px;
+  float: left;
+  font-size: 15px;
+  border: 1px solid #d8d8d8;
+  padding: 10px 30px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.edit {
+  background-color: white;
+  width: 70%;
+  height: 100px;
+  margin: 0px 10px 20px 10px;
+  float: left;
+  font-size: 15px;
+  border: 1px solid #d8d8d8;
+  padding: 10px 30px;
+}
+
+.button-bar {
+
+
+  border: 1px solid #0066cc;
+  background-color: #0099cc;
+  color: #ffffff;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 5px 10px 5px; 
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 16px;
+}
