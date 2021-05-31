@@ -17,26 +17,26 @@
     <div id="app">
         <!-- basic buttons for switching documents -->
         <h1>Document Viewer</h1>
-        <files-switcher class="button-bar" @current-file="setFile"></files-switcher>
+        <files-switcher class="button-bar" ref="files" @current-file="setFile"></files-switcher>
         <br>
         <!-- div containing the main document -->
         <div id="content" class="document" @mouseover="setDisable"></div>
         <div class="annotationBar">
-            <button class="button" :disabled="isDisabled" @click="addAnnotation">NOTE</button>
+            <button class="button" :disabled="isDisabled" @click="addAnnotation() ; $refs.files.updateFile()">NOTE</button>
             <template v-if="this.notes.length > 0">
-                <button class="button" :disabled="no" @click="sendToServer">SAVE</button>
+                <button class="button" @click="sendToServer">SAVE</button>
             </template>
             <span class = "saved" :disable="true"> {{ savedProperty }} </span>
 
             <!-- here goes the template -->
-            <annotation-display v-for="note in notes" :note="note" :current="currentFile" @update="editNote"></annotation-display>
+            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @del="deletePassage"></annotation-list>
         </div>
     </div>
 
     <script src="./prototype.js"></script>
     <script src="components/annotation-list.js"></script>
-    <script src="components/buttons.js"></script>
-
+    <script src="components/files-switcher.js"></script>
+    
     <script>
         const mountedApp = app.mount('#app')
     </script>

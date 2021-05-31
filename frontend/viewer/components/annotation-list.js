@@ -1,13 +1,36 @@
-app.component('annotation-display', {
+app.component('annotation-list', {
     /*html*/
-    emits: ["update"],
+    emits: ["update","del"],
     props: ['note','current'],
     
     // template of the html code for the display of the passage object
     template: `
         <template v-if="note.fileId === current">
-            <a :href=" '#' + note.id" title="retrace quote" class="notes" @click="selectText(note.id)" style="text-decoration: none"> {{ note.passage }} </a>
-            <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
+            <div class="passage">
+                <a :href=" '#' + note.id" title="retrace quote" class="notes" @click="selectText(note.id)" style="text-decoration: none"> {{ note.passage }} </a>
+                <button class="delete" @click="del(note.id)"> DELETE </button>
+                <button class="collapsible"> Note </button>
+                <div class="content">
+                    <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
+                </div>
+            </div>
+
+            <script>
+                var coll = document.getElementsByClassName("collapsible");
+                var i;
+
+                for (i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                        content.style.display = "none";
+                        } else {
+                        content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
         </template>
 
     `,
@@ -36,6 +59,9 @@ app.component('annotation-display', {
                 i : index
             }
             this.$emit('update', noteObject);
+        },
+        del(index) {
+            this.$emit('del', index);
         }
     }
 

@@ -30,10 +30,10 @@ const app = Vue.createApp({
                 file: undefined
             };
 
-            console.log(note);
-
-            this.notes.push(note);
-            this.index++;
+            if (string != "") {
+                this.notes.push(note);
+                this.index++;
+            }
         },
 
         // send the entire passage object to the server
@@ -71,6 +71,15 @@ const app = Vue.createApp({
 
         setFile(id) {
             this.currentFile = id;
+        },
+
+        deletePassage(index) {
+            console.log(index);
+            this.notes.splice(index, 1);
+            this.index -= 1;
+            for (let i = 0; i < this.notes.length; i++) {
+                this.notes[i].id = i;   
+            }
         },
         
         computed: {

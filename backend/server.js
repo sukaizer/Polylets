@@ -5,8 +5,10 @@ const Datastore = require('nedb');
 
 const app = express();
 
-// get the static content of public folder
-app.use(express.static('../frontend/viewer'));
+// setup of different routes
+app.use('/viewer', express.static('../frontend/viewer'));
+app.use('/editor',express.static('../frontend/editor'));
+
 app.use(express.json());
 
 // sends a message to the client
@@ -14,18 +16,50 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-open('http://localhost:3000/');
+// automatically opens the link
+open('http://localhost:3000/viewer');
 
+// listening
 app.listen(3000, () => console.log('listening at 3000'));
 
 // creation of database
-const database = new Datastore('database.db');
-database.loadDatabase();
+const databasePassages = new Datastore('databasePassages.db');
+databasePassages.loadDatabase();
+
+const databaseHtmlFiles = new Datastore('databaseHtmlFiles.db');
+databaseHtmlFiles.loadDatabase();
+
+// get the data
+app.get('/files', (rq, rs) => {
+    databaseHtmlFiles.find({}, (err, data) => {
+        if (err) {
+            rs.end();
+            return;
+        }
+        rs.json(data);
+    });
+});
+
+app.get('/notes', (rq, rs) => {
+        databasePassages.find({}, (err, data) => {
+        if (err) {
+            rs.end();
+            return;
+        }
+        rs.json(data);
+    });
+});
 
 // listening and insertion of the data in the previously created database
 app.post('/api', (rq, rs) => {
-    console.log('I got a request');
     const data = rq.body;
-    database.insert(data);
+    databasePassages.insert(data);
     rs.json(data);
 });
+
+app.post('/files', (rq, rs) => {
+    const data = rq.body;
+    databaseHtmlFiles.insert(data);
+    rs.json(data);
+});
+
