@@ -110,8 +110,8 @@ body {
 }
 
 .notes {
-  margin: 0px;
-  width: 75%;
+  margin: 0px 10px 20px 10px;
+  width: 80%;
   height: 100px;
   float: left;
   font-size: 15px;
@@ -139,17 +139,11 @@ body {
   background-color: #ccc;
 }
 
-.content {
-  padding: 0 18px;
-  overflow: hidden;
-  background-color: #f1f1f1;
-}
-
 .edit {
   background-color: white;
-  width: 70%;
+  width: 80%;
   height: 100px;
-  margin: 0px 10px 20px 10px;
+  margin: 20px 10px 20px 10px;
   float: left;
   font-size: 15px;
   border: 1px solid #d8d8d8;

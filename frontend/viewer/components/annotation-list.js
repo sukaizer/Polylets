@@ -5,7 +5,8 @@ app.component('annotation-list', {
 
     data() {
         return {
-            toggled: true
+            toggled: true,
+            display : "HIDE ANNOTATION"
         }
     },
     
@@ -15,11 +16,9 @@ app.component('annotation-list', {
             <div class="passage">
                 <a :href=" '#' + note.id" title="retrace quote" class="notes" @click="selectText(note.id)" style="text-decoration: none"> {{ note.passage }} </a>
                 <button class="delete" @click="del(note.locId)"> DELETE </button>
-                <button class="collapsible" @click="toggle"> Note </button>
+                <button class="delete" @click="toggle"> {{display}} </button>
                 <template v-if="toggled">
-                    <div class="content">
-                        <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
-                    </div>
+                    <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
                 </template>
             </div>
         </template>
@@ -56,7 +55,8 @@ app.component('annotation-list', {
         },
         toggle() {
             this.toggled = !this.toggled;
-            console.log(this.toggled);
+            if (this.toggled) this.display = "HIDE ANNOTATION";
+            if (!this.toggled) this.display = "DISPLAY ANNOTATION";
         }
     }
 
