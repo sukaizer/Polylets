@@ -1,36 +1,27 @@
 app.component('annotation-list', {
     /*html*/
     emits: ["update","del"],
-    props: ['note','current'],
+    props: ['note', 'current'],
+
+    data() {
+        return {
+            toggled: true
+        }
+    },
     
     // template of the html code for the display of the passage object
     template: `
         <template v-if="note.fileId === current">
             <div class="passage">
                 <a :href=" '#' + note.id" title="retrace quote" class="notes" @click="selectText(note.id)" style="text-decoration: none"> {{ note.passage }} </a>
-                <button class="delete" @click="del(note.id)"> DELETE </button>
-                <button class="collapsible"> Note </button>
-                <div class="content">
-                    <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
-                </div>
+                <button class="delete" @click="del(note.locId)"> DELETE </button>
+                <button class="collapsible" @click="toggle"> Note </button>
+                <template v-if="toggled">
+                    <div class="content">
+                        <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
+                    </div>
+                </template>
             </div>
-
-            <script>
-                var coll = document.getElementsByClassName("collapsible");
-                var i;
-
-                for (i = 0; i < coll.length; i++) {
-                    coll[i].addEventListener("click", function() {
-                        this.classList.toggle("active");
-                        var content = this.nextElementSibling;
-                        if (content.style.display === "block") {
-                        content.style.display = "none";
-                        } else {
-                        content.style.display = "block";
-                        }
-                    });
-                }
-            </script>
         </template>
 
     `,
@@ -62,6 +53,10 @@ app.component('annotation-list', {
         },
         del(index) {
             this.$emit('del', index);
+        },
+        toggle() {
+            this.toggled = !this.toggled;
+            console.log(this.toggled);
         }
     }
 

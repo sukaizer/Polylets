@@ -22,10 +22,10 @@ app.component('files-switcher', {
 
     /*html*/
     template: `
-        <button class="button-bar" id="b1" @click="onAction(1)" @click="emitter(1)"> file1 </button>
-        <button class="button-bar" id="b2" @click="onAction(2)" @click="emitter(2)"> file2 </button>
-        <button class="button-bar" id="b3" @click="onAction(3)" @click="emitter(3)"> file3 </button>
-        <button class="button-bar" id="b4" @click="onAction(4)" @click="emitter(4)"> file4 </button>
+        <button class="button-bar" id="b1" @click="onAction(1)" @click="emitter(1)"> FILE 1 </button>
+        <button class="button-bar" id="b2" @click="onAction(2)" @click="emitter(2)"> FILE 2 </button>
+        <button class="button-bar" id="b3" @click="onAction(3)" @click="emitter(3)"> FILE 3 </button>
+        <button class="button-bar" id="b4" @click="onAction(4)" @click="emitter(4)"> FILE 4 </button>
     `,
     methods: {
         onAction(index) {

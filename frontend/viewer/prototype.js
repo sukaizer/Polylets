@@ -24,6 +24,7 @@ const app = Vue.createApp({
             // create a new js object with current selection 
             const note = {
                 id: this.index,
+                locId: this.index,
                 passage: string,
                 annotation: "",
                 fileId : this.currentFile,
@@ -76,12 +77,11 @@ const app = Vue.createApp({
         deletePassage(index) {
             console.log(index);
             this.notes.splice(index, 1);
-            this.index -= 1;
             for (let i = 0; i < this.notes.length; i++) {
-                this.notes[i].id = i;   
+                this.notes[i].locId = i;   
             }
         },
-        
+
         computed: {
             inPageAnchor() {
                 return '#' + this.index;

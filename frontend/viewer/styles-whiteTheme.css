@@ -20,7 +20,7 @@ body {
 .annotationBar {
   background-color: #f8f8f8;
   margin-left: 5px;
-  width: 25%;
+  width: 30%;
   height: 1000px;
   float: left;
   border: 1px solid #d8d8d8;
@@ -111,7 +111,7 @@ body {
 
 .notes {
   margin: 0px;
-  width: 70%;
+  width: 75%;
   height: 100px;
   float: left;
   font-size: 15px;
@@ -141,7 +141,6 @@ body {
 
 .content {
   padding: 0 18px;
-  display: none;
   overflow: hidden;
   background-color: #f1f1f1;
 }
@@ -168,16 +167,4 @@ body {
   cursor: pointer;
   border-radius: 15px;
   font-size: 16px;
-}
-
-.collapsible:after {
-  content: "\02795"; /* Unicode character for "plus" sign (+) */
-  font-size: 13px;
-  color: white;
-  float: right;
-  margin-left: 5px;
-}
-
-.active:after {
-  content: "\2796"; /* Unicode character for "minus" sign (-) */
 }
