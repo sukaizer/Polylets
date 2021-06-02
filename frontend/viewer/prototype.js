@@ -24,7 +24,7 @@ const app = Vue.createApp({
             // create a new js object with current selection 
             const note = {
                 id: this.index,
-                locId: this.index,
+                locId: 0,
                 passage: string,
                 annotation: "",
                 fileId : this.currentFile,
@@ -35,21 +35,31 @@ const app = Vue.createApp({
                 this.notes.push(note);
                 this.index++;
             }
+
+
+            for (let i = 0; i < this.notes.length; i++) {
+                this.notes[i].locId = i;   
+            }
         },
 
         // send the entire passage object to the server
         async sendToServer() {
-            var file = document.getElementById("content").innerHTML;
+            /*var file = document.getElementById("content").innerHTML;
             this.notes.forEach(element => {
                 element.file = file;
-            });
+            });*/
             const delay = ms => new Promise(res => setTimeout(res, ms));
+
             const options = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(this.notes)
+            };
+
+            const o = {
+                method: 'DELETE'
             };
             fetch('/api', options);
             this.savedProperty = "Saved !";

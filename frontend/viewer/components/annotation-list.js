@@ -18,7 +18,7 @@ app.component('annotation-list', {
                 <button class="delete" @click="del(note.locId)"> DELETE </button>
                 <button class="delete" @click="toggle"> {{display}} </button>
                 <template v-if="toggled">
-                    <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.id)"> {{ note.annotation }} </textarea>
+                    <textarea :id= "note.id" class="edit" placeholder="Type here" @input="change($event.target.value,note.locId)"> {{ note.annotation }} </textarea>
                 </template>
             </div>
         </template>
