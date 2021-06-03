@@ -52,12 +52,16 @@ const app = Vue.createApp({
 
             const note = {
                 id: this.index,
+<<<<<<< HEAD
                 locId: this.index,
                 rangeStart: selection.anchorOffset,
                 rangeLength: string.length,
                 startParentNode: selectionNode.childNodes[0],
                 parentNode: selectionNode,
                 yPosition: selectionPosition,
+=======
+                locId: 0,
+>>>>>>> 351ab66fcbe6cf17a0b259130b4fd644857f4a0f
                 passage: string,
                 annotation: "",
                 fileId: this.currentFile,
@@ -72,6 +76,11 @@ const app = Vue.createApp({
             if (string != "") {
                 this.notes.push(note);
                 this.index++;
+            }
+
+
+            for (let i = 0; i < this.notes.length; i++) {
+                this.notes[i].locId = i;   
             }
         },
 
@@ -102,17 +111,22 @@ const app = Vue.createApp({
 
         // send the entire passage object to the server
         async sendToServer() {
-            var file = document.getElementById("content").innerHTML;
+            /*var file = document.getElementById("content").innerHTML;
             this.notes.forEach(element => {
                 element.file = file;
-            });
+            });*/
             const delay = ms => new Promise(res => setTimeout(res, ms));
+
             const options = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(this.notes)
+            };
+
+            const o = {
+                method: 'DELETE'
             };
             fetch('/api', options);
             this.savedProperty = "Saved !";
@@ -141,7 +155,11 @@ const app = Vue.createApp({
             console.log(index);
             this.notes.splice(index, 1);
             for (let i = 0; i < this.notes.length; i++) {
+<<<<<<< HEAD
                 this.notes[i].locId = i;
+=======
+                this.notes[i].locId = i;   
+>>>>>>> 351ab66fcbe6cf17a0b259130b4fd644857f4a0f
             }
         },
 

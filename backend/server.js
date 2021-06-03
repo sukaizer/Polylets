@@ -52,6 +52,10 @@ app.get('/notes', (rq, rs) => {
 
 // listening and insertion of the data in the previously created database
 app.post('/api', (rq, rs) => {
+    databasePassages.remove({}, { multi: true }, function (err, numRemoved) {
+        databasePassages.loadDatabase(function (err) {
+        });
+    });
     const data = rq.body;
     databasePassages.insert(data);
     rs.json(data);
@@ -62,4 +66,8 @@ app.post('/files', (rq, rs) => {
     databaseHtmlFiles.insert(data);
     rs.json(data);
 });
+
+app.delete('/api', (rq, rs) => {
+
+})
 

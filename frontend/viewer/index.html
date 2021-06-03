@@ -3,21 +3,22 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>prototype</title>
+    <title>Polylets viewer</title>
     <!-- Import Styles -->
     <link rel="stylesheet" href="styles-whiteTheme.css" />
     <!-- Import Vue.js -->
     <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 </head>
 
 
 <body>
     <div id="app">
         <!-- basic buttons for switching documents -->
-        <h1>Document Viewer</h1>
-        <files-switcher class="button-bar" ref="files" @current-file="setFile"></files-switcher>
+        <div style="margin:0px 0px 0px 10px">
+            <h1>Document Viewer</h1>
+            <files-switcher class="button-bar" ref="files" @current-file="setFile"></files-switcher>
+        </div>
         <br>
         <!-- div containing the main document -->
         <div id="content" class="document" @mouseover="setDisable"></div>
