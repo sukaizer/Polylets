@@ -74,12 +74,35 @@ const app = Vue.createApp({
                 this.index++;
             }
 
-
             for (let i = 0; i < this.notes.length; i++) {
                 this.notes[i].locId = i;   
             }
         },
 
+        reselect(note) {
+            console.log("note");
+            console.log(note);
+            document.getElementById("content").scrollTo(0, note.yPosition);
+
+            const range = new Range();
+
+            range.setStart(note.startNode.firstChild, note.startOffset);
+            range.setEnd(note.endNode.firstChild, note.endOffset);
+
+
+            console.log("new range");
+            console.log(range);
+            const select = window.getSelection();
+            console.log("first select");
+            console.log(select);
+            select.removeAllRanges();
+            select.addRange(range);
+            console.log("select");
+            console.log(select);
+        },
+
+        
+        
         // addAnnotation() {
         //     const selection = window.getSelection();
         //     const string = selection.toString();
@@ -151,7 +174,7 @@ const app = Vue.createApp({
             console.log(index);
             this.notes.splice(index, 1);
             for (let i = 0; i < this.notes.length; i++) {
-                this.notes[i].locId = i;   
+                this.notes[i].locId = i;
             }
         },
 

@@ -30,7 +30,7 @@
             <span class = "saved" :disable="true"> {{ savedProperty }} </span>
 
             <!-- here goes the template -->
-            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @del="deletePassage"></annotation-list>
+            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @selection="reselect" @del="deletePassage"></annotation-list>
         </div>
     </div>
 
