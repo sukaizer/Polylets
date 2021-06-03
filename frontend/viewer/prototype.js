@@ -52,16 +52,12 @@ const app = Vue.createApp({
 
             const note = {
                 id: this.index,
-<<<<<<< HEAD
                 locId: this.index,
                 rangeStart: selection.anchorOffset,
                 rangeLength: string.length,
                 startParentNode: selectionNode.childNodes[0],
                 parentNode: selectionNode,
                 yPosition: selectionPosition,
-=======
-                locId: 0,
->>>>>>> 351ab66fcbe6cf17a0b259130b4fd644857f4a0f
                 passage: string,
                 annotation: "",
                 fileId: this.currentFile,
@@ -155,11 +151,7 @@ const app = Vue.createApp({
             console.log(index);
             this.notes.splice(index, 1);
             for (let i = 0; i < this.notes.length; i++) {
-<<<<<<< HEAD
-                this.notes[i].locId = i;
-=======
                 this.notes[i].locId = i;   
->>>>>>> 351ab66fcbe6cf17a0b259130b4fd644857f4a0f
             }
         },
 
