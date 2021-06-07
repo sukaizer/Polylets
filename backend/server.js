@@ -7,7 +7,8 @@ const app = express();
 
 // setup of different routes
 app.use('/viewer', express.static('../frontend/viewer'));
-app.use('/editor',express.static('../frontend/editor'));
+app.use('/editor', express.static('../frontend/editor'));
+app.use('/reader',express.static('../frontend/reader'));
 
 app.use(express.json());
 

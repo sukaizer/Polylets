@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Polylets reader</title>
+    <!-- Import Styles -->
+    <link rel="stylesheet" href="stylesheet.css" />
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+
+<body>
+    <div>
+    <p><strong>Novelty</strong></p>
+    File 1 discloses that <span ID="test">"this chamber comprising a structure with a plane panel".</span>
+    <br>
+    File 2 discloses that "an engine with an engine pod".
+    <br>
+    File 3 discloses that "a vane of a turbomachine type aircraft engine".
+    </div>
+
+    <div id="console" class="draggable" onclick=drag()>
+        <span class="windowTitle">Window 1</span>
+        <a class="unpin" onclick=unpin()>unpin</a>
+        <br><br>
+        click to pin
+    </div>
+    <br><br>
+
+    <div id="snaptarget" class="ui-widget-header">
+        <p> snap target </p>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
