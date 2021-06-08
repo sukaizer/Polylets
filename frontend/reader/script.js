@@ -1,56 +1,143 @@
-let test = document.getElementById("test");
-let div = document.getElementById("console");
-div.style.position = "absolute";
-div.hidden = true;
-var clicked = false;
-var unpinned = false;
+var clicked = [];
+var unpinned = [];
+var firstEnter = [];
+var idList = [];
+var referenceObjects = [];
+var passages = [];
 
-$("#console").draggable({
-    disable: true,
-    snap: ".ui-widget-header",
-    snapmode:"inner"
-});
+getData();
 
-function drag() {
+function save(i) {
+    var div = referenceObjects[i];
+    if (!clicked[i]) {
+        var element = document.getElementById("snaptarget");
+        var rect = element.getBoundingClientRect();
+        div.style.top = rect.top +'px';
+        div.style.left = rect.left + 'px';
+        div.hidden = false;
+        $('#'+i).draggable({
+            disable: true,
+            containment: "#snaptarget",
+            snap: ".annotationBar",
+            snapmode:"inner"
+        });
+        drag(i);
+    }
+}
+
+function drag(i) {
     $(function () {
-        if (unpinned) {
-            unpinned = false;
-            $("#console").draggable("option", "disabled", true);
+        var div = referenceObjects[i];
+        if (unpinned[i]) {
+            unpinned[i] = false;
+            $('#'+i).draggable("option", "disabled", true);
             div.style.cursor = 'default';
             div.style.borderWidth = 0 + 'px';
         } else {
-            clicked = true;
-            $("#console").draggable("option", "disabled", false);
+            clicked[i] = true;
+            $('#'+i).draggable("option", "disabled", false);
             div.style.cursor = 'move';
             div.style.borderWidth = 5 +'px';
         }
     })
 }
 
-function unpin() {
+function unpin(i) {
     $(function () {
-        clicked = false;
-        unpinned = true;
+        clicked[i] = false;
+        unpinned[i] = true;
     })
 }
 
-test.addEventListener("mouseenter", function (event) {
-    if (!clicked) {
-        div.style.top = event.clientY + 25 + 'px'; //or whatever 
-        div.style.left = event.clientX -50 + 'px'; // or whatever
+function createJSObject(item) {
+    var obj = {
+        rangeStart : `${item.rangeStart}`,
+        rangeLength : `${item.rangeLength}`,
+        startParentNode : `${item.startParentNode}`,
+        parentNode : `${item.parentNode}`,
+        yPosition : `${item.yPosition}`,
+        passage : `${item.passage}`,
+        annotation : `${item.annotation}`,
+        fileId : `${item.fileId}`,
+        startOffset : `${item.startOffset}`,
+        endOffset : `${item.endOffset}`,
+        startNode : `${item.startNode}`,
+        endNode : `${item.endNode}`
     }
-    div.hidden = false;
-    event.target.style.color = "orange";
-}, false);
+    return obj;
+}
 
-test.addEventListener("mouseleave", function (event) {
-    event.target.style.color = "";
-}, false);
+async function getData() {
+    const res = await fetch('/notes');
+    const data = await res.json();
 
-div.addEventListener("mouseleave", function (event) {
-    if (clicked) {
-        div.hidden = false;
-    } else {
-        div.hidden = true;
+    var i = 0;
+    for (item of data) {
+        passages[i] = createJSObject(item);
+        const newAnnot = document.createElement('div');
+        const passage = document.createElement('span');
+        const note = document.createElement('span');
+        const strPassage = document.createTextNode(`${item.passage}`);
+        const strNote = document.createTextNode(`${item.annotation}`);
+        
+        idList[i] = `${item._id}`;
+        note.setAttribute("class", "annot-note")
+        passage.setAttribute("class", "annot-pass")
+        passage.setAttribute("id", `${item._id}`);
+        newAnnot.setAttribute("class", "element");
+
+        passage.appendChild(strPassage);
+        note.appendChild(strNote);
+        newAnnot.appendChild(passage);
+        newAnnot.appendChild(note);
+
+        document.getElementById("document").append(newAnnot);
+        document.getElementById("document").append(document.createElement('p'));
+
+
+        const newRef = document.createElement('div');
+        newRef.setAttribute("id", i);
+        newRef.setAttribute("class", "draggable");
+        newRef.style.borderColor = "#"+Math.floor(Math.random()*16777215).toString(16);
+        newRef.onclick = () => {
+            save(newRef.getAttribute("id"));
+        }
+        newRef.style.position = "absolute";
+        newRef.hidden = true;
+        const refBut = document.createElement('a');
+        refBut.setAttribute("class", "unpin");
+        refBut.appendChild(document.createTextNode("UNPIN"));
+        refBut.onclick = () => {
+            unpin(newRef.getAttribute("id"));
+        }
+        newRef.appendChild(refBut);
+        document.getElementById("referenceObjects").append(newRef);
+        referenceObjects[i] = newRef;
+
+        passage.addEventListener("mouseenter", function (event) {
+            if (!clicked[newRef.getAttribute("id")]) {
+                newRef.style.top = event.clientY - 10 + 'px'; //or whatever 
+                newRef.style.left = event.clientX - 10   + 'px'; // or whatever
+            }
+            newRef.hidden = false;
+            event.target.style.color = "orange";
+        }, false);
+        
+        passage.addEventListener("mouseleave", function (event) {
+            event.target.style.color = "";
+        }, false);
+
+
+        newRef.addEventListener("mouseleave", function (event) {
+            if (clicked[newRef.getAttribute("id")]) {
+                newRef.hidden = false;
+            } else {
+                newRef.hidden = true;
+            }
+        }, false);
+
+        clicked[i] = false;
+        unpinned[i] = false;
+        i++;
     }
-}, false);
+}
