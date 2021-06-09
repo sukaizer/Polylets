@@ -56,7 +56,7 @@
                             // butt.setAttribute("onclick", `insertCitation("${item._id}")`)
                             // butt.textContent = "insert";
                             document.getElementById("annotations").append(newAnnot);
-                        } 
+                        }
                     }
                 </script>
             </p>
@@ -65,7 +65,7 @@
 
 
         <button id="save-button">Save</button>
-
+            
 
 
         <!-- Create the editor container -->
@@ -96,14 +96,14 @@
 
                     //node.setAttribute('id', "on");
                     //highlight thingy
-                    node.setAttribute('onmouseover', "hightlight(" + id + ")");
-                    node.setAttribute('onmouseout', "unhighlight(" + id + ")");
+                    node.setAttribute('onmouseover', "hightlight("+id+")");
+                    node.setAttribute('onmouseout', "unhighlight("+id+")");
                     //handful for reader
-                    node.setAttribute("data-fileId", document.getElementById(id).attributes[3].value);
-                    node.setAttribute("data-startOffset", document.getElementById(id).attributes[4].value);
-                    node.setAttribute("data-endOffset", document.getElementById(id).attributes[5].value);
-                    node.setAttribute("data-startNode", document.getElementById(id).attributes[6].value);
-                    node.setAttribute("data-endNode", document.getElementById(id).attributes[7].value);
+                    node.setAttribute("data-fileId", document.getElementById(id).attributes[3].value );
+                    node.setAttribute("data-startOffset", document.getElementById(id).attributes[4].value );
+                    node.setAttribute("data-endOffset", document.getElementById(id).attributes[5].value );
+                    node.setAttribute("data-startNode", document.getElementById(id).attributes[6].value );
+                    node.setAttribute("data-endNode", document.getElementById(id).attributes[7].value );
                     return node;
                 }
             }
@@ -122,9 +122,9 @@
 
             const quill = new Quill('#editor', {
                 modules: {
-                    toolbar: toolbarOptions
+                    toolbar : toolbarOptions
                 },
-
+                
                 theme: 'snow'
             });
 
@@ -136,14 +136,14 @@
 
                 link.setAttribute('download', filename);
                 link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(elHtml));
-                link.click();
+                link.click(); 
             }
 
-            var fileName = 'file.html'; // You can use the .txt extension if you want
+            var fileName =  'file.html'; // You can use the .txt extension if you want
 
-            $('#save-button').click(function () {
+            $('#save-button').click(function(){
                 console.log("save");
-                downloadInnerHtml(fileName, 'editor', 'text/html');
+                downloadInnerHtml(fileName, 'editor','text/html');
             });
 
             const saver = document.querySelector(".save-button");
@@ -182,8 +182,8 @@
                 quill.insertText(getCursorPosition(), "] ");
                 quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.innerText, true);
                 quill.insertText(getCursorPosition(), " ");
-
-                quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + 4, document.getElementById(note).firstElementChild.innerText.length, 'highlight', note);
+                
+                quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + 4 , document.getElementById(note).firstElementChild.innerText.length ,'highlight', note);
 
                 // dropevent.target.appendChild(document.getElementById(data));
                 // document.getElementById("drag").style.color = 'black';
@@ -209,6 +209,10 @@
             // }
 
             // saver.addEventListener("click", saveAsPdf);
+
+           
+
+
         </script>
 
 

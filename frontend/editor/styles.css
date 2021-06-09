@@ -57,6 +57,21 @@ body {
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
   overflow-y: auto;
 }
+
+
+.hightlighted-element {
+  text-align: justify;
+  text-overflow: ellipsis;
+  margin: 10px 10px 20px 10px;
+  border: 1px solid #d8d8d8;
+  cursor: move;
+  border-radius: 12px;
+  width: 100%;
+  height: 180px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: auto;
+  background-color: #c0d31b;
+}
   
   .button {
     /* border-radius: 15px;
