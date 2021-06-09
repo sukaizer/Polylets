@@ -17,6 +17,10 @@ body {
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
 
+.document ::selection {
+  background-color: cyan;
+}
+
 .annotationBar {
   background-color: #f8f8f8;
   margin-left: 5px;

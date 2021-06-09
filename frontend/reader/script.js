@@ -4,6 +4,7 @@ var firstEnter = [];
 var idList = [];
 var referenceObjects = [];
 var passages = [];
+var files = [];
 
 getData();
 
@@ -22,6 +23,21 @@ function save(i) {
             snapmode:"inner"
         });
         drag(i);
+    } else {
+        var myWindow = window.open("", "", "");
+        var element = document.createElement("div");
+        element.setAttribute("id", "document");
+        element.appendChild(files[passages[i].fileId - 1]);
+        myWindow.document.write(element.innerHTML);
+        console.log(passages[i]);
+        var selectionObject = {
+            startNode: passages[i].startNode, 
+            endNode: passages[i].endNode, 
+            startOffset: passages[i].startOffset, 
+            endOffset: passages[i].endOffset, 
+            yPosition: passages[i].yPosition, 
+        }
+        reselect(myWindow, selectionObject);
     }
 }
 
@@ -68,6 +84,16 @@ function createJSObject(item) {
 }
 
 async function getData() {
+    const rs = await fetch('/files');
+    const filesData = await rs.json();
+    
+    for (let index = 0; index < 4; index++) {
+        var element = document.createElement("div");
+        element.setAttribute("id", "document");
+        this.buildDOM(element, filesData[index]);
+        files[index] = element;
+    }
+
     const res = await fetch('/notes');
     const data = await res.json();
 
@@ -140,4 +166,54 @@ async function getData() {
         unpinned[i] = false;
         i++;
     }
+}
+
+function buildDOM(element, jsonObject) { // element is the parent element to add the children to
+    if (typeof jsonObject == "string") {
+        jsonObject = JSON.parse(jsonObject);
+    }
+    if (Array.isArray(jsonObject)) {
+        for (var i = 0; i < jsonObject.length; i++) {
+            this.buildDOM(element, jsonObject[i]);
+        }
+    }
+    else {
+        var e = document.createElement(jsonObject.tag);
+        for (var prop in jsonObject) {
+            if (prop != "tag") {
+                if (prop == "children" && Array.isArray(jsonObject[prop])) {
+                    this.buildDOM(e, jsonObject[prop]);
+                }
+                else if (prop == "html") {
+                    e.innerHTML = jsonObject[prop];
+                }
+                else {
+                    e.setAttribute(prop, jsonObject[prop]);
+                }
+            }
+        }
+        element.appendChild(e);
+    }
+}
+
+//re-select text 
+//the selectionObject is similar to note in your code
+function reselect(myWindow, selectionObject) {
+    console.log(selectionObject.startNode);
+    //scroll to the position 
+    myWindow.document.getElementById("document").scrollTo(0, selectionObject.yPosition);
+    //reselect the selection 
+    const newRange = new Range(); 
+    console.log(selectionObject.startNode.firstChild);
+    console.log(selectionObject.startOffset);
+    newRange.setStart(selectionObject.startNode.firstChild, selectionObject.startOffset); 
+    console.log(newRange);
+    newRange.setEnd(selectionObject.endNode.firstChild, selectionObject.endOffset); 
+    console.log(newRange.toString());
+
+    
+    console.log(newRange); 
+    let selection = myWindow.getSelection();
+    selection.removeAllRanges(); 
+    selection.addRange(newRange);            
 }
