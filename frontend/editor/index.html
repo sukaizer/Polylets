@@ -2,6 +2,9 @@
 <html>
 <!-- Include stylesheet -->
 <title>Polylets editor</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
@@ -30,10 +33,16 @@
                             const strPassage = document.createTextNode(`${item.passage}`);
                             const strNote = document.createTextNode(`${item.annotation}`);
 
-
                             newAnnot.setAttribute("id", `${item._id}`);
                             newAnnot.setAttribute("draggable", "true");
                             newAnnot.setAttribute("ondragstart", `drag(event)`);
+
+                            newAnnot.setAttribute("data-fileid", `${item.fileId}`);
+                            newAnnot.setAttribute("data-startOffset", `${item.startOffset}`)
+                            newAnnot.setAttribute("data-endOffset", `${item.endOffset}`)
+                            newAnnot.setAttribute("data-startNode", `${item.startNode}`)
+                            newAnnot.setAttribute("data-endNode", `${item.endNode}`)
+
                             note.setAttribute("class", "annot-note")
                             passage.setAttribute("class", "annot-pass")
                             newAnnot.setAttribute("class", "element");
@@ -47,11 +56,17 @@
                             // butt.setAttribute("onclick", `insertCitation("${item._id}")`)
                             // butt.textContent = "insert";
                             document.getElementById("annotations").append(newAnnot);
-                        }
+                        } 
                     }
                 </script>
             </p>
         </div>
+
+
+
+        <button id="save-button">Save</button>
+
+
 
         <!-- Create the editor container -->
         <div class="document">
@@ -69,9 +84,70 @@
 
         <!-- Initialize Quill editor -->
         <script>
-            var quill = new Quill('#editor', {
+
+            let Inline = Quill.import('blots/inline');
+
+            class HighlightBlot extends Inline {
+                static create(id) {
+                    let node = super.create();
+                    // Sanitize url if desired
+                    console.log("id is");
+                    console.log(id);
+
+                    //node.setAttribute('id', "on");
+                    //highlight thingy
+                    node.setAttribute('onmouseover', "hightlight(" + id + ")");
+                    node.setAttribute('onmouseout', "unhighlight(" + id + ")");
+                    //handful for reader
+                    node.setAttribute("data-fileId", document.getElementById(id).attributes[3].value);
+                    node.setAttribute("data-startOffset", document.getElementById(id).attributes[4].value);
+                    node.setAttribute("data-endOffset", document.getElementById(id).attributes[5].value);
+                    node.setAttribute("data-startNode", document.getElementById(id).attributes[6].value);
+                    node.setAttribute("data-endNode", document.getElementById(id).attributes[7].value);
+                    return node;
+                }
+            }
+
+            HighlightBlot.blotName = 'highlight';
+            HighlightBlot.tagName = 'a';
+
+
+            Quill.register(HighlightBlot);
+
+
+            var toolbarOptions = [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['link', 'image', 'video', 'formula'],
+            ];
+
+            const quill = new Quill('#editor', {
+                modules: {
+                    toolbar: toolbarOptions
+                },
+
                 theme: 'snow'
             });
+
+
+            function downloadInnerHtml(filename, elId, mimeType) {
+                var elHtml = document.getElementById(elId).firstElementChild.innerHTML;
+                var link = document.createElement('a');
+                mimeType = mimeType || 'text/plain';
+
+                link.setAttribute('download', filename);
+                link.setAttribute('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(elHtml));
+                link.click();
+            }
+
+            var fileName = 'file.html'; // You can use the .txt extension if you want
+
+            $('#save-button').click(function () {
+                console.log("save");
+                downloadInnerHtml(fileName, 'editor', 'text/html');
+            });
+
+            const saver = document.querySelector(".save-button");
+
 
             function getCursorPosition() {
                 var range = quill.getSelection();
@@ -88,13 +164,6 @@
                 }
             }
 
-            function insertCitation(noteId) {
-                var note = document.getElementById(noteId).innerHTML;
-                console.log(getCursorPosition());
-                quill.insertText(getCursorPosition(), note, 'italic', true);
-                return note;
-            }
-
             function drag(dragevent) {
                 var text = dragevent.target.id;
                 dragevent.dataTransfer.setData("text", text);
@@ -106,16 +175,48 @@
                 dropevent.preventDefault();
                 var note = dropevent.dataTransfer.getData("text");
                 console.log(document.getElementById(note));
-                quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.innerText, true);
+                const cursor = getCursorPosition();
+                // quill.format('highlight', note);
                 quill.insertText(getCursorPosition(), " [");
                 quill.insertText(getCursorPosition(), document.getElementById(note).lastElementChild.innerText, true);
-                quill.insertText(getCursorPosition(), "]");
+                quill.insertText(getCursorPosition(), "] ");
+                quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.innerText, true);
+                quill.insertText(getCursorPosition(), " ");
 
+                quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + 4, document.getElementById(note).firstElementChild.innerText.length, 'highlight', note);
 
                 // dropevent.target.appendChild(document.getElementById(data));
                 // document.getElementById("drag").style.color = 'black';
             }
+
+            function hightlight(id) {
+                console.log(id);
+                id.className = "hightlighted-element";
+            }
+
+            function unhighlight(id) {
+                id.className = "element";
+            }
+
+            // function saveAsPdf() {
+            //     const doc = quill.root.innerHTML;
+            //     var x = window.open();
+            //     x.document.open();
+            //     x.document.write(doc);
+
+            //     x.print();
+            //     x.close();
+            // }
+
+            // saver.addEventListener("click", saveAsPdf);
         </script>
+
+
+
+
+    </div>
+
+    <script src="./edit.js"></script>
 
 </body>
 
