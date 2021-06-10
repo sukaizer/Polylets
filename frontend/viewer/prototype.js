@@ -157,8 +157,22 @@ const app = Vue.createApp({
         //get all the related information when the user makes the selection 
         getSelectionInfo(){
             const range = window.getSelection().getRangeAt(0);
-            let startNode = window.getSelection().getRangeAt(0).startContainer.parentNode; 
-            let endNode = window.getSelection().getRangeAt(0).endContainer.parentNode; 
+            
+            let startNode;
+            let endNode; 
+
+            if (range.startContainer.nodeName == "P"){
+                startNode = range.startContainer; 
+            }else{
+                startNode = range.startContainer.parentNode; 
+            }
+
+            if (range.endContainer.nodeName == "P"){
+                endNode = range.endContainer; 
+            }else{
+                endNode = range.endContainer.parentNode; 
+            }
+
             if (startNode.nodeName == "STRONG"){
                 console.log("start strong"); 
                 startNode = startNode.parentNode; 
