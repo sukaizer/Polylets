@@ -5,6 +5,8 @@
 
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="./jszip-master/dist/jszip.js"></script>
+<script type="text/javascript" src="FileSaver.js-master/dist/FileSaver.js"></script>
 
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -44,8 +46,8 @@
                             newAnnot.setAttribute("data-startIndex", `${item.startIndex}`)
                             newAnnot.setAttribute("data-endIndex", `${item.endIndex}`)
 
-                            note.setAttribute("class", "annot-note")
-                            passage.setAttribute("class", "annot-pass")
+                            note.setAttribute("class", "annot-note");
+                            passage.setAttribute("class", "annot-pass");
                             newAnnot.setAttribute("class", "element");
 
                             passage.appendChild(strPassage);
@@ -147,10 +149,26 @@
             $('#save-button').click(function(){
                 console.log("save");
                 downloadInnerHtml(fileName, 'editor','text/html');
+                zipFile();
             });
 
             const saver = document.querySelector(".save-button");
 
+
+            function zipFile() {
+                var zip = new JSZip();
+
+                zip.file("Hello.txt", "Hello World\n");
+
+                var img = zip.folder("images");
+                
+
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    // see FileSaver.js
+                    saveAs(content, "example.zip");
+                });
+
+            }
 
             function getCursorPosition() {
                 var range = quill.getSelection();
