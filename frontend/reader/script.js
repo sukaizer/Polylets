@@ -41,22 +41,17 @@ function save(i) {
             snapmode:"inner"
         });
         drag(i);
-    } else {
-        var myWindow = window.open("", "", "");
-        var element = document.createElement("div");
-        element.setAttribute("id", "document");
-        element.appendChild(files[passages[i].fileId - 1]);
-        myWindow.document.write(element.innerHTML);
-        console.log(passages[i]);
-        var selectionObject = {
-            startNode: passages[i].startNode, 
-            endNode: passages[i].endNode, 
-            startOffset: passages[i].startOffset, 
-            endOffset: passages[i].endOffset, 
-            yPosition: passages[i].yPosition, 
-        }
-        reselect(myWindow, selectionObject);
     }
+}
+
+function openWindow(i) {
+    var myWindow = window.open("", "", "");
+    var element = document.createElement("div");
+    element.setAttribute("id", "document");
+    element.appendChild(files[passages[i].fileId - 1]);
+    myWindow.document.write(element.innerHTML);
+    console.log(passages[i]);
+    reselect(myWindow, passages[i]);
 }
 
 function drag(i) {
@@ -83,23 +78,6 @@ function unpin(i) {
     })
 }
 
-function createJSObject(item) {
-    var obj = {
-        rangeStart : `${item.rangeStart}`,
-        rangeLength : `${item.rangeLength}`,
-        startParentNode : `${item.startParentNode}`,
-        parentNode : `${item.parentNode}`,
-        yPosition : `${item.yPosition}`,
-        passage : `${item.passage}`,
-        annotation : `${item.annotation}`,
-        fileId : `${item.fileId}`,
-        startOffset : `${item.startOffset}`,
-        endOffset : `${item.endOffset}`,
-        startNode : `${item.startNode}`,
-        endNode : `${item.endNode}`
-    }
-    return obj;
-}
 
 async function getData() {
     const rs = await fetch('/files');
@@ -115,11 +93,12 @@ async function getData() {
     var el;
     var prefix = 'elementId';
     for (var i = 0; el = document.getElementById(prefix + i); i++) {
-        console.log("hey");
         passages[i] = {
             fileId : el.getAttribute("data-fileid"),
             startOffset : el.getAttribute("data-startoffset"),
-            endoffset : el.getAttribute("data-endoffset"), 
+            endOffset: el.getAttribute("data-endoffset"),
+            startIndex : el.getAttribute("data-startindex"),
+            endIndex: el.getAttribute("data-endindex"),
         }
 
         const newRef = document.createElement('div');
@@ -129,6 +108,11 @@ async function getData() {
         newRef.onclick = () => {
             save(newRef.getAttribute("id"));
         }
+
+        newRef.ondblclick = () => {
+            openWindow(newRef.getAttribute("id"));
+        }
+
         newRef.style.position = "absolute";
         newRef.hidden = true;
         const refBut = document.createElement('a');
@@ -138,6 +122,13 @@ async function getData() {
             unpin(newRef.getAttribute("id"));
         }
         newRef.appendChild(refBut);
+        
+        const passageContent = document.createElement('div');
+        passageContent.setAttribute("class", "passage-content");
+        passageContent.innerHTML = el.textContent;
+        newRef.style.overflow = scroll;
+        newRef.appendChild(passageContent); 
+
         document.getElementById("referenceObjects").append(newRef);
         referenceObjects[i] = newRef;
 
@@ -145,6 +136,9 @@ async function getData() {
             if (!clicked[newRef.getAttribute("id")]) {
                 newRef.style.top = event.clientY - 10 + 'px'; //or whatever 
                 newRef.style.left = event.clientX - 10   + 'px'; // or whatever
+            } else {
+                $('#' + newRef.getAttribute("id")).css({ transform: 'scale(1.5)' });
+                $('#' + newRef.getAttribute("id")).css({ trasition: 'transform .6s' });
             }
             newRef.hidden = false;
             event.target.style.color = "orange";
@@ -152,6 +146,9 @@ async function getData() {
         
         el.addEventListener("mouseleave", function (event) {
             event.target.style.color = "";
+            if (clicked[newRef.getAttribute("id")]) {
+                $('#'+newRef.getAttribute("id")).css({ transform: 'scale(1)' });
+            }
         }, false);
 
 
@@ -195,24 +192,50 @@ function buildDOM(element, jsonObject) { // element is the parent element to add
     }
 }
 
-//re-select text 
-//the selectionObject is similar to note in your code
 function reselect(myWindow, selectionObject) {
-    console.log(selectionObject.startNode);
     //scroll to the position 
-    myWindow.document.getElementById("document").scrollTo(0, selectionObject.yPosition);
-    //reselect the selection 
-    const newRange = new Range(); 
-    console.log(selectionObject.startNode.firstChild);
-    console.log(selectionObject.startOffset);
-    newRange.setStart(selectionObject.startNode.firstChild, selectionObject.startOffset); 
-    console.log(newRange);
-    newRange.setEnd(selectionObject.endNode.firstChild, selectionObject.endOffset); 
-    console.log(newRange.toString());
+    //myWindow.document.getElementById("document").scrollTo(0, selectionObject.yPosition); 
 
+    //reselect the selection using startIndex and endIndex 
+    let documentNode = myWindow.document.getElementById("document"); 
+    let node = documentNode.firstElementChild; 
+    let i = 0; 
+    let startNode;
+    let endNode; 
+
+    while (node) {
+        if (i == selectionObject.startIndex){
+            startNode = node; 
+        }if(i == selectionObject.endIndex){
+            endNode = node; 
+        }
+        i ++; 
+        node = node.nextElementSibling || node.nextSibling;
+    }
+    console.log(startNode); 
+    console.log(endNode); 
+
+    //re-create the selection using offset 
+    const newRange = new Range(); 
+    console.log(startNode.firstChild.firstChild);
+
+    if (startNode.firstChild.nodeName == "STRONG"){
+        console.log("start strong");
+        newRange.setStart(startNode.firstChild.firstChild, selectionObject.startOffset); 
+    }
+    else{
+        newRange.setStart(startNode.firstChild, selectionObject.startOffset); 
+    }
+
+    if (endNode.firstChild.nodeName == "STRONG"){
+        console.log("end strong");
+        newRange.setEnd(endNode.firstChild.firstChild, selectionObject.endOffset); 
+    } else {
+        console.log(endNode.firstChild);
+        newRange.setEnd(endNode.firstChild, selectionObject.endOffset); 
+    }
     
-    console.log(newRange); 
-    let selection = myWindow.getSelection();
+    let selection = myWindow.window.getSelection();
     selection.removeAllRanges(); 
     selection.addRange(newRange);            
 }
