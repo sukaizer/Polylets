@@ -125,31 +125,47 @@ const app = Vue.createApp({
         },
 
         addAnnotation() {
-            const selection = window.getSelection();
-            const string = selection.toString();
-            const range = window.getSelection().getRangeAt(0);
-            const selectionNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
-            const doc = document.getElementById("content");
-            const selectionPosition = doc.scrollTop;
 
-            const startNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
-            const endNode = window.getSelection().getRangeAt(0).endContainer.parentNode;
+            const selection = window.getSelection();
+            const string = selection.toString();            
+            const range = window.getSelection().getRangeAt(0);
+            const startNode = window.getSelection().getRangeAt(0).startContainer.parentNode; 
+            const endNode = window.getSelection().getRangeAt(0).endContainer.parentNode; 
+
+            //find the startIndex and endIndex
+            const parentNode = startNode.parentNode; 
+            let node = parentNode.firstElementChild; 
+            let startIndex = 0; 
+            let endIndex = 0; 
+
+            let i = 0; 
+            while ( node !== endNode && node.nodeType === Node.ELEMENT_NODE ){
+                if (node == startNode){
+                    startIndex = i; 
+                    }
+                    i++; 
+                    node = node.nextElementSibling || node.nextSibling;
+                    }
+                endIndex = i; 
+                console.log(startIndex); 
+                console.log(endIndex);
+
+
+            let doc = document.getElementById("content"); 
+            let selectionPosition = doc.scrollTop; 
 
             const note = {
                 id: this.index,
                 locId: this.index,
-                rangeStart: selection.anchorOffset,
-                rangeLength: string.length,
-                startParentNode: selectionNode.childNodes[0],
-                parentNode: this.toJSON(selectionNode),
-                yPosition: selectionPosition,
                 passage: string,
                 annotation: "",
                 fileId: this.currentFile,
-                startOffset: range.startOffset,
-                endOffset: range.endOffset,
-                startNode: startNode,
-                endNode: endNode
+                startIndex: startIndex, 
+                endIndex: endIndex, 
+                startOffset: range.startOffset, 
+                endOffset: range.endOffset, 
+                yPosition: selectionPosition,
+
             };
 
             if (string != "") {
@@ -160,37 +176,43 @@ const app = Vue.createApp({
             for (let i = 0; i < this.notes.length; i++) {
                 this.notes[i].locId = i;   
             }
-            console.log(this.toDOM(this.toJSON(note.startNode)));
         },
 
 
         reselect(note) {
-            console.log("note");
-            console.log(note);
-            document.getElementById("content").scrollTo(0, note.yPosition);
+                document.getElementById("content").scrollTo(0, note.yPosition); 
 
-            const range = new Range();
+                //reselect the selection using startIndex and endIndex 
+                let documentNode = document.getElementById("content"); 
+                //console.log(documentNode);
+                let node = documentNode.firstElementChild; 
+                let i = 0; 
+                let startNode;
+                let endNode; 
 
-            range.setStart(this.toDOM(this.toJSON(note.startNode)).firstChild, note.startOffset);
-            range.setEnd(this.toDOM(this.toJSON(note.endNode)).firstChild, note.endOffset);
+                while (node) {
+                  console.log(node);
+                  if (i == note.startIndex){
+                     startNode = node; 
+                  }if(i == note.endIndex){
+                     endNode = node; 
+                  }
+                  i ++; 
+                  node = node.nextElementSibling || node.nextSibling;
+                }
+                console.log(startNode); 
+                console.log(endNode); 
 
-            const range2 = new Range();
+                //re-create the selection using starting index and end index 
+                const newRange = new Range(); 
+                newRange.setStart(startNode.firstChild, note.startOffset); 
+                newRange.setEnd(endNode.firstChild, note.endOffset); 
 
-            range2.setStart(note.startNode.firstChild, note.startOffset);
-            range2.setEnd(note.endNode.firstChild, note.endOffset);
-
-            console.log("new range");
-            console.log(range);
-            console.log("range 2");
-            console.log(range2);
-
-            const select = window.getSelection();
-            console.log("first select");
-            console.log(select);
-            select.removeAllRanges();
-            select.addRange(range2);
-            console.log("select");
-            console.log(select);
+                
+                console.log(newRange); 
+                let selection = window.getSelection();
+                selection.removeAllRanges(); 
+                selection.addRange(newRange);          
         },
 
         // send the entire passage object to the server

@@ -27,42 +27,8 @@ app.component('annotation-list', {
     `,
     // methods related to the passage object
     methods: {
-        // selects the text from the document when the user clicked on the related passage object
-        // selectText(node) {
-        //     node = document.getElementById(node);
-        //     if (document.body.createTextRange) {
-        //         const range = document.body.createTextRange();
-        //         range.moveToElementText(node);
-        //         range.select();
-        //     } else if (window.getSelection) {
-        //         const selection = window.getSelection();
-        //         const range = document.createRange();
-        //         range.selectNodeContents(node);
-        //         selection.removeAllRanges();
-        //         selection.addRange(range);
-        //     } else {
-        //         console.warn("Could not select text in node: Unsupported browser.");
-        //     }
-        // },
-
-
-
         
-
-        // selectText(note) {
-        //     document.getElementById("document").scrollTo(0, note.yPosition);
-
-        //     const newRange = new Range();
-        //     newRange.setStart(note.startNode.firstChild, note.startOffset);
-        //     newRange.setEnd(note.endNode.firstChild, note.endOffset);
-        //     let selection = window.getSelection();
-        //     selection.removeAllRanges();
-        //     selection.addRange(newRange);
-        // },
-
         selectText() {
-            console.log("thisnute")
-            console.log(this.note);
             this.$emit('selection', this.note);
             
         },

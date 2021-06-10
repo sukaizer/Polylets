@@ -1,12 +1,30 @@
 var clicked = [];
 var unpinned = [];
 var firstEnter = [];
-var idList = [];
+
 var referenceObjects = [];
 var passages = [];
 var files = [];
 
 getData();
+var file;
+
+var recupererFichiers = function () {
+    file = document.getElementById('myfiles').files[0]
+    if (file) {
+    var reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onload = function (evt) {
+        document.getElementById("document").innerHTML = evt.target.result;
+    }
+    reader.onerror = function (evt) {
+        document.getElementById("document").innerHTML = "error reading file";
+    }
+}
+}
+
+document.querySelector("#myfiles").onchange = recupererFichiers;
+
 
 function save(i) {
     var div = referenceObjects[i];
@@ -99,68 +117,67 @@ async function getData() {
 
     var i = 0;
     for (item of data) {
-        passages[i] = createJSObject(item);
-        const newAnnot = document.createElement('div');
-        const passage = document.createElement('span');
-        const note = document.createElement('span');
-        const strPassage = document.createTextNode(`${item.passage}`);
-        const strNote = document.createTextNode(`${item.annotation}`);
+        // passages[i] = createJSObject(item);
+        // const newAnnot = document.createElement('div');
+        // const passage = document.createElement('span');
+        // const note = document.createElement('span');
+        // const strPassage = document.createTextNode(`${item.passage}`);
+        // const strNote = document.createTextNode(`${item.annotation}`);
         
-        idList[i] = `${item._id}`;
-        note.setAttribute("class", "annot-note")
-        passage.setAttribute("class", "annot-pass")
-        passage.setAttribute("id", `${item._id}`);
-        newAnnot.setAttribute("class", "element");
+        // note.setAttribute("class", "annot-note")
+        // passage.setAttribute("class", "annot-pass")
+        // passage.setAttribute("id", `${item._id}`);
+        // newAnnot.setAttribute("class", "element");
 
-        passage.appendChild(strPassage);
-        note.appendChild(strNote);
-        newAnnot.appendChild(passage);
-        newAnnot.appendChild(note);
+        // passage.appendChild(strPassage);
+        // note.appendChild(strNote);
+        // newAnnot.appendChild(passage);
+        // newAnnot.appendChild(note);
 
-        document.getElementById("document").append(newAnnot);
-        document.getElementById("document").append(document.createElement('p'));
+        // document.getElementById("document").append(newAnnot);
+        // document.getElementById("document").append(document.createElement('p'));
 
 
-        const newRef = document.createElement('div');
-        newRef.setAttribute("id", i);
-        newRef.setAttribute("class", "draggable");
-        newRef.style.borderColor = "#"+Math.floor(Math.random()*16777215).toString(16);
-        newRef.onclick = () => {
-            save(newRef.getAttribute("id"));
-        }
-        newRef.style.position = "absolute";
-        newRef.hidden = true;
-        const refBut = document.createElement('a');
-        refBut.setAttribute("class", "unpin");
-        refBut.appendChild(document.createTextNode("UNPIN"));
-        refBut.onclick = () => {
-            unpin(newRef.getAttribute("id"));
-        }
-        newRef.appendChild(refBut);
-        document.getElementById("referenceObjects").append(newRef);
-        referenceObjects[i] = newRef;
+        // const newRef = document.createElement('div');
+        // newRef.setAttribute("id", i);
+        // newRef.setAttribute("class", "draggable");
+        // newRef.style.borderColor = "#"+Math.floor(Math.random()*16777215).toString(16);
+        // newRef.onclick = () => {
+        //     save(newRef.getAttribute("id"));
+        // }
+        // newRef.style.position = "absolute";
+        // newRef.hidden = true;
+        // const refBut = document.createElement('a');
+        // refBut.setAttribute("class", "unpin");
+        // refBut.appendChild(document.createTextNode("UNPIN"));
+        // refBut.onclick = () => {
+        //     unpin(newRef.getAttribute("id"));
+        // }
+        // newRef.appendChild(refBut);
+        // document.getElementById("referenceObjects").append(newRef);
+        // referenceObjects[i] = newRef;
 
-        passage.addEventListener("mouseenter", function (event) {
-            if (!clicked[newRef.getAttribute("id")]) {
-                newRef.style.top = event.clientY - 10 + 'px'; //or whatever 
-                newRef.style.left = event.clientX - 10   + 'px'; // or whatever
-            }
-            newRef.hidden = false;
-            event.target.style.color = "orange";
-        }, false);
+        // passage.addEventListener("mouseenter", function (event) {
+        //     if (!clicked[newRef.getAttribute("id")]) {
+        //         newRef.style.top = event.clientY - 10 + 'px'; //or whatever 
+        //         newRef.style.left = event.clientX - 10   + 'px'; // or whatever
+        //     }
+        //     newRef.hidden = false;
+        //     event.target.style.color = "orange";
+        // }, false);
         
-        passage.addEventListener("mouseleave", function (event) {
-            event.target.style.color = "";
-        }, false);
+        // passage.addEventListener("mouseleave", function (event) {
+        //     event.target.style.color = "";
+        // }, false);
 
 
-        newRef.addEventListener("mouseleave", function (event) {
-            if (clicked[newRef.getAttribute("id")]) {
-                newRef.hidden = false;
-            } else {
-                newRef.hidden = true;
-            }
-        }, false);
+        // newRef.addEventListener("mouseleave", function (event) {
+        //     if (clicked[newRef.getAttribute("id")]) {
+        //         newRef.hidden = false;
+        //     } else {
+        //         newRef.hidden = true;
+        //     }
+        // }, false);
 
         clicked[i] = false;
         unpinned[i] = false;
