@@ -128,31 +128,8 @@ const app = Vue.createApp({
 
             const selection = window.getSelection();
             const string = selection.toString();            
-            const range = window.getSelection().getRangeAt(0);
-            const startNode = window.getSelection().getRangeAt(0).startContainer.parentNode; 
-            const endNode = window.getSelection().getRangeAt(0).endContainer.parentNode; 
 
-            //find the startIndex and endIndex
-            const parentNode = startNode.parentNode; 
-            let node = parentNode.firstElementChild; 
-            let startIndex = 0; 
-            let endIndex = 0; 
-
-            let i = 0; 
-            while ( node !== endNode && node.nodeType === Node.ELEMENT_NODE ){
-                if (node == startNode){
-                    startIndex = i; 
-                    }
-                    i++; 
-                    node = node.nextElementSibling || node.nextSibling;
-                    }
-                endIndex = i; 
-                console.log(startIndex); 
-                console.log(endIndex);
-
-
-            let doc = document.getElementById("content"); 
-            let selectionPosition = doc.scrollTop; 
+            var selecObj = this.getSelectionInfo();
 
             const note = {
                 id: this.index,
@@ -160,12 +137,11 @@ const app = Vue.createApp({
                 passage: string,
                 annotation: "",
                 fileId: this.currentFile,
-                startIndex: startIndex, 
-                endIndex: endIndex, 
-                startOffset: range.startOffset, 
-                endOffset: range.endOffset, 
-                yPosition: selectionPosition,
-
+                startIndex: selecObj.startIndex, 
+                endIndex: selecObj.endIndex, 
+                startOffset: selecObj.startOffset, 
+                endOffset: selecObj.endOffset, 
+                yPosition: selecObj.yPosition,
             };
 
             if (string != "") {
@@ -178,41 +154,104 @@ const app = Vue.createApp({
             }
         },
 
+        //get all the related information when the user makes the selection 
+        getSelectionInfo(){
+            const range = window.getSelection().getRangeAt(0);
+            let startNode = window.getSelection().getRangeAt(0).startContainer.parentNode; 
+            let endNode = window.getSelection().getRangeAt(0).endContainer.parentNode; 
+            if (startNode.nodeName == "STRONG"){
+                console.log("start strong"); 
+                startNode = startNode.parentNode; 
+            }
+            if (endNode.nodeName == "STRONG"){
+                console.log("end strong");
+                endNode = endNode.parentNode; 
+            }
+
+            //find the startIndex and endIndex
+            const parentNode = document.getElementById("content");
+            let startIndex = 0; 
+            let endIndex = 0; 
+            let i = 0; 
+            console.log(startNode); 
+            console.log(endNode);
+
+
+            for (let i = 0; i < parentNode.childElementCount; i++) {
+                // Do stuff
+                // console.log(parentNode.children[i]);
+
+                if (parentNode.children[i] == startNode){
+                startIndex = i; 
+                }
+                if (parentNode.children[i] == endNode){
+                endIndex = i; 
+                }
+                }
+
+                console.log(startIndex); 
+                console.log(endIndex); 
+
+            let doc = document.getElementById("content"); 
+            let selectionPosition = doc.scrollTop; 
+
+            return {
+                startIndex: startIndex, 
+                endIndex: endIndex, 
+                startOffset: range.startOffset, 
+                endOffset: range.endOffset, 
+                yPosition: selectionPosition, 
+            }; 
+        },
+
 
         reselect(note) {
-                document.getElementById("content").scrollTo(0, note.yPosition); 
+            //scroll to the position 
+            document.getElementById("content").scrollTo(0, note.yPosition); 
 
-                //reselect the selection using startIndex and endIndex 
-                let documentNode = document.getElementById("content"); 
-                //console.log(documentNode);
-                let node = documentNode.firstElementChild; 
-                let i = 0; 
-                let startNode;
-                let endNode; 
+            //reselect the selection using startIndex and endIndex 
+            let documentNode = document.getElementById("content"); 
+            console.log(documentNode);
+            let node = documentNode.firstElementChild; 
+            let i = 0; 
+            let startNode;
+            let endNode; 
 
-                while (node) {
-                  console.log(node);
-                  if (i == note.startIndex){
-                     startNode = node; 
-                  }if(i == note.endIndex){
-                     endNode = node; 
-                  }
-                  i ++; 
-                  node = node.nextElementSibling || node.nextSibling;
+            while (node) {
+                if (i == note.startIndex){
+                    startNode = node; 
+                }if(i == note.endIndex){
+                    endNode = node; 
                 }
-                console.log(startNode); 
-                console.log(endNode); 
+                i ++; 
+                node = node.nextElementSibling || node.nextSibling;
+            }
+            console.log(startNode); 
+            console.log(endNode); 
 
-                //re-create the selection using starting index and end index 
-                const newRange = new Range(); 
+            //re-create the selection using offset 
+            const newRange = new Range(); 
+            console.log(startNode.firstChild.firstChild);
+
+            if (startNode.firstChild.nodeName == "STRONG"){
+                console.log("start strong");
+                newRange.setStart(startNode.firstChild.firstChild, note.startOffset); 
+            }
+            else{
                 newRange.setStart(startNode.firstChild, note.startOffset); 
-                newRange.setEnd(endNode.firstChild, note.endOffset); 
+            }
 
-                
-                console.log(newRange); 
-                let selection = window.getSelection();
-                selection.removeAllRanges(); 
-                selection.addRange(newRange);          
+            if (endNode.firstChild.nodeName == "STRONG"){
+                console.log("end strong");
+                newRange.setEnd(endNode.firstChild.firstChild, note.endOffset); 
+            }else{
+                newRange.setEnd(endNode.firstChild, note.endOffset); 
+            }
+
+            console.log(newRange); 
+            let selection = window.getSelection();
+            selection.removeAllRanges(); 
+            selection.addRange(newRange);       
         },
 
         // send the entire passage object to the server
