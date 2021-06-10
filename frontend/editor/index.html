@@ -41,8 +41,8 @@
                             newAnnot.setAttribute("data-fileid", `${item.fileId}`);
                             newAnnot.setAttribute("data-startOffset", `${item.startOffset}`)
                             newAnnot.setAttribute("data-endOffset", `${item.endOffset}`)
-                            newAnnot.setAttribute("data-startNode", `${item.startNode}`)
-                            newAnnot.setAttribute("data-endNode", `${item.endNode}`)
+                            newAnnot.setAttribute("data-startIndex", `${item.startIndex}`)
+                            newAnnot.setAttribute("data-endIndex", `${item.endIndex}`)
 
                             note.setAttribute("class", "annot-note")
                             passage.setAttribute("class", "annot-pass")
@@ -104,8 +104,8 @@
                     node.setAttribute("data-fileId", document.getElementById(id).attributes[3].value );
                     node.setAttribute("data-startOffset", document.getElementById(id).attributes[4].value );
                     node.setAttribute("data-endOffset", document.getElementById(id).attributes[5].value );
-                    node.setAttribute("data-startNode", document.getElementById(id).attributes[6].value );
-                    node.setAttribute("data-endNode", document.getElementById(id).attributes[7].value );
+                    node.setAttribute("data-startIndex", document.getElementById(id).attributes[6].value );
+                    node.setAttribute("data-endIndex", document.getElementById(id).attributes[7].value );
                     return node;
                 }
             }
