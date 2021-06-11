@@ -8,7 +8,8 @@ const app = express();
 // setup of different routes
 app.use('/viewer', express.static('../frontend/viewer'));
 app.use('/editor', express.static('../frontend/editor'));
-app.use('/reader',express.static('../frontend/reader'));
+app.use('/reader', express.static('../frontend/reader'));
+app.use('/',express.static('../frontend/'));
 
 app.use(express.json());
 
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 // automatically opens the link
-open('http://localhost:3000/viewer');
+open('http://localhost:3000/');
 
 // listening
 app.listen(3000, () => console.log('listening at 3000'));
