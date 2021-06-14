@@ -72,23 +72,40 @@ async function getData() {
     }
 }
 
-const grid = document.querySelector('revo-grid');
+const grid = document.querySelector("revo-grid");
 const columns = [
-  { prop: 'name', name: 'First column' },
   {
-    prop: 'details',
-    name: 'Second column',
-    cellTemplate: (createElement, props) => {
-      return createElement('div',
-        {
-          style: { backgroundColor: 'red' },
-          class: { 'inner-cell': true },
-        },
-        props.model[props.prop] || '',
-      );
-    },
+    prop: "name",
+    name: "First"
   },
+  {
+    prop: "details",
+    name: "Second column",
+    size: 200,
+    cellTemplate: (createElement, props) => {
+      return createElement(
+        "div",
+        {
+          style: {
+            fontStyle: "italic",
+            color: "green"
+          },
+          class: {
+            "inner-cell": true
+          }
+        },
+        props.model[props.prop] || ""
+      );
+    }
+  }
 ];
-const items = [{ name: 'New item', details: 'Item description' }];
+const items = [
+  {
+    name: "New item",
+    details: "Item description"
+  }
+];
+
 grid.columns = columns;
 grid.source = items;
+grid.resize = true;
