@@ -9,6 +9,7 @@ const app = express();
 app.use('/viewer', express.static('../frontend/viewer'));
 app.use('/editor', express.static('../frontend/editor'));
 app.use('/reader', express.static('../frontend/reader'));
+app.use('/table', express.static('../frontend/table'));
 app.use('/',express.static('../frontend/'));
 
 app.use(express.json());
