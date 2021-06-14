@@ -9,7 +9,6 @@ function drop(dropevent) {
     var note = dropevent.dataTransfer.getData("text");
     console.log(document.getElementById(note));
     const cursor = getCursorPosition();
-    // quill.format('highlight', note);
     var highlength = 0;
     if (document.getElementById(note).lastElementChild.innerText.length != 0) {
         quill.insertText(getCursorPosition(), " [");
