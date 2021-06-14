@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<!-- Include stylesheet -->
+<title>Polylets table</title>
+
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@revolist/revogrid@latest/dist/revo-grid/revo-grid.js"></script>
+
+<body>
+
+    <div class="navigationBar">
+        <a href="../viewer">Viewer</a>
+        <a href="../editor">Editor</a>
+        <a href="../reader">Reader</a>
+        <a>Table</a>
+    </div>
+
+    <div style="margin:0px 0px 0px 10px">
+        <h1>Document Table</h1>
+    </div>
+
+    <div class="editor">
+
+        <div id="annotations" class="annotation">
+            <p style="border: 1px solid #d8d8d8;"></p>
+        </div>
+
+        <!-- Create the editor container -->
+        <div class="document">
+            <revo-grid class="grid-component" />
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
