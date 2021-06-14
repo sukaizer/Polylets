@@ -107,14 +107,21 @@
                     //node.setAttribute('id', "on");
                     //highlight thingy=
                     node.setAttribute("id", "elementId" + iter);
-                    node.setAttribute('onmouseover', "highlight("+id+")");
-                    node.setAttribute('onmouseout', "unhighlight("+id+")");
                     //handful for reader
                     node.setAttribute("data-fileId", document.getElementById(id).attributes[3].value );
                     node.setAttribute("data-startOffset", document.getElementById(id).attributes[4].value );
                     node.setAttribute("data-endOffset", document.getElementById(id).attributes[5].value );
                     node.setAttribute("data-startIndex", document.getElementById(id).attributes[6].value );
                     node.setAttribute("data-endIndex", document.getElementById(id).attributes[7].value );
+
+                    node.addEventListener("mouseenter", function(event) {
+                        highlight(id);
+                    });
+
+                    node.addEventListener("mouseleave", function(event) {
+                        unhighlight(id);
+                    });
+
                     return node;
                 }
             }
@@ -271,11 +278,11 @@
             }
 
             function highlight(id) {
-                id.className = "hightlighted-element";
+                document.getElementById(id).className = "hightlighted-element";
             }
 
             function unhighlight(id) {
-                id.className = "element";
+                document.getElementById(id).className = "element";
             }
 
             function iterId() {
