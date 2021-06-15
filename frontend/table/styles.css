@@ -41,25 +41,23 @@ body {
 
 .annot-note {
   width: 80%;
-  height: 100%;
   font-style: italic;
 }
 
 .annot-pass {
   width: 80%;
-  height: 10  0%;
+  height: 100%;
   font-size: 17x;
 }
 
 .element {
 text-align: justify;
 text-overflow: ellipsis;
-margin: 20px 5px 5px 10px;
 padding: 5px 20px;
 border: 1px solid #d8d8d8;
 cursor: move;
 border-radius: 12px;
-width: 90%;
+width: 80%;
 height: 180px;
 box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 overflow-y: auto;
@@ -133,8 +131,6 @@ transform: scale(1.1, 1.2);
 
 
 .button-bar {
-
-
   border: 1px solid #0066cc;
   background-color: #0099cc;
   color: #ffffff;
@@ -147,3 +143,25 @@ transform: scale(1.1, 1.2);
   font-size: 16px;
 }
 
+
+.invisible {
+  float:left;
+}
+
+.tbl {
+  width:100%;
+  empty-cells: show;
+}
+
+.tbl tr:nth-child(even) {
+  background-color: #eee;
+}
+.tbl tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+td {
+  background: #fff;
+  border: 1px solid #999;
+  padding: 10px 15px 10px 15px;
+}

@@ -1,34 +1,38 @@
+
+
 function drag(dragevent) {
     var text = dragevent.target.id;
     dragevent.dataTransfer.setData("text", text);
-    console.log(dragevent.target.id);
+    console.log("dragit")
+    console.log(text);
 }
+
+// function drop(dropevent) {
+//   dropevent.preventDefault();
+
+//   console.log("dropit");
+//   var note = dropevent.dataTransfer.getData("text");
+//   console.log(note);
+//   const doc = document.createElement('div');
+//   doc.appendChild(document.createTextNode(document.getElementById(note).firstElementChild.innerText));
+//   dropevent.target.appendChild(doc);
+// }
 
 function drop(dropevent) {
-    dropevent.preventDefault();
-    var note = dropevent.dataTransfer.getData("text");
-    console.log(document.getElementById(note));
-    const cursor = getCursorPosition();
-    var highlength = 0;
-    if (document.getElementById(note).lastElementChild.innerText.length != 0) {
-        quill.insertText(getCursorPosition(), " [");
-        quill.insertText(getCursorPosition(), document.getElementById(note).lastElementChild.innerText, true);
-        quill.insertText(getCursorPosition(), "] ");
-        highlength = 4;
-    }
-    quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.innerText, true);
-    quill.insertText(getCursorPosition(), " "); 
-    quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + highlength , document.getElementById(note).firstElementChild.innerText.length ,'highlight', note);
-    iterId();
+  console.log("dropit");  
+  console.log(dropevent);
+  var note = dropevent.dataTransfer.getData("text");
+  console.log(note);
+  dropevent.target.appendChild(document.getElementById(note));
 }
 
-function highlight(id) {
-    document.getElementById(id).className = "hightlighted-element";
+function p(dropevent) {
+  dropevent.preventDefault();
+  console.log("over");
 }
 
-function unhighlight(id) {
-    document.getElementById(id).className = "element";
-}
+
+
 
 function iterId() {
     console.log("iteration");
@@ -38,7 +42,6 @@ function iterId() {
 
 getData();
 async function getData() {
-    console.log('da');
     const res = await fetch('/notes');
     const data = await res.json();
 
@@ -51,7 +54,7 @@ async function getData() {
 
         newAnnot.setAttribute("id", `${item._id}`);
         newAnnot.setAttribute("draggable", "true");
-        newAnnot.setAttribute("ondragstart", `drag(event)`);
+        newAnnot.setAttribute("ondragstart", "drag(event)");
 
         newAnnot.setAttribute("data-fileid", `${item.fileId}`);
         newAnnot.setAttribute("data-startOffset", `${item.startOffset}`)
@@ -72,23 +75,91 @@ async function getData() {
     }
 }
 
-const grid = document.querySelector('revo-grid');
-const columns = [
-  { prop: 'name', name: 'First column' },
-  {
-    prop: 'details',
-    name: 'Second column',
-    cellTemplate: (createElement, props) => {
-      return createElement('div',
-        {
-          style: { backgroundColor: 'red' },
-          class: { 'inner-cell': true },
-        },
-        props.model[props.prop] || '',
-      );
-    },
-  },
-];
-const items = [{ name: 'New item', details: 'Item description' }];
-grid.columns = columns;
-grid.source = items;
+
+
+const td = document.getElementsByTagName("td");
+console.log("td")
+console.log(td);
+for (cell of td ) {
+  console.log("cell")
+  console.log(cell)
+  cell.setAttribute('ondrop', `drop(event)`);
+}
+
+var row = 2;
+var col = 3;
+
+// $(".element").on("dragstart", function(event) {
+//   console.log(event);
+//   drag(event);
+// })
+
+// $("td").on("drop", function(event) {
+//   console.log(event);
+//   drop(event);
+// })
+
+$(".new-row").on("dragenter", function(event) {
+  $("tbody").append(document.createElement("tr"));
+  for (i = 0 ; i < col ; i++) {
+    $("tr:last-child").append(document.createElement("td"));
+  }
+  row += 1;
+  $(this).trigger("changetext");
+});
+
+$(".new-column").on("dragenter", function(event) {
+  $("tr").each(function() {
+    $(this).append(document.createElement("td"));
+  })
+  col += 1;
+  $(this).trigger("changetext");
+});
+
+$(document).on("changetext", function() {
+  $("td").attr("ondrop", "drop(event)");
+})
+
+
+
+// function addt() {
+//   const d = document.getElementById("ok5FF49DL5HMqkvP");
+//   console.log(d)
+//   const i = { name: 'New item', details: "unu" }
+//   grid.source.push(i);
+//   console.log("second");
+//   console.log(grid.source);
+// }
+
+
+// //grid
+// var grid = document.querySelector('revo-grid');
+// var columns = [
+//   { prop: 'name', name: 'First column' },
+//   {
+//     prop: 'details',
+//     name: 'Second column',
+//     cellTemplate: (createElement, props) => {
+//       return createElement('div',
+//         {
+//           style: { backgroundColor: 'red' },
+//           class: { 'inner-cell': true }
+//         },
+//         props.model[props.prop] || '',
+//       );
+//     },
+//   },
+// ];
+// var items = [{ name: 'New item', details: 'Item description' }, {name: "jij", details: 'second item'}];
+// grid.columns = columns;
+// grid.source = items;
+// console.log("first");
+// console.log(grid.source);
+
+// console.log("grid");
+// console.log(grid);
+
+
+// var cell = document.getElementsByClassName('inner-cell');
+// console.log("cell");
+// console.log(cell);
