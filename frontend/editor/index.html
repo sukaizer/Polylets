@@ -31,51 +31,7 @@
 
     <div class="editor">
 
-        <div id="annotations" class="annotation">
-
-            <p style="border: 1px solid #d8d8d8;">
-                <script>
-                    getData();
-                    async function getData() {
-                        console.log('da');
-                        const res = await fetch('/notes');
-                        const data = await res.json();
-
-                        for (item of data) {
-                            const newAnnot = document.createElement('div');
-                            const passage = document.createElement('a');
-                            const note = document.createElement('p');
-                            const strPassage = document.createTextNode(`${item.passage}`);
-                            const strNote = document.createTextNode(`${item.annotation}`);
-
-                            newAnnot.setAttribute("id", `${item._id}`);
-                            newAnnot.setAttribute("draggable", "true");
-                            newAnnot.setAttribute("ondragstart", `drag(event)`);
-
-                            newAnnot.setAttribute("data-fileid", `${item.fileId}`);
-                            newAnnot.setAttribute("data-startOffset", `${item.startOffset}`)
-                            newAnnot.setAttribute("data-endOffset", `${item.endOffset}`)
-                            newAnnot.setAttribute("data-startIndex", `${item.startIndex}`)
-                            newAnnot.setAttribute("data-endIndex", `${item.endIndex}`)
-
-                            note.setAttribute("class", "annot-note");
-                            passage.setAttribute("class", "annot-pass");
-                            newAnnot.setAttribute("class", "element");
-
-                            passage.appendChild(strPassage);
-                            note.appendChild(strNote);
-                            newAnnot.appendChild(passage);
-                            newAnnot.appendChild(note);
-
-                            // const butt = document.createElement('button');
-                            // butt.setAttribute("onclick", `insertCitation("${item._id}")`)
-                            // butt.textContent = "insert";
-                            document.getElementById("annotations").append(newAnnot);
-                        }
-                    }
-                </script>
-            </p>
-        </div>
+        <div id="annotations" class="annotation"></div>
 
         <button id="save-button" class="button">Save</button>
             
