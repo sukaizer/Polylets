@@ -213,6 +213,7 @@ async function getData() {
     for (item of data) {
 
         const newAnnot = document.createElement('div');
+        const handle = document.createElement('div');
         const passage = document.createElement('a');
         const note = document.createElement('p');
         const strPassage = document.createTextNode(`${item.passage}`);
@@ -230,10 +231,12 @@ async function getData() {
 
         note.setAttribute("class", "annot-note");
         passage.setAttribute("class", "annot-pass");
-        newAnnot.setAttribute("class", "element");
+        newAnnot.setAttribute("class", "note draggable");
+        handle.setAttribute("class", "draghandle");
 
         passage.appendChild(strPassage);
         note.appendChild(strNote);
+        newAnnot.appendChild(handle);
         newAnnot.appendChild(passage);
         newAnnot.appendChild(note);
 
