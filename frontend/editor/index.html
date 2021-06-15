@@ -9,6 +9,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="./jszip-master/dist/jszip.js"></script>
 <script type="text/javascript" src="FileSaver.js-master/dist/FileSaver.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -294,9 +295,9 @@
             $('.annot-pass').on('mousedown', ev => { console.log('note-content'); ev.preventDefault() })
 
             // we set these handlers on the container so that they are inherited by any new draggable item
-            $('#container').on('dragstart', '.draggable', ev => dnd ? console.warn('spurious dragstart event') : dnd = new DragAndDropInteraction(ev))
-            $('#container').on('drag', '.draggable', ev => dnd ? dnd.drag(ev) : console.warn('spurious drag event'))
-            $('#container').on('dragend', '.draggable', ev => dnd ? dnd.dragEnd(ev) : console.warn('spurious dragend event'))
+            $('#annotations').on('dragstart', '.draggable', ev => dnd ? console.warn('spurious dragstart event') : dnd = new DragAndDropInteraction(ev))
+            $('#annotations').on('drag', '.draggable', ev => dnd ? dnd.drag(ev) : console.warn('spurious drag event'))
+            $('#annotations').on('dragend', '.draggable', ev => dnd ? dnd.dragEnd(ev) : console.warn('spurious dragend event'))
 
             // these handlers are the only ones that are called when we receive a remote drag
             $('.dropzone').on('dragenter', ev => dnd ? dnd.dragEnter(ev) : dnd = new DropInteraction(ev))
@@ -339,6 +340,8 @@
             </div>
         </div>
     </div>
+    <br>
+        <div id="sidebar" class="dropzone"></div>
 
     <script src="script.js"></script>
 

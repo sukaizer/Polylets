@@ -54,7 +54,6 @@ body {
   width: 80%;
   height: 10 0%;
   font-size: 17x;
-  
 }
 
 .element {
@@ -88,8 +87,6 @@ body {
   transition-timing-function: ease-out;
   transform: scale(1.1, 1.2);
 }
-
-
 
 .button {
   /* border-radius: 15px;
@@ -175,4 +172,12 @@ body {
   height: 15px;
   background-color: lightsalmon;
   cursor: grab;
+}
+
+#sidebar {
+  float: right; /* This causes the sidebar to move to the right */
+  width: 258px; /* We need to set the width whenever we float an element */
+  height: 500px;
+  background-color: lightgrey;
+  padding: 5px;
 }

@@ -166,6 +166,7 @@ function drag(dragevent) {
 
 function drop(dropevent) {
     dropevent.preventDefault();
+    console.log("here drip")
     var note = dropevent.dataTransfer.getData("text");
     console.log(document.getElementById(note));
     const cursor = getCursorPosition();
@@ -177,18 +178,20 @@ function drop(dropevent) {
         quill.insertText(getCursorPosition(), "] ");
         highlength = 4;
     }
-    quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.innerText, true);
+    quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.nextElementSibling.innerText, true);
     quill.insertText(getCursorPosition(), " "); 
-    quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + highlength , document.getElementById(note).firstElementChild.innerText.length ,'highlight', note);
+    quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + highlength , document.getElementById(note).firstElementChild.nextElementSibling.innerText.length ,'highlight', note);
     iterId();
 }
 
 function highlight(id) {
-    document.getElementById(id).className = "hightlighted-element";
+    //document.getElementById(id).className = "hightlighted-element";
+    $('#'+id).css({ transform: 'scale(1.2)' });
+    $('#'+id).css({ transition: 'transform .2s' });
 }
 
 function unhighlight(id) {
-    document.getElementById(id).className = "element";
+    $('#'+id).css({ transform: 'scale(1)' });
 }
 
 function iterId() {
