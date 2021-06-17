@@ -29,6 +29,8 @@
 
     <div class="editor">
 
+        <button class="exporter">Export to Editor</button>
+
         <div id="annotations" class="annotation" ondragover="p(event)" ondrop="drop(event)">
             <p style="border: 1px solid #d8d8d8;"></p>
         </div>
@@ -37,9 +39,14 @@
 
         <!-- Create the editor container -->
         <div  class="document" ondragover="p(event)">
-          <span class="table-line">
+          
+          <div class="table-line">
+          
+          <div class="table-form">
             
             <table class="tbl" id="tbl"> 
+              <colgroup>
+              </colgroup>
               <tr>
                 <td></td>
                 <td></td>
@@ -52,16 +59,18 @@
               </tr>
             </table>
 
-            <div class="new-column">
-              <p>new row</p>
-            </div>
+          </div> 
 
-        </span> 
-
-        <div class="new-row">
-            <p>new column</p>
+        
+        <div class="new-column">
+          <p></p>
         </div>
 
+      </div>
+      
+        <div class="new-row">
+          <p></p>
+        </div>
         
 
     </div>

@@ -1,4 +1,4 @@
-
+var data = [];
 
 function drag(dragevent) {
     var text = dragevent.target.id;
@@ -73,7 +73,27 @@ async function getData() {
 
         document.getElementById("annotations").append(newAnnot);
     }
+};
+
+
+
+//send data to server
+async function sendToServer() {
+  console.log('there!')
+	const delay = ms => new Promise(res => setTimeout(res, ms));
+
+	const options = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	};
+	fetch('/tbl', options);
+	await delay(1000);
 }
+
+
 
 
 
@@ -89,16 +109,36 @@ for (cell of td ) {
 var row = 2;
 var col = 3;
 
-// $(".element").on("dragstart", function(event) {
-//   console.log(event);
-//   drag(event);
-// })
+//export into editor
+async function exportToEditor() {
+	console.log("export");
+	//create data
+	var tmp = [];
+	for (i = 1 ; i <= col ; i++) {
+		$('.tbl tr td:nth-child('+i+') div').each(function(index) {
+			tmp.push($(this));
+		})
+    if (tmp.length != 0) {
+      data.push(tmp);  
+    }
+		tmp = [];
+	}
 
-// $("td").on("drop", function(event) {
-//   console.log(event);
-//   drop(event);
-// })
+	//push to the database
+	console.log(data);
+	sendToServer();
+	data = [];
+}
 
+
+//add column
+$(".tbl tr:nth-child(1) td").each(function(index) {
+	$(".tbl colgroup").append(document.createElement("col"))
+})
+
+
+
+//drag to add row
 $(".new-row").on("dragenter", function(event) {
   $("tbody").append(document.createElement("tr"));
   for (i = 0 ; i < col ; i++) {
@@ -108,18 +148,29 @@ $(".new-row").on("dragenter", function(event) {
   $(this).trigger("changetext");
 });
 
+//drag to add column
 $(".new-column").on("dragenter", function(event) {
   $("tr").each(function() {
     $(this).append(document.createElement("td"));
   })
   col += 1;
+  $(".tbl colgroup").append(document.createElement("col"))
   $(this).trigger("changetext");
 });
 
+
+//add dnd attribute to table
 $(document).on("changetext", function() {
   $("td").attr("ondrop", "drop(event)");
 })
 
+
+
+
+//export button
+$(".exporter").on("click", function(event) {
+	exportToEditor();
+})
 
 
 // function addt() {
