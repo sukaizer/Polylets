@@ -9,6 +9,10 @@ body {
   text-align: center;
 }
 
+.document a {
+  font-style: oblique;
+}
+
 .navigationBar a {
   font-weight: bold;
   color: #2c3e50;

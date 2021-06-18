@@ -16,8 +16,8 @@ body {
 }
 
 .document {
-  width: 50%;
-  height: 1000px;
+  width: 55%;
+  height: 800px;
   margin: 10px 10px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
@@ -33,13 +33,14 @@ body {
 
 .annotation {
   background-color: rgb(243, 236, 236);
-  width: 30%;
-  height: 80%;
+  width: 35%;
+  height: 800px;
   margin: 10px 10px;
   float: left;
   font-size: 15px;
   padding: 10px 20px 5px 5px;
   border-radius: 10px;
+  overflow: scroll;
 }
 
 .annot-note {
