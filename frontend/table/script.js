@@ -3,8 +3,7 @@ var data = [];
 function drag(dragevent) {
     var text = dragevent.target.id;
     dragevent.dataTransfer.setData("text", text);
-    console.log("dragit")
-    console.log(text);
+
 }
 
 // function drop(dropevent) {
@@ -19,24 +18,19 @@ function drag(dragevent) {
 // }
 
 function drop(dropevent) {
-  console.log("dropit");  
-  console.log(dropevent);
   var note = dropevent.dataTransfer.getData("text");
-  console.log(note);
   dropevent.target.appendChild(document.getElementById(note));
+  tableCoordinate();
 }
 
 function p(dropevent) {
   dropevent.preventDefault();
-  console.log("over");
 }
 
 
 
 
 function iterId() {
-    console.log("iteration");
-    console.log(iter);
     iter += 1;
 }
 
@@ -79,7 +73,6 @@ async function getData() {
 
 //send data to server
 async function sendToServer() {
-  console.log('there!')
 	const delay = ms => new Promise(res => setTimeout(res, ms));
 
 	const options = {
@@ -98,36 +91,46 @@ async function sendToServer() {
 
 
 const td = document.getElementsByTagName("td");
-console.log("td")
-console.log(td);
 for (cell of td ) {
-  console.log("cell")
-  console.log(cell)
   cell.setAttribute('ondrop', `drop(event)`);
 }
 
 var row = 2;
 var col = 3;
 
+function tableCoordinate() {
+	for (i = 1 ; i <= row ; i++) {
+		for (j = 1 ; j <= col ; j++) {
+			$('.tbl tr:nth-child('+i+') td:nth-child('+j+') div').each(function() {
+				$(this).attr('data-row', i);
+        $(this).attr('data-col', j);
+			})
+		}
+	}
+}
+
+
 //export into editor
 async function exportToEditor() {
-	console.log("export");
 	//create data
-	var tmp = [];
 	for (i = 1 ; i <= col ; i++) {
-		$('.tbl tr td:nth-child('+i+') div').each(function(index) {
-			tmp.push($(this));
+		$('.tbl tr td:nth-child('+i+') div').each(function(index) {  
+      const tis = $(this)[0];
+      const note = {
+        id : tis.id,
+        fileId : tis.attributes[3].value,
+        startOffset : tis.attributes[4].value,
+        endOffset : tis.attributes[5].value,
+        startIndex : tis.attributes[6].value,
+        endIndex : tis.attributes[7].value,
+        row: tis.attributes[9].value,
+        col: tis.attributes[10].value, 
+      }
+      data.push(note);
 		})
-    if (tmp.length != 0) {
-      data.push(tmp);  
-    }
-		tmp = [];
 	}
-
-	//push to the database
-	console.log(data);
-	sendToServer();
-	data = [];
+  sendToServer();
+  data = [];
 }
 
 
@@ -172,45 +175,3 @@ $(".exporter").on("click", function(event) {
 	exportToEditor();
 })
 
-
-// function addt() {
-//   const d = document.getElementById("ok5FF49DL5HMqkvP");
-//   console.log(d)
-//   const i = { name: 'New item', details: "unu" }
-//   grid.source.push(i);
-//   console.log("second");
-//   console.log(grid.source);
-// }
-
-
-// //grid
-// var grid = document.querySelector('revo-grid');
-// var columns = [
-//   { prop: 'name', name: 'First column' },
-//   {
-//     prop: 'details',
-//     name: 'Second column',
-//     cellTemplate: (createElement, props) => {
-//       return createElement('div',
-//         {
-//           style: { backgroundColor: 'red' },
-//           class: { 'inner-cell': true }
-//         },
-//         props.model[props.prop] || '',
-//       );
-//     },
-//   },
-// ];
-// var items = [{ name: 'New item', details: 'Item description' }, {name: "jij", details: 'second item'}];
-// grid.columns = columns;
-// grid.source = items;
-// console.log("first");
-// console.log(grid.source);
-
-// console.log("grid");
-// console.log(grid);
-
-
-// var cell = document.getElementsByClassName('inner-cell');
-// console.log("cell");
-// console.log(cell);

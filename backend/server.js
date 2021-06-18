@@ -10,7 +10,7 @@ app.use('/viewer', express.static('../frontend/viewer'));
 app.use('/editor', express.static('../frontend/editor'));
 app.use('/reader', express.static('../frontend/reader'));
 app.use('/table', express.static('../frontend/table'));
-app.use('/',express.static('../frontend/'));
+app.use('/', express.static('../frontend/'));
 
 app.use(express.json());
 
@@ -47,7 +47,17 @@ app.get('/files', (rq, rs) => {
 });
 
 app.get('/notes', (rq, rs) => {
-        databasePassages.find({}, (err, data) => {
+    databasePassages.find({}, (err, data) => {
+        if (err) {
+            rs.end();
+            return;
+        }
+        rs.json(data);
+    });
+});
+
+app.get('/tbl', (rq, rs) => {
+    databaseTable.find({}, (err, data) => {
         if (err) {
             rs.end();
             return;
@@ -73,11 +83,16 @@ app.post('/files', (rq, rs) => {
     rs.json(data);
 });
 
-app.post('/tbl', (rq, rs) => {Ò
+app.post('/tbl', (rq, rs) => {
+    databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
+        console.log("1");
+        databaseTable.loadDatabase(function (err) {
+        });
+    });
     const data = rq.body;
+    console.log(data);
     databaseTable.insert(data);
-    console.log("2");
-    rs.json(data);
+    rs.json(data)
 });
 
 app.delete('/api', (rq, rs) => {
