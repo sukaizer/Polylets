@@ -28,7 +28,7 @@
         <br>
         <!-- div containing the main document -->
         <div id="content" class="document" @mouseover="setDisable"></div>
-        <div class="annotationBar">
+        <div id="container" class="annotationBar">
             <button class="button" :disabled="isDisabled" @click="addAnnotation() ; $refs.files.updateFile()">NOTE</button>
             <template v-if="this.notes.length > 0">
                 <button class="button" @click="sendToServer">SAVE</button>
@@ -36,7 +36,7 @@
             <span class = "saved" :disable="true"> {{ savedProperty }} </span>
 
             <!-- here goes the template -->
-            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @selection="reselect" @del="deletePassage"></annotation-list>
+            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @selection="reselect" @del="deletePassage" @drag="dragPassage"></annotation-list>
         </div>
     </div>
 
@@ -44,8 +44,7 @@
     <script src="components/annotation-list.js"></script>
     <script src="components/files-switcher.js"></script>
     
-    <script>
-        const mountedApp = app.mount('#app')
+    <script src="script.js">
     </script>
 
 </body>

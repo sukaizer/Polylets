@@ -244,17 +244,17 @@ function moveElem(elem, deltaX, deltaY) {
 }
 
 // Create a note with the given content and optional position
-function createNote(passage, annotation, left, top) {
+function createNote(data, left, top) {
   let style = "";
   if (top !== undefined && left !== undefined)
     style = `style="top: ${top}px; left: ${left}px"`;
-  let html = `<div class="note draggable" draggable="true" ${style}>
+  let html = `<div id=${data.id} draggable="true" data-fileid=${data.fileId} data-startoffset=${data.startOffset} data-endoffset=${data.endOffset} data-startindex=${data.startIndex} data-endindex=${data.endIndex} class="note draggable">
         <div class="draghandle"></div>
         <a class="passage-content">
-            ${passage}
+            ${data.passage}
         </a>
         <p class="note-content">
-            ${annotation}
+            ${data.annotation}
         </p>
     </div>`;
   return html;
@@ -268,34 +268,6 @@ function getNoteContent(note) {
 // Return the HTML content of a note
 function getPassageContent(note) {
   return note.firstElementChild.nextElementSibling.innerHTML;
-}
-
-// Move a note from the content pane to the sidebar
-function moveNoteToSidebar(note, sidebar, ev, dnd) {
-  // Copy note and append it to sidebar
-  let html = createNote(getPassageContent(note), getNoteContent(note));
-  $("#sidebar").append(html);
-
-  // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
-  setTimeout(() => note.remove(), 0);
-}
-
-// Move a note from the sidebar to the content pane
-function moveNoteToContent(note, sidebar, ev, dnd) {
-  // Compute destination position
-  // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
-  let offset = $("#content").offset();
-  let scroll = { x: $("#content").scrollLeft(), y: $("#content").scrollTop() };
-  let x =
-    ev.originalEvent.clientX - offset.left + scroll.x - dnd.cursorOffset.x;
-  let y = ev.originalEvent.clientY - offset.top + scroll.y - dnd.cursorOffset.y;
-
-  // Copy note and append it to sidebar
-  let html = createNote(getPassageContent(note), getNoteContent(note), x, y);
-  $("#content").append(html);
-
-  // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
-  setTimeout(() => note.remove(), 0);
 }
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
@@ -333,24 +305,8 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
-  let html = createNote(xferData.passage, xferData.content);
+  let html = createNote(xferData);
   $("#sidebar").append(html);
-}
-
-// Copy a note from a remote window to the content pane
-function copyNoteToContent(xferData, sidebar, ev, dnd) {
-  // Compute destination position
-  // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
-  let offset = $("#content").offset();
-  let scroll = { x: $("#content").scrollLeft(), y: $("#content").scrollTop() };
-  let x =
-    ev.originalEvent.clientX - offset.left + scroll.x - xferData.cursorOffset.x;
-  let y =
-    ev.originalEvent.clientY - offset.top + scroll.y - xferData.cursorOffset.y;
-
-  // Copy note and append it to sidebar
-  let html = createNote(xferData.passage, xferData.content, x, y);
-  $("#content").append(html);
 }
 
 // Global holding the current drag-and-drop interaction, if any
@@ -384,7 +340,7 @@ class DragAndDropInteraction {
     let xferData = {
       windowId: windowId,
       passage: getPassageContent(this.draggedElem),
-      content: getNoteContent(this.draggedElem),
+      annotation: getNoteContent(this.draggedElem),
       cursorOffset: this.cursorOffset,
     };
     ev.originalEvent.dataTransfer.setData(
@@ -507,7 +463,7 @@ class DropInteraction {
   dragOver(ev) {
     this.dropZone = ev.currentTarget;
     let mvt = this.getMovement();
-    console.log(ev.type, mvt, ev);
+    //console.log(ev.type, mvt, ev);
     if (mvt) {
       // this tells that we can drop remotely
       ev.originalEvent.dataTransfer.dropEffect = "copy";
@@ -532,6 +488,7 @@ class DropInteraction {
 
     // Parse transfer data
     let xferData = ev.originalEvent.dataTransfer.getData("text/plain");
+    console.log(xferData);
     let data = null;
     if (xferData && xferData.length > 0) data = JSON.parse(xferData);
     if (!data) {
@@ -544,12 +501,8 @@ class DropInteraction {
     switch (movement) {
       case "->sidebar": // copy remote note to sidebar
         // remove note from content and append it to sidebar
+        console.log("hey");
         copyNoteToSidebar(data, this.dropZone, ev, this);
-        break;
-
-      case "->content": // copy remote note to content pane
-        // remove note from sidebar and append it to panel
-        copyNoteToContent(data, this.dropZone, ev, this);
         break;
 
       default:
