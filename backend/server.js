@@ -32,6 +32,9 @@ databasePassages.loadDatabase();
 const databaseHtmlFiles = new Datastore('databaseHtmlFiles.db');
 databaseHtmlFiles.loadDatabase();
 
+const databaseTable = new Datastore('databaseTable.db');
+databaseTable.loadDatabase();
+
 // get the data
 app.get('/files', (rq, rs) => {
     databaseHtmlFiles.find({}, (err, data) => {
@@ -70,7 +73,13 @@ app.post('/files', (rq, rs) => {
     rs.json(data);
 });
 
+app.post('/tbl', (rq, rs) => {Ò
+    const data = rq.body;
+    databaseTable.insert(data);
+    console.log("2");
+    rs.json(data);
+});
+
 app.delete('/api', (rq, rs) => {
 
 })
-

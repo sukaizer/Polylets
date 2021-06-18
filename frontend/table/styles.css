@@ -21,7 +21,6 @@ body {
   margin: 10px 10px;
   border: 1px solid #d8d8d8;
   overflow-y: auto;  /* this makes the div scrollable  */
-  float: left;
   padding: 20px;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
@@ -143,13 +142,29 @@ transform: scale(1.1, 1.2);
   font-size: 16px;
 }
 
+.table-line{
+  height:8%;
+}
 
-.invisible {
-  float:left;
+.table-form{
+  float: left;
+  width:80%;
+}
+
+.new-column{
+  height:100%;
+  width:20%;
+  display: inline-block;
+  text-align: center;
+}
+
+.new-row{
+  width: 80%;
+  height: 50%;
 }
 
 .tbl {
-  width:100%;
+  width: 100%;
   empty-cells: show;
 }
 
