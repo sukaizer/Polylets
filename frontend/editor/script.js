@@ -114,7 +114,6 @@ async function zipFile() {
 
 }
 
-
 function buildDOM(element, jsonObject) { // element is the parent element to add the children to
     if (typeof jsonObject == "string") {
         jsonObject = JSON.parse(jsonObject);
@@ -142,7 +141,6 @@ function buildDOM(element, jsonObject) { // element is the parent element to add
         element.appendChild(e);
     }
 }
-
 
 function getCursorPosition() {
     var range = quill.getSelection();
@@ -175,15 +173,15 @@ function drop(dropevent) {
     const cursor = getCursorPosition();
     // quill.format('highlight', note);
     var highlength = 0;
-    if (document.getElementById(note).lastElementChild.innerText.length != 0) {
+    if (document.getElementById(note).lastElementChild.lastElementChild.innerText.length != 0) {
         quill.insertText(getCursorPosition(), " [");
-        quill.insertText(getCursorPosition(), document.getElementById(note).lastElementChild.innerText, true);
+        quill.insertText(getCursorPosition(), document.getElementById(note).lastElementChild.lastElementChild.innerText, true);
         quill.insertText(getCursorPosition(), "] ");
         highlength = 4;
     }
-    quill.insertText(getCursorPosition(), document.getElementById(note).firstElementChild.nextElementSibling.innerText, true);
+    quill.insertText(getCursorPosition(), document.getElementById(note).lastElementChild.firstElementChild.innerText, true);
     quill.insertText(getCursorPosition(), " "); 
-    quill.formatText(cursor + document.getElementById(note).lastElementChild.innerText.length + highlength , document.getElementById(note).firstElementChild.nextElementSibling.innerText.length ,'highlight', note);
+    quill.formatText(cursor + document.getElementById(note).lastElementChild.lastElementChild.innerText.length + highlength , document.getElementById(note).lastElementChild.firstElementChild.innerText.length ,'highlight', note);
     iterId();
 }
 
@@ -204,15 +202,15 @@ function iterId() {
 }
 
 async function getData() {
-    for (let i = 0; i < nbFile; i++) {
-        const container = document.createElement('div');
-        document.getElementById("annotations").append(container);
-        const doc = document.createElement('p');
-        doc.appendChild(document.createTextNode("Document " + (i + 1)));
-        doc.setAttribute("class", "docName");
-        container.append(doc);
-        passagesDiv[i] = container;
-    }
+    // for (let i = 0; i < nbFile; i++) {
+    //     const container = document.createElement('div');
+    //     document.getElementById("annotations").append(container);
+    //     const doc = document.createElement('p');
+    //     doc.appendChild(document.createTextNode("Document " + (i + 1)));
+    //     doc.setAttribute("class", "docName");
+    //     container.append(doc);
+    //     passagesDiv[i] = container;
+    // }
     const res = await fetch('/notes');
     const data = await res.json();
 
@@ -220,6 +218,7 @@ async function getData() {
 
         const newAnnot = document.createElement('div');
         const handle = document.createElement('div');
+        const content = document.createElement('div');
         const passage = document.createElement('a');
         const note = document.createElement('p');
         const strPassage = document.createTextNode(`${item.passage}`);
@@ -235,6 +234,7 @@ async function getData() {
         newAnnot.setAttribute("data-startIndex", `${item.startIndex}`)
         newAnnot.setAttribute("data-endIndex", `${item.endIndex}`)
 
+        content.setAttribute("class","content");
         note.setAttribute("class", "annot-note");
         passage.setAttribute("class", "annot-pass");
         newAnnot.setAttribute("class", "note draggable");
@@ -242,14 +242,15 @@ async function getData() {
 
         passage.appendChild(strPassage);
         note.appendChild(strNote);
+        content.appendChild(passage);
+        content.appendChild(note);
         newAnnot.appendChild(handle);
-        newAnnot.appendChild(passage);
-        newAnnot.appendChild(note);
+        newAnnot.appendChild(content);
 
 
-        passagesDiv[`${item.fileId}`-1].append(newAnnot);
+        //passagesDiv[`${item.fileId}`-1].append(newAnnot);
 
-        //document.getElementById("annotations").append(newAnnot);
+        document.getElementById("annotations").append(newAnnot);
     }
 }
 

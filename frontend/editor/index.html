@@ -1,313 +1,140 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<!-- Include stylesheet -->
-<title>Polylets editor</title>
+    <meta charset="utf-8">
+    <title>Polylets editor</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="./jszip-master/dist/jszip.js"></script>
-<script type="text/javascript" src="FileSaver.js-master/dist/FileSaver.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-    <script type="text/javascript">
-
-        // This name will be passed to the destination window during drag-and-drop
-        // and can be used to distinguish among several source windows
-        let windowId = 'demo'
-
-        // Return the id of the closest enclosing dropzone, if any
-        function getDropZoneId(elem) {
-            return $(elem).closest('.dropzone').attr('id')
+    <style type="text/css">
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+            font-weight: 300;
+            /* display: flex; */
         }
 
-        // Move jQuery `elem` by deltaX, deltaY
-        function moveElem(elem, deltaX, deltaY) {
-            let offset = elem.offset()
-            offset.left += deltaX
-            offset.top += deltaY
-            elem.offset(offset)
+        .navigationBar {
+            padding: 5px;
+            text-align: center;
         }
 
-        // Create a note with the given content and optional position
-        function createNote(content, left, top) {
-            let style = ''
-            if (top !== undefined && left !== undefined)
-                style = `style="top: ${top}px; left: ${left}px"`
-            let html =
-                `<div class="note draggable" draggable="true" ${style}>
-    				<div class="draghandle"></div>
-    				<div class="note-content">
-    					${content}
-    				</div>
-    			</div>`
-            return html
+        .navigationBar a {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+
+        .document {
+            width: 55%;
+            height: 800px;
+            margin: 10px 10px;
+            border: 1px solid #d8d8d8;
+            overflow-y: auto; /* this makes the div scrollable  */
+            float: left;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
         }
 
-        // Return the HTML content of a note
-        function getNoteContent(note) {
-            return $(note).find('.note-content').html()
+        #sidebar {
+            background-color: rgb(243, 236, 236);
+            width: 20%;
+            height: 800px;
+            margin: 10px 10px;
+            float: left;
+            font-size: 15px;
+            padding: 10px 20px 5px 5px;
+            border-radius: 10px;
+            overflow: scroll;
         }
 
-        // Move a note from the content pane to the sidebar
-        function moveNoteToSidebar(note, sidebar, ev, dnd) {
-            // Copy note and append it to sidebar
-            let html = createNote(getNoteContent(note))
-            $('#sidebar').append(html)
-
-            // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
-            setTimeout(() => note.remove(), 0)
+        .note {
+            background-color: yellow;
+            overflow: scroll;
         }
 
-        // Move a note from the sidebar to the content pane
-        function moveNoteToContent(note, sidebar, ev, dnd) {
-            // Compute destination position
-            // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
-            let offset = $('#content').offset()
-            let scroll = { x: $('#content').scrollLeft(), y: $('#content').scrollTop() }
-            let x = ev.originalEvent.clientX - offset.left + scroll.x - dnd.cursorOffset.x
-            let y = ev.originalEvent.clientY - offset.top + scroll.y - dnd.cursorOffset.y
-
-            // Copy note and append it to sidebar
-            let html = createNote(getNoteContent(note), x, y)
-            $('#content').append(html)
-
-            // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
-            setTimeout(() => note.remove(), 0)
+        .note .note-content {
+            width: 100%;
+            height: 75px;
+            /* 100px - 15px (draghandle) - 2*5px (padding) */
+            padding: 5px;
+            overflow: scroll;
         }
 
-        // Copy a note from a remote window to the sidebar
-        function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
-            // Copy note and append it to sidebar
-            let html = createNote(xferData.content)
-            $('#sidebar').append(html)
+        .note .passage-content {
+            width: 100%;
+            height: 75px;
+            /* 100px - 15px (draghandle) - 2*5px (padding) */
+            padding: 5px;
+            overflow: scroll;
         }
 
-        // Copy a note from a remote window to the content pane
-        function copyNoteToContent(xferData, sidebar, ev, dnd) {
-            // Compute destination position
-            // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
-            let offset = $('#content').offset()
-            let scroll = { x: $('#content').scrollLeft(), y: $('#content').scrollTop() }
-            let x = ev.originalEvent.clientX - offset.left + scroll.x - xferData.cursorOffset.x
-            let y = ev.originalEvent.clientY - offset.top + scroll.y - xferData.cursorOffset.y
 
-            // Copy note and append it to sidebar
-            let html = createNote(xferData.content, x, y)
-            $('#content').append(html)
+        .note-content {
+            border: 20px;
+            border-radius: 6px;
+            border-color: #2c3e50;
         }
 
-        // Global holding the current drag-and-drop interaction, if any
-        let dnd = null
-
-        // Singleton class holding the state for a drag-and-drop interaction
-        class DragAndDropInteraction {
-            draggedElem = null
-            dropZone = null
-
-            constructor(ev) {
-                console.log(ev.type + ': new dnd interaction', ev)
-                this.draggedElem = ev.target
-                this.dropZone = null
-
-                // absolute position of cursor (used for local move)
-                this.startPos = { x: ev.originalEvent.screenX, y: ev.originalEvent.screenY }
-
-                // position of cursor relative to dragged element (used for non-local move)
-                let offset = $(this.draggedElem).offset()
-                this.cursorOffset = { x: ev.originalEvent.pageX - offset.left, y: ev.originalEvent.pageY - offset.top }
-
-                // fill out dataTransfor info in case we drag out of the window
-                ev.originalEvent.dataTransfer.effectAllowed = 'copy'
-                let xferData = {
-                    windowId: windowId,
-                    content: getNoteContent(this.draggedElem),
-                    cursorOffset: this.cursorOffset,
-                }
-                ev.originalEvent.dataTransfer.setData('text/plain', JSON.stringify(xferData))
-            }
-
-            // ==== utilities ====
-
-            getMovement() { // return a string sourceDropZone->destinationDropZone
-                let from = getDropZoneId(this.draggedElem)
-                let to = getDropZoneId(this.dropZone)
-                if (from && to)
-                    return from + '->' + to
-                return null
-            }
-
-            // ==== Event Handlers ===
-            drag(ev) {
-                // console.log('drag')
-            }
-
-            dragEnd(ev) {
-                console.log('dragEnd', ev)
-                dnd = null	// reset interaction
-            }
-
-            dragEnter(ev) {
-                console.log('dragEnter', ev)
-                this.dragOver(ev)
-            }
-
-            dragOver(ev) {
-                this.dropZone = ev.currentTarget
-                let mvt = this.getMovement()
-                console.log(ev.type, mvt, ev)
-                if (mvt && mvt !== 'sidebar->sidebar') {
-                    // this signals that we are able to handle a drop here
-                    ev.preventDefault()
-                    ev.stopPropagation()
-                }
-            }
-
-            dragLeave(ev) {
-                // console.log('dragLeave', ev)
-                // this.dropZone = null
-                // ev.preventDefault()
-            }
-
-            drop(ev) {
-                console.log('drop', ev)
-                if (!this.dropZone)
-                    return
-
-                // let e = ev.originalEvent
-                // console.log(`client ${e.x} ${e.y} - layer ${e.layerX} ${e.layerY} - offset ${e.offsetX} ${e.offsetY} - screen ${e.screenX} ${e.screenY}`)
-
-                let movement = this.getMovement()
-                console.log(movement)
-                switch (movement) {
-                    case 'content->content': // move note withing the content pane
-                        // simply move the note
-                        moveElem($(this.draggedElem), ev.screenX - this.startPos.x, ev.screenY - this.startPos.y)
-                        break
-
-                    case 'content->sidebar': // move note from content pane to sidebar
-                        // remove note from content and append it to sidebar
-                        moveNoteToSidebar(this.draggedElem, this.dropZone, ev, this)
-                        break
-
-                    case 'sidebar->content': // move note from sidebar to content pane
-                        // remove note from sidebar and append it to panel
-                        moveNoteToContent(this.draggedElem, this.dropZone, ev, this)
-                        break
-
-                    case 'sidebar->sidebar': // move note within sidebar: do nothing
-                    //break
-
-                    default:
-                        console.log('unknown/unsupported movement ')
-                }
-            }
+        .passage-content {
+            border: 20px;
+            border-radius: 6px;
+            border-color: #2c3e50;
         }
 
-        // Singleton class holding the state for a drag-and-drop interaction
-        // when dragging from another window
-        class DropInteraction {
-            dropZone = null
 
-            constructor(ev) {
-                console.log(ev.type + ': new drop interaction', ev)
-                this.dragOver(ev)
-            }
-
-            // ==== utilities ====
-
-            getMovement() { // return a string sourceDropZone->destinationDropZone
-                let to = getDropZoneId(this.dropZone)
-                if (to)
-                    return '->' + to
-                return null
-            }
-
-            // ==== Event Handlers ===
-
-            dragEnter(ev) {
-                this.dragOver(ev)
-            }
-
-            dragOver(ev) {
-                this.dropZone = ev.currentTarget
-                let mvt = this.getMovement()
-                console.log(ev.type, mvt, ev)
-                if (mvt) {
-                    // this tells that we can drop remotely
-                    ev.originalEvent.dataTransfer.dropEffect = 'copy'
-
-                    // this signals that we are able to handle a drop here
-                    ev.preventDefault()
-                    ev.stopPropagation()
-                }
-            }
-
-            dragLeave(ev) {
-                console.log('remote dragLeave', ev)
-                ev.preventDefault()
-            }
-
-            drop(ev) {
-                console.log('remote drop', ev)
-                if (!this.dropZone) {
-                    dnd = null
-                    return
-                }
-
-                // Parse transfer data
-                let xferData = ev.originalEvent.dataTransfer.getData('text/plain')
-                let data = null
-                if (xferData && xferData.length > 0)
-                    data = JSON.parse(xferData)
-                if (!data) {
-                    dnd = null
-                    return
-                }
-
-                let movement = this.getMovement()
-                console.log(movement)
-                switch (movement) {
-                    case '->sidebar': // copy remote note to sidebar
-                        // remove note from content and append it to sidebar
-                        copyNoteToSidebar(data, this.dropZone, ev, this)
-                        break
-
-                    case '->content': // copy remote note to content pane
-                        // remove note from sidebar and append it to panel
-                        copyNoteToContent(data, this.dropZone, ev, this)
-                        break
-
-                    default:
-                        console.log('unknown/unsupported movement ')
-                }
-
-                dnd = null
-            }
+        #sidebar .note {
+            margin: 10px;
+            height: 150px;
         }
 
-        $(function () {
-            // this disables dragging a note by clicking its content
-            $('.annot-note').on('mousedown', ev => { console.log('note-content'); ev.preventDefault() })
-            $('.annot-pass').on('mousedown', ev => { console.log('note-content'); ev.preventDefault() })
+        /* for managing drag-and-drop */
+        .note .draghandle {
+            width: 100%;
+            height: 15px;
+            background-color: lightsalmon;
+            cursor: grab;
+        }
 
-            // we set these handlers on the container so that they are inherited by any new draggable item
-            $('#annotations').on('dragstart', '.draggable', ev => dnd ? console.warn('spurious dragstart event') : dnd = new DragAndDropInteraction(ev))
-            $('#annotations').on('drag', '.draggable', ev => dnd ? dnd.drag(ev) : console.warn('spurious drag event'))
-            $('#annotations').on('dragend', '.draggable', ev => dnd ? dnd.dragEnd(ev) : console.warn('spurious dragend event'))
+        .button {
+            /* border-radius: 15px;
+            background-color: #e80505;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 20px 20px;
+            cursor: pointer; */
 
-            // these handlers are the only ones that are called when we receive a remote drag
-            $('.dropzone').on('dragenter', ev => dnd ? dnd.dragEnter(ev) : dnd = new DropInteraction(ev))
-            $('.dropzone').on('dragover', ev => dnd ? dnd.dragOver(ev) : console.warn('spurious dragover event'))
-            $('.dropzone').on('dragleave', ev => dnd ? dnd.dragLeave(ev) : console.warn('spurious dragleave event'))
+            background-color: rgb();
+            /* color: #ffffff; */
+            padding: 5px 10px;
+            margin: 5px 5px 10px 5px;
+            cursor: pointer;
+            border-radius: 15px;
+            border: 1px solid #999999;
+        }       
 
-            $('.dropzone').on('drop', ev => dnd ? dnd.drop(ev) : console.warn('spurious drop event'))
-        })
-    </script>
+        .button:hover {
+            /* background-color: #ffffff;
+            box-shadow: 0px 15px 20px rgba(219, 26, 12, 0.4);
+            color: #e80505; */
+
+            background-color: rgb(88, 88, 88);
+            color: #ffffff;
+            padding: 5px 10px;
+            border: 1px solid #999999;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./jszip-master/dist/jszip.js"></script>
+	<script type="text/javascript" src="FileSaver.js-master/dist/FileSaver.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
+
 <body>
 
     <div class="navigationBar">
@@ -316,32 +143,22 @@
         <a href="../reader">Reader</a>
         <a href="../table">Table</a>
     </div>
-
-    <div style="margin:0px 0px 0px 10px">
-        <h1>Document Editor</h1>
-        <button id="save-button" class="button">Save</button>
     
-    </div>
-
+    <div id="container">
+        <div style="margin:0px 0px 0px 10px">
+            <h1>Document Editor</h1>
+            <button id="save-button" class="button">Save</button>
         
-
-    <div class="editor">
-
-        <div id="annotations" class="annotation"></div>
-
-        <button id="save-button" class="button">Save</button>
-            
-        <!-- Create the editor container -->
+        </div>
+        <div id="sidebar" class="dropzone"></div>
         <div class="document">
             <div id="editor" ondrop="drop(event)">
                 
             </div>
         </div>
     </div>
-    <br>
-        <div id="sidebar" class="dropzone"></div>
 
-    <script src="script.js"></script>
+    <script src="script2.js"></script>
 
 </body>
 
