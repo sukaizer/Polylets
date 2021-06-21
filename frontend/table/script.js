@@ -20,7 +20,8 @@ function drag(dragevent) {
 function drop(dropevent) {
   var note = dropevent.dataTransfer.getData("text");
   dropevent.target.appendChild(document.getElementById(note));
-  tableCoordinate();
+  $(document).trigger("changetext")
+  
 }
 
 function p(dropevent) {
@@ -134,9 +135,59 @@ async function exportToEditor() {
 }
 
 
+function deleteCol(c) {
+  // Getting the table
+  var tbl = document.getElementById('tbl'); 
+  
+  // Getting the rows in table.
+  var row = tbl.rows;  
+
+  // Removing the column at index(col).  
+  for (var j = 0; j < row.length; j++) {
+      // Deleting the ith cell of each row.
+      row[j].deleteCell(c);
+  }
+
+  //delete button
+  const butt = document.getElementsByClassName("del-col");
+  butt[c].remove();
+
+  $(document).trigger("changetext");
+  col -= 1;
+}
+
+
+function deleteRow(r) {
+	//delete row
+	var tr = document.getElementsByTagName("tr");
+	tr[r].remove();
+	//delete button
+	const butt = document.getElementsByClassName("del-row");
+	butt[r].remove();
+	$(document).trigger("changetext");
+	row -= 1;
+}
+
+
 //add column
 $(".tbl tr:nth-child(1) td").each(function(index) {
-	$(".tbl colgroup").append(document.createElement("col"))
+  //columns
+  const buttCol = document.createElement("button")
+  buttCol.innerHTML = "X"
+  buttCol.setAttribute("class", "del-col")
+  buttCol.setAttribute("onclick", "deleteCol("+index+")");
+  $(".document").prepend(buttCol);
+  $(".tbl colgroup").append(document.createElement("col"))
+})
+
+
+$("tr").each(function(id) {
+  //rows
+  const buttRow =document.createElement("button");
+  buttRow.innerHTML = "X"
+  buttRow.setAttribute("class", "del-row")
+  buttRow.setAttribute("onclick", "deleteRow("+id+")");
+  $(".document").append(buttRow)
 })
 
 
@@ -147,7 +198,12 @@ $(".new-row").on("dragenter", function(event) {
   for (i = 0 ; i < col ; i++) {
     $("tr:last-child").append(document.createElement("td"));
   }
+  const butt = document.createElement("button");
+  butt.innerHTML = "X"
+  butt.setAttribute("class", "del-row")
+  butt.setAttribute("onclick", "deleteRow("+row+")");
   row += 1;
+  $(".document").append(butt);
   $(this).trigger("changetext");
 });
 
@@ -156,15 +212,36 @@ $(".new-column").on("dragenter", function(event) {
   $("tr").each(function() {
     $(this).append(document.createElement("td"));
   })
+  const butt = document.createElement("button")
+  butt.innerHTML = "X"
+  butt.setAttribute("class", "del-col")
+  butt.setAttribute("onclick", "deleteCol("+col+")");
+  $(".document").prepend(butt);
   col += 1;
   $(".tbl colgroup").append(document.createElement("col"))
   $(this).trigger("changetext");
 });
 
 
-//add dnd attribute to table
+//add dnd attribute and updates things
 $(document).on("changetext", function() {
+  tableCoordinate();
   $("td").attr("ondrop", "drop(event)");
+  //update col
+  $(".del-col").each(function(id) {
+    $(this).attr("onclick", "deleteCol("+id+")");
+	const i = id+1;
+	const pos = $(".tbl tr:nth-child(1) td:nth-child("+i+")").position().left;
+	console.log(pos);
+	$(this).css({top: 5 +'px', left: pos + 45 + 'px', position:'absolute'});
+  })
+  //update rows
+  $(".del-row").each(function(id) {
+	const tds = document.getElementsByTagName("tr");
+	const h = tds[id].getBoundingClientRect().top;
+    $(this).attr("onclick", "deleteRow("+id+")");
+	$(this).css({top: h -140 +'px', left: '5px', position:'absolute'});
+  })
 })
 
 

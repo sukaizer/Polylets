@@ -1,9 +1,7 @@
 let Inline = Quill.import('blots/inline');
 var nbFile = 4;
 var passagesDiv = [];
-console.log
 getData();
-fillQuill();
 
 class HighlightBlot extends Inline {
     static create(id) {
@@ -54,8 +52,6 @@ const quill = new Quill('#editor', {
     
     theme: 'snow'
 });
-
-
 
 
 function downloadInnerHtml(filename, elId, mimeType) {
@@ -157,13 +153,11 @@ function getCursorPosition() {
     }
 }
 
-
 function drag(dragevent) {
     var text = dragevent.target.id;
     dragevent.dataTransfer.setData("text", text);
     console.log(dragevent.target.id);
 }
-
 
 function drop(dropevent) {
     dropevent.preventDefault();
@@ -247,64 +241,10 @@ async function getData() {
         newAnnot.appendChild(handle);
         newAnnot.appendChild(content);
 
+        console.log(`${item.fileId}`);
 
         //passagesDiv[`${item.fileId}`-1].append(newAnnot);
 
         document.getElementById("annotations").append(newAnnot);
-    }
-}
-
-
-//fill quill with database
-async function fillQuill() {
-    //wait database
-    console.log("hello");
-    const rs = await fetch('/tbl');
-    console.log("fetched)");
-    const tbl = await rs.json();
-    console.log(tbl);
-    //split into arrays
-    var data = []
-    var tmp = []
-    for (i = 1 ; i <= tbl.length ; i++)  {
-        tmp = []
-        for (item of tbl){
-            if (`${item.col}` == i) {
-                tmp.push(item);
-            }
-        }
-        data.push(tmp);
-    }
-    console.log("data");
-    console.log(data);
-    
-    //sort
-    for (item of data) {
-        item.sort(function(a, b){return a.row - b.row});
-    }
-
-    var currentcol = 1
-    //any item in /tbl
-    quill.setSelection(0,0);
-    for (item of data) {
-        for (elem of item) {
-            console.log("elem");
-            console.log(elem);
-            const cursor = getCursorPosition();
-            var id = elem.id;
-            console.log(id);
-
-            var highlength = 0;
-            if (document.getElementById(id).lastElementChild.innerText.length != 0) {
-                quill.insertText(getCursorPosition(), " [");
-                quill.insertText(getCursorPosition(), document.getElementById(id).lastElementChild.innerText, true);
-                quill.insertText(getCursorPosition(), "] ");
-                highlength = 4;
-            }
-            quill.insertText(getCursorPosition(), document.getElementById(id).firstElementChild.nextElementSibling.innerText);
-            quill.insertText(getCursorPosition(), " "); 
-            quill.formatText(cursor + document.getElementById(id).lastElementChild.innerText.length + highlength , document.getElementById(id).firstElementChild.nextElementSibling.innerText.length ,'highlight', id);
-        }
-        quill.insertText(getCursorPosition(), "\n\n");
     }
 }
