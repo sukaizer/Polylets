@@ -185,3 +185,6 @@ td {
   padding: 10px 15px 10px 15px;
 }
 
+table td.highlighted {
+  background-color:#999;
+}

@@ -345,7 +345,7 @@ function getPassageContent(note) {
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
   const cursor = getCursorPosition();
-  console.log(note);
+  
   // quill.format('highlight', note);
   var highlength = 0;
   if (note.lastElementChild.innerText.length != 0) {
