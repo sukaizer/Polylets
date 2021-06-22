@@ -1,10 +1,13 @@
 let Inline = Quill.import("blots/inline");
 var nbFile = 4;
 var passagesDiv = [];
-const files = []
+const files = []  
 
 getData();
-fillQuill();
+
+setTimeout(function() {
+  fillQuill();
+}, 100);
 
 //fill quill with database
 async function fillQuill() {
@@ -41,12 +44,9 @@ async function fillQuill() {
   quill.setSelection(0, 0);
   for (item of data) {
     for (elem of item) {
-      console.log("elem");
-      console.log(elem);
       const cursor = getCursorPosition();
-      var id = elem.id;
-      console.log(id);
-
+      var id = elem.docId;
+      console.log("id");
       var highlength = 0;
       if (document.getElementById(id).lastElementChild.innerText.length != 0) {
         quill.insertText(getCursorPosition(), " [");

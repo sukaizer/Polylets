@@ -26,12 +26,11 @@ function drop(dropevent) {
   console.log(note);
   if (note.lastElementChild.className != "element") {
     dropevent.target.appendChild(note);
-    $(document).trigger("changetext")
   } else if (dropevent.target.tagName == "TD") {
     const targetAttr = dropevent.target.attributes
     autofill(note, targetAttr[1].value, targetAttr[2].value)
   }
-  
+  $(document).trigger("changetext");
 }
 
 //avoiding default dnd behavior
@@ -76,9 +75,6 @@ async function getData() {
 		files[index] = element;
 	}
 
-	for (f of files) {
-		console.log(f);
-	}
 
     const res = await fetch('/notes');
     const data = await res.json();
@@ -274,7 +270,11 @@ function tableCoordinate() {
 		for (j = 1 ; j <= col ; j++) {
 			$('.tbl tr:nth-child('+i+') td:nth-child('+j+')').each(function() {
 				$(this).attr('data-row', i);
-        $(this).attr('data-col', j);
+        		$(this).attr('data-col', j);
+			})
+			$('.tbl tr:nth-child('+i+') td:nth-child('+j+') div').each(function() {
+				$(this).attr('data-row', i);
+        		$(this).attr('data-col', j);
 			})
 		}
 	}
@@ -320,6 +320,7 @@ async function exportToEditor() {
       const tis = $(this)[0];
       const note = {
         id : "tableId" + i,
+        docId : tis.id,
         fileId : tis.attributes[3].value,
         startOffset : tis.attributes[4].value,
         endOffset : tis.attributes[5].value,
@@ -444,6 +445,8 @@ $(document).on("changetext", function() {
 //export button
 $(".exporter").on("click", function(event) {
 	exportToEditor();
+	var href = $("a[href='../editor']").attr('href');
+	window.location.href = href;
 })
 
 
@@ -451,16 +454,15 @@ $(".exporter").on("click", function(event) {
  //selectable table using jQuery 
  $(function () {
 	var isMouseDown = false;
-	$(".tbl td")
-	  .mousedown(function () {
-		isMouseDown = true;
-		$(this).toggleClass("highlighted");
-		console.log("start");
-		console.log(this);
-		startCell = this; //get the startCell 
+	$(".tbl td").mousedown(function () {
+      isMouseDown = true;
+      $(this).toggleClass("highlighted");
+      console.log("start");
+      console.log(this);
+      startCell = this; //get the startCell 
 
-		return false; // prevent text selection
-	  })
+      return false; // prevent text selection
+      })
 	  .mouseover(function () {
 		if (isMouseDown) {
 		  $(this).toggleClass("highlighted");
