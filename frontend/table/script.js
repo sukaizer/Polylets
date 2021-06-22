@@ -1,4 +1,8 @@
 var data = [];
+var files = [];
+var row = 2;
+var col = 3;
+
 
 //drag single element
 function drag(dragevent) {
@@ -61,6 +65,21 @@ function iterId() {
 
 getData();
 async function getData() {
+
+    const rf = await fetch('/files');
+	const filesData = await rf.json();
+
+	for (let index = 0; index < 4; index++) {
+		var element = document.createElement("div");
+		element.setAttribute("id", "document");
+		this.buildDOM(element, filesData[index]);
+		files[index] = element;
+	}
+
+	for (f of files) {
+		console.log(f);
+	}
+
     const res = await fetch('/notes');
     const data = await res.json();
 
@@ -107,6 +126,14 @@ async function getData() {
         newAnnot.setAttribute("data-startIndex", `${item.startIndex}`)
         newAnnot.setAttribute("data-endIndex", `${item.endIndex}`)
 
+		newAnnot.ondblclick = () => {
+            openWindow(newAnnot.getAttribute("data-fileid"),
+						newAnnot.getAttribute("data-startOffset"),
+						newAnnot.getAttribute("data-endOffset"),
+						newAnnot.getAttribute("data-startIndex"),
+						newAnnot.getAttribute("data-endIndex"),);
+        }
+
         note.setAttribute("class", "annot-note");
         passage.setAttribute("class", "annot-pass");
         newAnnot.setAttribute("class", "element");
@@ -122,6 +149,69 @@ async function getData() {
     //initialize table
     $(document).trigger("changetext");
 };
+
+
+//open window when double click
+function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
+    var myWindow = window.open("", "", "");
+    var element = document.createElement("div");
+    element.setAttribute("id", "document");
+    element.appendChild(files[id - 1]);
+    myWindow.document.write(element.innerHTML);
+    
+    reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
+}
+
+
+//select passage in new window
+function reselect(myWindow, startOffset, endOffset, startIndex, endIndex)  {
+    //scroll to the position 
+    //myWindow.document.getElementById("document").scrollTo(0, yPosition); 
+
+    //reselect the selection using startIndex and endIndex 
+    let documentNode = myWindow.document.getElementById("document");
+    let node = documentNode.firstElementChild;
+    let i = 0;
+    let startNode;
+    let endNode;
+
+    while (node) {
+        if (i == startIndex) {
+            startNode = node;
+        } if (i == endIndex) {
+            endNode = node;
+        }
+        i++;
+        node = node.nextElementSibling || node.nextSibling;
+    }
+    console.log(startNode);
+    console.log(endNode);
+
+    //re-create the selection using offset 
+    const newRange = new Range();
+    console.log(startNode.firstChild.firstChild);
+
+    if (startNode.firstChild.nodeName == "STRONG") {
+        console.log("start strong");
+        newRange.setStart(startNode.firstChild.firstChild, startOffset);
+    }
+    else {
+        newRange.setStart(startNode.firstChild, startOffset);
+    }
+
+    if (endNode.firstChild.nodeName == "STRONG") {
+        console.log("end strong");
+        newRange.setEnd(endNode.firstChild.firstChild, endOffset);
+    } else {
+        console.log(endNode.firstChild);
+        newRange.setEnd(endNode.firstChild, endOffset);
+    }
+
+    let selection = myWindow.window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+}
+
 
 
 
@@ -143,14 +233,41 @@ async function sendToServer() {
 
 
 
+function buildDOM(element, jsonObject) { // element is the parent element to add the children to
+    if (typeof jsonObject == "string") {
+        jsonObject = JSON.parse(jsonObject);
+    }
+    if (Array.isArray(jsonObject)) {
+        for (var i = 0; i < jsonObject.length; i++) {
+            this.buildDOM(element, jsonObject[i]);
+        }
+    }
+    else {
+        var e = document.createElement(jsonObject.tag);
+        for (var prop in jsonObject) {
+            if (prop != "tag") {
+                if (prop == "children" && Array.isArray(jsonObject[prop])) {
+                    this.buildDOM(e, jsonObject[prop]);
+                }
+                else if (prop == "html") {
+                    e.innerHTML = jsonObject[prop];
+                }
+                else {
+                    e.setAttribute(prop, jsonObject[prop]);
+                }
+            }
+        }
+        element.appendChild(e);
+    }
+}
+
+
 
 const td = document.getElementsByTagName("td");
 for (cell of td ) {
   cell.setAttribute('ondrop', `drop(event)`);
 }
 
-var row = 2;
-var col = 3;
 
 function tableCoordinate() {
 	for (i = 1 ; i <= row ; i++) {
