@@ -48,34 +48,265 @@ async function fillQuill() {
       var id = elem.docId;
       console.log("id");
       var highlength = 0;
-      if (document.getElementById(id).lastElementChild.innerText.length != 0) {
-        quill.insertText(getCursorPosition(), " [");
-        quill.insertText(
-          getCursorPosition(),
-          document.getElementById(id).lastElementChild.innerText,
-          true
-        );
-        quill.insertText(getCursorPosition(), "] ");
-        highlength = 4;
-      }
+
+      quill.insertText(getCursorPosition(), " [");
+      quill.insertText(
+        getCursorPosition(),
+        document.getElementById(id).lastElementChild.lastElementChild
+          .lastElementChild.innerText,
+        true
+      );
+      quill.insertText(getCursorPosition(), "] ");
+      highlength = 4;
+
       quill.insertText(
         getCursorPosition(),
         document.getElementById(id).firstElementChild.nextElementSibling
-          .innerText
+          .firstElementChild.innerText
       );
       quill.insertText(getCursorPosition(), " ");
       quill.formatText(
         cursor +
-          document.getElementById(id).lastElementChild.innerText.length +
+          document.getElementById(id).lastElementChild.lastElementChild
+            .lastElementChild.innerText.length +
           highlength,
         document.getElementById(id).firstElementChild.nextElementSibling
-          .innerText.length,
+          .firstElementChild.innerText.length,
         "highlight",
         id
       );
     }
     quill.insertText(getCursorPosition(), "\n\n");
   }
+}
+
+// create a passage object which will be added to the sidebar and sets the listeners
+function createPassage(data) {
+  const passage = document.createElement("div");
+  passage.setAttribute("green", "none");
+  passage.setAttribute("blue", "none");
+  passage.setAttribute("red", "none");
+  passage.setAttribute("class", "passage draggable");
+  passage.setAttribute("id", data.id);
+  passage.setAttribute("draggable", "true");
+  passage.setAttribute("data-fileid", data.fileId);
+  passage.setAttribute("data-startOffset", data.startOffset);
+  passage.setAttribute("data-endOffset", data.endOffset);
+  passage.setAttribute("data-startIndex", data.startIndex);
+  passage.setAttribute("data-endIndex", data.endIndex);
+
+  const draghandle = document.createElement("div");
+  draghandle.setAttribute("class", "draghandle");
+
+  const draghandlebutton = document.createElement("button");
+  draghandlebutton.setAttribute("class", "draghandle-button");
+  draghandlebutton.appendChild(
+    document.createTextNode(String.fromCharCode(10005))
+  );
+
+  draghandlebutton.onclick = () => {
+    passage.remove();
+    for (let i = 0; i < allPassages.length; i++) {
+      if (allPassages[i] == passage) {
+        allPassages.splice(i, 1);
+      }
+    }
+  };
+
+  draghandlebutton.onmouseover = () => {
+    draghandlebutton.style.color = "red";
+  };
+
+  draghandlebutton.onmouseleave = () => {
+    draghandlebutton.style.color = "black";
+  };
+
+  const tag = document.createElement("button");
+  tag.setAttribute("class", "draghandle-button");
+  tag.append(document.createTextNode("Tag"));
+
+  const cont = document.createElement("div");
+  cont.setAttribute("class", "circle");
+  cont.style.visibility = "hidden";
+  cont.style.position = "absolute";
+  document.body.appendChild(cont);
+
+  tag.onclick = (event) => {
+    if (cont.style.visibility == "visible") {
+      cont.style.visibility = "hidden";
+      green.style.visibility = "hidden";
+      blue.style.visibility = "hidden";
+      red.style.visibility = "hidden";
+    } else {
+      cont.style.visibility = "visible";
+      green.style.visibility = "visible";
+      blue.style.visibility = "visible";
+      red.style.visibility = "visible";
+      cont.style.top = event.clientY - 40 + "px";
+      cont.style.left = event.clientX - 40 + "px";
+    }
+    event.stopPropagation();
+  };
+
+  $(window).click(function () {
+    cont.style.visibility = "hidden";
+    green.style.visibility = "hidden";
+    blue.style.visibility = "hidden";
+    red.style.visibility = "hidden";
+  });
+
+  tag.onmouseover = () => {
+    tag.style.color = "blue";
+  };
+
+  tag.onmouseleave = () => {
+    tag.style.color = "black";
+  };
+
+  const sidebar = document.getElementById("sidebar");
+  sidebar.onscroll = () => {
+    console.log(sidebar.pageY);
+
+    // cont.style.top = tag.offsetTop + 20 + "px";
+    // cont.style.left = tag.offsetLeft - 10 + "px";
+  };
+
+  const green = document.createElement("button");
+  green.setAttribute("class", "tag-green");
+  green.style.position = "absolute";
+  green.style.left = cont.offsetLeft + 19 + "px";
+  green.style.top = cont.offsetTop - 162 + "px";
+  green.style.width = 22 + "px";
+  green.style.height = 22 + "px";
+  green.onclick = () => {
+    passage.setAttribute("green", "green");
+    greenEff.style.visibility = "visible";
+  };
+
+  const blue = document.createElement("button");
+  blue.setAttribute("class", "tag-blue");
+  blue.style.position = "absolute";
+  blue.style.left = cont.offsetLeft - 5 + "px";
+  blue.style.top = cont.offsetTop - 120 + "px";
+  blue.style.width = 22 + "px";
+  blue.style.height = 22 + "px";
+  blue.onclick = () => {
+    passage.setAttribute("blue", "blue");
+    blueEff.style.visibility = "visible";
+  };
+
+  const red = document.createElement("button");
+  red.setAttribute("class", "tag-red");
+  red.style.position = "absolute";
+  red.style.left = cont.offsetLeft + 45 + "px";
+  red.style.top = cont.offsetTop - 120 + "px";
+  red.style.width = 22 + "px";
+  red.style.height = 22 + "px";
+  red.onclick = () => {
+    passage.setAttribute("red", "red");
+    redEff.style.visibility = "visible";
+  };
+
+  const greenEff = document.createElement("button");
+  greenEff.setAttribute("class", "tag-green-eff");
+  greenEff.onclick = () => {
+    passage.setAttribute("green", "none");
+    greenEff.style.visibility = "hidden";
+  };
+
+  const blueEff = document.createElement("button");
+  blueEff.setAttribute("class", "tag-blue-eff");
+  blueEff.onclick = () => {
+    passage.setAttribute("blue", "none");
+    blueEff.style.visibility = "hidden";
+  };
+
+  const redEff = document.createElement("button");
+  redEff.setAttribute("class", "tag-red-eff");
+  redEff.onclick = () => {
+    passage.setAttribute("red", "none");
+    redEff.style.visibility = "hidden";
+  };
+
+  draghandle.appendChild(draghandlebutton);
+  draghandle.appendChild(tag);
+  cont.appendChild(green);
+  cont.appendChild(blue);
+  cont.appendChild(red);
+  draghandle.appendChild(redEff);
+  draghandle.appendChild(blueEff);
+  draghandle.appendChild(greenEff);
+
+  const quote = document.createElement("div");
+  quote.setAttribute("class", "quote");
+  const quoteA = document.createElement("a");
+  quoteA.setAttribute("class", "notes");
+  quoteA.appendChild(document.createTextNode(data.passage));
+  quote.appendChild(quoteA);
+
+  const annotationArea = document.createElement("div");
+  annotationArea.setAttribute("class", "annotationArea");
+  const title = document.createElement("span");
+  title.setAttribute("class", "field-title");
+  title.appendChild(document.createTextNode("Note"));
+  const hide = document.createElement("button");
+  hide.setAttribute("class", "hide-button");
+  hide.appendChild(document.createTextNode(String.fromCharCode(9660)));
+  hide.onclick = () => {
+    if (
+      passage.lastElementChild.lastElementChild.style.visibility != "hidden"
+    ) {
+      passage.lastElementChild.lastElementChild.style.visibility = "hidden";
+      hide.innerText = String.fromCharCode(9658);
+    } else {
+      passage.lastElementChild.lastElementChild.style.visibility = "visible";
+      hide.innerText = String.fromCharCode(9660);
+    }
+  };
+  const edit = document.createElement("div");
+  edit.setAttribute("class", "edit-area");
+  const textarea = document.createElement("p");
+  textarea.appendChild(document.createTextNode(data.annotation));
+  edit.appendChild(textarea);
+  annotationArea.appendChild(title);
+  annotationArea.appendChild(hide);
+  annotationArea.appendChild(edit);
+
+  passage.appendChild(draghandle);
+  passage.appendChild(quote);
+  passage.appendChild(annotationArea);
+  allPassages.push(passage);
+  return passage;
+}
+
+function showAllPassages() {
+  const annotationList = document.getElementById("sidebar");
+  annotationList.innerHTML = "";
+
+  allPassages.forEach((element) => {
+    annotationList.appendChild(element);
+  });
+}
+
+function ShowNotesWithSameTag(color) {
+  // get all the notes with the given tag
+
+  let notesWithSameTag = [];
+
+  allPassages.forEach((el) => {
+    if (el.getAttribute(color) == color) {
+      notesWithSameTag.push(el);
+    }
+  });
+  console.log(notesWithSameTag);
+
+  // display notes
+  const annotationList = document.getElementById("sidebar");
+  annotationList.innerHTML = "";
+
+  notesWithSameTag.forEach((element) => {
+    annotationList.appendChild(element);
+  });
 }
 
 class HighlightBlot extends Inline {
@@ -91,23 +322,23 @@ class HighlightBlot extends Inline {
     //handful for reader
     node.setAttribute(
       "data-fileId",
-      document.getElementById(id).attributes[2].value
-    );
-    node.setAttribute(
-      "data-startOffset",
       document.getElementById(id).attributes[3].value
     );
     node.setAttribute(
-      "data-endOffset",
+      "data-startOffset",
       document.getElementById(id).attributes[4].value
     );
     node.setAttribute(
-      "data-startIndex",
+      "data-endOffset",
       document.getElementById(id).attributes[5].value
     );
     node.setAttribute(
-      "data-endIndex",
+      "data-startIndex",
       document.getElementById(id).attributes[6].value
+    );
+    node.setAttribute(
+      "data-endIndex",
+      document.getElementById(id).attributes[7].value
     );
 
     node.addEventListener("mouseenter", function (event) {
@@ -240,17 +471,8 @@ function iterId() {
 }
 
 async function getData() {
-
-  const rf = await fetch('/files');
-	const filesData = await rf.json();
-
-	for (let index = 0; index < 4; index++) {
-		var element = document.createElement("div");
-		element.setAttribute("id", "document");
-		this.buildDOM(element, filesData[index]);
-		files[index] = element;
-	}
-
+  const rf = await fetch("/files");
+  const filesData = await rf.json();
 
   // for (let i = 0; i < nbFile; i++) {
   //     const container = document.createElement('div');
@@ -263,48 +485,10 @@ async function getData() {
   // }
   const res = await fetch("/notes");
   const data = await res.json();
-
+  var i = 100;
   for (item of data) {
-    const newAnnot = document.createElement("div");
-    const handle = document.createElement("div");
-    const passage = document.createElement("a");
-    const note = document.createElement("p");
-    const strPassage = document.createTextNode(`${item.passage}`);
-    const strNote = document.createTextNode(`${item.annotation}`);
-
-    newAnnot.setAttribute("id", `${item._id}`);
-    newAnnot.setAttribute("draggable", "true");
-
-    newAnnot.setAttribute("data-fileid", `${item.fileId}`);
-    newAnnot.setAttribute("data-startOffset", `${item.startOffset}`);
-    newAnnot.setAttribute("data-endOffset", `${item.endOffset}`);
-    newAnnot.setAttribute("data-startIndex", `${item.startIndex}`);
-    newAnnot.setAttribute("data-endIndex", `${item.endIndex}`);
-
-
-    newAnnot.ondblclick = () => {
-      openWindow(newAnnot.getAttribute("data-fileid"),
-                  newAnnot.getAttribute("data-startOffset"),
-                  newAnnot.getAttribute("data-endOffset"),
-                  newAnnot.getAttribute("data-startIndex"),
-                  newAnnot.getAttribute("data-endIndex"),);
-    }
-
-
-    note.setAttribute("class", "note-content");
-    passage.setAttribute("class", "passage-content");
-    newAnnot.setAttribute("class", "note draggable");
-    handle.setAttribute("class", "draghandle");
-
-    passage.appendChild(strPassage);
-    note.appendChild(strNote);
-    newAnnot.appendChild(handle);
-    newAnnot.appendChild(passage);
-    newAnnot.appendChild(note);
-
-    //passagesDiv[`${item.fileId}`-1].append(newAnnot);
-
-    document.getElementById("sidebar").append(newAnnot);
+    document.getElementById("sidebar").append(createPassage(item));
+    i += 10;
   }
 }
 
@@ -315,19 +499,16 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   element.setAttribute("id", "document");
   element.appendChild(files[id - 1]);
   myWindow.document.write(element.innerHTML);
-  
+
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
 }
 
-
-
-
 //select passage in new window
-function reselect(myWindow, startOffset, endOffset, startIndex, endIndex)  {
-  //scroll to the position 
-  //myWindow.document.getElementById("document").scrollTo(0, yPosition); 
+function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
+  //scroll to the position
+  //myWindow.document.getElementById("document").scrollTo(0, yPosition);
 
-  //reselect the selection using startIndex and endIndex 
+  //reselect the selection using startIndex and endIndex
   let documentNode = myWindow.document.getElementById("document");
   let node = documentNode.firstElementChild;
   let i = 0;
@@ -335,44 +516,41 @@ function reselect(myWindow, startOffset, endOffset, startIndex, endIndex)  {
   let endNode;
 
   while (node) {
-      if (i == startIndex) {
-          startNode = node;
-      } if (i == endIndex) {
-          endNode = node;
-      }
-      i++;
-      node = node.nextElementSibling || node.nextSibling;
+    if (i == startIndex) {
+      startNode = node;
+    }
+    if (i == endIndex) {
+      endNode = node;
+    }
+    i++;
+    node = node.nextElementSibling || node.nextSibling;
   }
   console.log(startNode);
   console.log(endNode);
 
-  //re-create the selection using offset 
+  //re-create the selection using offset
   const newRange = new Range();
   console.log(startNode.firstChild.firstChild);
 
   if (startNode.firstChild.nodeName == "STRONG") {
-      console.log("start strong");
-      newRange.setStart(startNode.firstChild.firstChild, startOffset);
-  }
-  else {
-      newRange.setStart(startNode.firstChild, startOffset);
+    console.log("start strong");
+    newRange.setStart(startNode.firstChild.firstChild, startOffset);
+  } else {
+    newRange.setStart(startNode.firstChild, startOffset);
   }
 
   if (endNode.firstChild.nodeName == "STRONG") {
-      console.log("end strong");
-      newRange.setEnd(endNode.firstChild.firstChild, endOffset);
+    console.log("end strong");
+    newRange.setEnd(endNode.firstChild.firstChild, endOffset);
   } else {
-      console.log(endNode.firstChild);
-      newRange.setEnd(endNode.firstChild, endOffset);
+    console.log(endNode.firstChild);
+    newRange.setEnd(endNode.firstChild, endOffset);
   }
 
   let selection = myWindow.window.getSelection();
   selection.removeAllRanges();
   selection.addRange(newRange);
 }
-
-
-
 
 function getCursorPosition() {
   var range = quill.getSelection();
@@ -406,23 +584,6 @@ function moveElem(elem, deltaX, deltaY) {
   elem.offset(offset);
 }
 
-// Create a note with the given content and optional position
-function createNote(data, left, top) {
-  let style = "";
-  if (top !== undefined && left !== undefined)
-    style = `style="top: ${top}px; left: ${left}px"`;
-  let html = `<div id=${data.id} draggable="true" data-fileid=${data.fileId} data-startoffset=${data.startOffset} data-endoffset=${data.endOffset} data-startindex=${data.startIndex} data-endindex=${data.endIndex} class="note draggable">
-        <div class="draghandle"></div>
-        <a class="passage-content">
-            ${data.passage}
-        </a>
-        <p class="note-content">
-            ${data.annotation}
-        </p>
-    </div>`;
-  return html;
-}
-
 // Return the HTML content of a note
 function getNoteContent(note) {
   return note.lastElementChild.innerHTML;
@@ -435,14 +596,14 @@ function getPassageContent(note) {
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
   const cursor = getCursorPosition();
-  
+
   // quill.format('highlight', note);
   var highlength = 0;
   if (note.lastElementChild.innerText.length != 0) {
     quill.insertText(getCursorPosition(), " [");
     quill.insertText(
       getCursorPosition(),
-      note.lastElementChild.innerText,
+      note.lastElementChild.lastElementChild.lastElementChild.innerText,
       true
     );
     quill.insertText(getCursorPosition(), "] ");
@@ -450,14 +611,17 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
   }
   quill.insertText(
     getCursorPosition(),
-    note.firstElementChild.nextElementSibling.innerText,
+    note.firstElementChild.nextElementSibling.firstElementChild.innerText,
     true
   );
   quill.insertText(getCursorPosition(), " ");
 
   quill.formatText(
-    cursor + note.lastElementChild.innerText.length + highlength,
-    note.firstElementChild.nextElementSibling.innerText.length,
+    cursor +
+      note.lastElementChild.lastElementChild.lastElementChild.innerText.length +
+      highlength,
+    note.firstElementChild.nextElementSibling.firstElementChild.innerText
+      .length,
     "highlight",
     note.id
   );
@@ -468,8 +632,7 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
-  let html = createNote(xferData);
-  $("#sidebar").append(html);
+  $("#sidebar").append(createPassage(xferData));
 }
 
 // Global holding the current drag-and-drop interaction, if any
