@@ -1,11 +1,11 @@
 let Inline = Quill.import("blots/inline");
 var nbFile = 4;
-var passagesDiv = [];
-const files = []  
+var allPassages = [];
+const files = [];
 
 getData();
 
-setTimeout(function() {
+setTimeout(function () {
   fillQuill();
 }, 100);
 
@@ -665,10 +665,19 @@ class DragAndDropInteraction {
     ev.originalEvent.dataTransfer.effectAllowed = "copy";
     let xferData = {
       windowId: windowId,
-      passage: getPassageContent(this.draggedElem),
-      annotation: getNoteContent(this.draggedElem),
       cursorOffset: this.cursorOffset,
+      id: this.draggedElem.getAttribute("id"),
+      fileId: this.draggedElem.getAttribute("data-fileid"),
+      startOffset: this.draggedElem.getAttribute("data-startoffset"),
+      endOffset: this.draggedElem.getAttribute("data-endoffset"),
+      startIndex: this.draggedElem.getAttribute("data-startindex"),
+      endIndex: this.draggedElem.getAttribute("data-endoffset"),
+      passage:
+        this.draggedElem.firstElementChild.nextSibling.firstElementChild
+          .innerText,
+      annotation: this.draggedElem.lastElementChild.lastElementChild.innerText,
     };
+
     ev.originalEvent.dataTransfer.setData(
       "text/plain",
       JSON.stringify(xferData)
