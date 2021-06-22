@@ -24,6 +24,8 @@ body {
   padding: 20px;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+
+  position: relative;
 }
 
 
@@ -165,6 +167,7 @@ transform: scale(1.1, 1.2);
 
 .tbl {
   width: 100%;
+  margin-left: 7%;
   empty-cells: show;
 }
 
@@ -177,6 +180,11 @@ transform: scale(1.1, 1.2);
 
 td {
   background: #fff;
+  height: 20px;
   border: 1px solid #999;
   padding: 10px 15px 10px 15px;
+}
+
+table td.highlighted {
+  background-color:#999;
 }
