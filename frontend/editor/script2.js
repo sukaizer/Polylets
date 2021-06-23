@@ -2,6 +2,9 @@ let Inline = Quill.import("blots/inline");
 var nbFile = 4;
 var allPassages = [];
 const files = [];
+var scrollPositions = [];
+var displayIsAll = true; //true if all notes are displayed currently
+var el = undefined;
 
 getData();
 
@@ -39,7 +42,6 @@ async function fillQuill() {
     });
   }
 
-  var currentcol = 1;
   //any item in /tbl
   quill.setSelection(0, 0);
   for (item of data) {
@@ -47,6 +49,8 @@ async function fillQuill() {
       const cursor = getCursorPosition();
       var id = elem.docId;
       console.log("id");
+      console.log(id);
+      console.log(document.getElementById(id));
       var highlength = 0;
 
       quill.insertText(getCursorPosition(), " [");
@@ -94,6 +98,16 @@ function createPassage(data) {
   passage.setAttribute("data-endOffset", data.endOffset);
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
+
+  passage.ondblclick = () => {
+    openWindow(
+      passage.getAttribute("data-fileid"),
+      passage.getAttribute("data-startOffset"),
+      passage.getAttribute("data-endOffset"),
+      passage.getAttribute("data-startIndex"),
+      passage.getAttribute("data-endIndex")
+    );
+  };
 
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
@@ -163,13 +177,13 @@ function createPassage(data) {
     tag.style.color = "black";
   };
 
-  const sidebar = document.getElementById("sidebar");
-  sidebar.onscroll = () => {
-    console.log(sidebar.pageY);
+  // const sidebar = document.getElementById("sidebar");
+  // sidebar.onscroll = () => {
+  //   console.log(sidebar.pageY);
 
-    // cont.style.top = tag.offsetTop + 20 + "px";
-    // cont.style.left = tag.offsetLeft - 10 + "px";
-  };
+  //   // cont.style.top = tag.offsetTop + 20 + "px";
+  //   // cont.style.left = tag.offsetLeft - 10 + "px";
+  // };
 
   const green = document.createElement("button");
   green.setAttribute("class", "tag-green");
@@ -280,6 +294,7 @@ function createPassage(data) {
 }
 
 function showAllPassages() {
+  displayIsAll = true;
   const annotationList = document.getElementById("sidebar");
   annotationList.innerHTML = "";
 
@@ -289,6 +304,7 @@ function showAllPassages() {
 }
 
 function ShowNotesWithSameTag(color) {
+  displayIsAll = false;
   // get all the notes with the given tag
 
   let notesWithSameTag = [];
@@ -312,33 +328,29 @@ function ShowNotesWithSameTag(color) {
 class HighlightBlot extends Inline {
   static create(id) {
     let node = super.create();
-    // Sanitize url if desired
-    console.log("id is");
-    console.log(id);
-
     //node.setAttribute('id', "on");
     //highlight thingy=
     node.setAttribute("id", "elementId" + iter);
     //handful for reader
     node.setAttribute(
       "data-fileId",
-      document.getElementById(id).attributes[3].value
-    );
-    node.setAttribute(
-      "data-startOffset",
-      document.getElementById(id).attributes[4].value
-    );
-    node.setAttribute(
-      "data-endOffset",
-      document.getElementById(id).attributes[5].value
-    );
-    node.setAttribute(
-      "data-startIndex",
       document.getElementById(id).attributes[6].value
     );
     node.setAttribute(
-      "data-endIndex",
+      "data-startOffset",
       document.getElementById(id).attributes[7].value
+    );
+    node.setAttribute(
+      "data-endOffset",
+      document.getElementById(id).attributes[8].value
+    );
+    node.setAttribute(
+      "data-startIndex",
+      document.getElementById(id).attributes[9].value
+    );
+    node.setAttribute(
+      "data-endIndex",
+      document.getElementById(id).attributes[10].value
     );
 
     node.addEventListener("mouseenter", function (event) {
@@ -455,24 +467,74 @@ function buildDOM(element, jsonObject) {
 }
 
 function highlight(id) {
-  //document.getElementById(id).className = "hightlighted-element";
-  $("#" + id).css({ transform: "scale(1.2)" });
-  $("#" + id).css({ transition: "transform .2s" });
+  if (displayIsAll) {
+    scrollPositions.forEach((sp) => {
+      if (sp.passageId == id) {
+        document.getElementById("sidebar").scrollTo(0, sp.scrollPos);
+        $("#" + id).css({ transform: "scale(1.2)" });
+        $("#" + id).css({ transition: "transform .2s" });
+      }
+    });
+  } else {
+    el = $("#" + id).clone();
+    var x = $("#sidebar").position().left + $("#sidebar").width() / 3.5;
+    var y = $("#sidebar").position().top + $("#sidebar").height() / 3.5;
+
+    console.log(x + " " + y);
+    el.appendTo("body");
+    el.css({
+      position: "absolute",
+      top: y + "px",
+      left: x + "px",
+      transform: "scale(0.5)",
+    });
+
+    setTimeout(() => {
+      el.css({
+        transform: "scale(1.3)",
+        transition: "transform .2s",
+      });
+    }, 1);
+  }
 }
 
 function unhighlight(id) {
-  $("#" + id).css({ transform: "scale(1)" });
+  if (displayIsAll) {
+    $("#" + id).css({ transform: "scale(1)" });
+  } else {
+    setTimeout(() => {
+      el.css({
+        transform: "scale(0.5)",
+        transition: "transform .2s",
+      });
+    }, 1);
+    el.remove();
+  }
 }
 
 function iterId() {
+  var el;
+  var prefix = "elementId";
+  var i = 0;
+  for (i; (el = document.getElementById(prefix + i)); i++) {
+    console.log("hey");
+  }
+
   console.log("iteration");
   console.log(iter);
-  iter += 1;
+  console.log("i = " + i);
+  iter = i;
 }
 
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
+  for (let index = 0; index < 4; index++) {
+    var element = document.createElement("div");
+    element.setAttribute("id", "document");
+    this.buildDOM(element, filesData[index]);
+    files[index] = element;
+  }
 
   // for (let i = 0; i < nbFile; i++) {
   //     const container = document.createElement('div');
@@ -595,10 +657,16 @@ function getPassageContent(note) {
 }
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
+  iterId();
   const cursor = getCursorPosition();
 
   // quill.format('highlight', note);
   var highlength = 0;
+  scrollPositions.push({
+    passageId: note.id,
+    id: iter,
+    scrollPos: document.getElementById("sidebar").scrollTop,
+  });
   if (note.lastElementChild.innerText.length != 0) {
     quill.insertText(getCursorPosition(), " [");
     quill.insertText(
@@ -625,8 +693,6 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
     "highlight",
     note.id
   );
-
-  iterId();
 }
 
 // Copy a note from a remote window to the sidebar
