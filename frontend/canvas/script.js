@@ -121,12 +121,6 @@ function buildDOM(element, jsonObject) {
   }
 }
 
-function iterId() {
-  console.log("iteration");
-  console.log(iter);
-  iter += 1;
-}
-
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();

@@ -12,6 +12,7 @@ $(function () {
   $("#snaptarget").disableSelection();
 });
 
+//loads html file into page div
 var recupererFichiers = function () {
   file = document.getElementById("myfiles").files[0];
   if (file) {
@@ -29,6 +30,7 @@ var recupererFichiers = function () {
 
 document.querySelector("#myfiles").onchange = recupererFichiers;
 
+//adds note to side pannel
 function save(i) {
   var div = referenceObjects[i];
   if (!clicked[i]) {
@@ -55,6 +57,7 @@ function openWindow(i) {
   reselect(myWindow, passages[i]);
 }
 
+//function to unpin and resets note position
 function unpin(i) {
   $(function () {
     clicked[i] = false;
@@ -72,6 +75,7 @@ function unpin(i) {
   });
 }
 
+//get the data from db and creating the notes, setting all data
 async function getData() {
   const rs = await fetch("/files");
   const filesData = await rs.json();
@@ -86,6 +90,7 @@ async function getData() {
   var el;
   var prefix = "elementId";
   for (var i = 0; (el = document.getElementById(prefix + i)); i++) {
+    //sets data for each note in the file
     passages[i] = {
       fileId: el.getAttribute("data-fileid"),
       startOffset: el.getAttribute("data-startoffset"),
@@ -136,6 +141,7 @@ async function getData() {
     document.getElementById("referenceObjects").append(newRef);
     referenceObjects[i] = newRef;
 
+    //event listener => display note to save it
     el.addEventListener(
       "mouseenter",
       function (event) {
@@ -182,6 +188,7 @@ async function getData() {
   }
 }
 
+//recreates dom element from json
 function buildDOM(element, jsonObject) {
   // element is the parent element to add the children to
   if (typeof jsonObject == "string") {
@@ -208,6 +215,7 @@ function buildDOM(element, jsonObject) {
   }
 }
 
+//reselects passage in second window where original file is opened
 function reselect(myWindow, selectionObject) {
   //scroll to the position
   //myWindow.document.getElementById("document").scrollTo(0, selectionObject.yPosition);

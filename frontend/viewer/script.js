@@ -127,6 +127,7 @@ class DragAndDropInteraction {
     // fill out dataTransfor info in case we drag out of the window
     ev.originalEvent.dataTransfer.effectAllowed = "copy";
     var note = mountedApp.getDraggedNote();
+    //the data we are going to send
     let xferData = {
       windowId: windowId,
       passage: note.passage,

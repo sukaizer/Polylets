@@ -12,8 +12,6 @@ setTimeout(function () {
   fillQuill();
 }, 500);
 
-
-
 //fill quill with database
 async function fillQuill() {
   //wait database
@@ -85,8 +83,6 @@ async function fillQuill() {
     quill.insertText(getCursorPosition(), "\n\n");
   }
 }
-
-
 
 // create a passage object which will be added to the sidebar and sets the listeners
 function createPassage(data) {
@@ -297,7 +293,7 @@ function createPassage(data) {
   return passage;
 }
 
-
+//display all passages
 function showAllPassages() {
   displayIsAll = true;
   const annotationList = document.getElementById("sidebar");
@@ -308,7 +304,7 @@ function showAllPassages() {
   });
 }
 
-
+//display only passages with 'color' tag
 function ShowNotesWithSameTag(color) {
   displayIsAll = false;
   // get all the notes with the given tag
@@ -330,7 +326,6 @@ function ShowNotesWithSameTag(color) {
     annotationList.appendChild(element);
   });
 }
-
 
 class HighlightBlot extends Inline {
   static create(id) {
@@ -375,8 +370,6 @@ class HighlightBlot extends Inline {
 HighlightBlot.blotName = "highlight";
 HighlightBlot.tagName = "a";
 
-
-
 var iter = 0;
 
 Quill.register(HighlightBlot);
@@ -394,7 +387,6 @@ const quill = new Quill("#editor", {
   theme: "snow",
 });
 
-
 function downloadInnerHtml(filename, elId, mimeType) {
   var elHtml = document.getElementById(elId).firstElementChild.innerHTML;
   var link = document.createElement("a");
@@ -408,7 +400,6 @@ function downloadInnerHtml(filename, elId, mimeType) {
   link.click();
 }
 
-
 var fileName = "file.html"; // You can use the .txt extension if you want
 
 $("#save-button").click(function () {
@@ -416,8 +407,6 @@ $("#save-button").click(function () {
   downloadInnerHtml(fileName, "editor", "text/html");
   zipFile();
 });
-
-
 
 const saver = document.querySelector(".save-button");
 
@@ -453,7 +442,6 @@ async function zipFile() {
   });
 }
 
-
 function buildDOM(element, jsonObject) {
   // element is the parent element to add the children to
   if (typeof jsonObject == "string") {
@@ -480,8 +468,7 @@ function buildDOM(element, jsonObject) {
   }
 }
 
-
-
+//when hovering over the note in editor, sidebar is scrolled and the right passage is shown
 function highlight(id) {
   if (displayIsAll) {
     scrollPositions.forEach((sp) => {
@@ -528,7 +515,7 @@ function unhighlight(id) {
   }
 }
 
-
+//sets the right id of notes for exporting in reader
 function iterId() {
   var el;
   var prefix = "elementId";
@@ -543,8 +530,6 @@ function iterId() {
   iter = i;
 }
 
-
-
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
@@ -556,12 +541,11 @@ async function getData() {
   }
 
   for (let index = 0; index < 4; index++) {
-		var element = document.createElement("div");
-		element.setAttribute("id", "document");
-		this.buildDOM(element, filesData[index]);
-		files[index] = element;
-	}
-
+    var element = document.createElement("div");
+    element.setAttribute("id", "document");
+    this.buildDOM(element, filesData[index]);
+    files[index] = element;
+  }
 
   // for (let i = 0; i < nbFile; i++) {
   //     const container = document.createElement('div');
@@ -581,8 +565,6 @@ async function getData() {
   }
 }
 
-
-
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   var myWindow = window.open("", "", "");
@@ -593,7 +575,6 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
 
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
 }
-
 
 //select passage in new window
 function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
@@ -659,17 +640,14 @@ function getCursorPosition() {
   }
 }
 
-
 // This name will be passed to the destination window during drag-and-drop
 // and can be used to distinguish among several source windows
 let windowId = "demo";
-
 
 // Return the id of the closest enclosing dropzone, if any
 function getDropZoneId(elem) {
   return $(elem).closest(".dropzone").attr("id");
 }
-
 
 // Move jQuery `elem` by deltaX, deltaY
 function moveElem(elem, deltaX, deltaY) {
@@ -679,20 +657,15 @@ function moveElem(elem, deltaX, deltaY) {
   elem.offset(offset);
 }
 
-
-
 // Return the HTML content of a note
 function getNoteContent(note) {
   return note.lastElementChild.innerHTML;
 }
 
-
 // Return the HTML content of a note
 function getPassageContent(note) {
   return note.firstElementChild.nextElementSibling.innerHTML;
 }
-
-
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
   iterId();
@@ -732,20 +705,11 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
   );
 }
 
-
-
-
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
   $("#sidebar").append(createPassage(xferData));
 }
-
-
-
-
-
-
 
 // Global holding the current drag-and-drop interaction, if any
 let dnd = null;

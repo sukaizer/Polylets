@@ -216,6 +216,7 @@ const app = Vue.createApp({
       };
     },
 
+    //reselect the passage
     reselect(note) {
       //scroll to the position
       document.getElementById("content").scrollTo(0, note.yPosition);
@@ -290,16 +291,19 @@ const app = Vue.createApp({
       this.isDisabled = string == "";
     },
 
+    //edits the annotation in the array
     editNote(noteObject) {
       const annotation = noteObject.note;
       const index = noteObject.i;
       this.notes[index].annotation = annotation;
     },
 
+    //sets the current file's id
     setFile(id) {
       this.currentFile = id;
     },
 
+    //delete the passage object at index
     deletePassage(index) {
       console.log(index);
       this.notes.splice(index, 1);
@@ -308,11 +312,13 @@ const app = Vue.createApp({
       }
     },
 
+    //sets the dragged passage data
     dragPassage(index) {
       this.lastDragged = index;
       console.log(this.lastDragged);
     },
 
+    //gets the dragged passage data
     getDraggedNote() {
       return this.notes[this.lastDragged];
     },
