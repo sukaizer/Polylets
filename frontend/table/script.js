@@ -7,8 +7,13 @@ var col = 3;
 //drag single element
 function drag(dragevent) {
     var text = dragevent.target.id;
-    dragevent.dataTransfer.setData("text", text);
+    console.log("drag")
+    console.log(text)
+    console.log(document.getElementById(text))
+    const dt = dragevent.dataTransfer
+    dt.setData("text", text);
 
+    dt.setDragImage(document.getElementById("2"), 0, 0);
 }
 
 //drag entire document
@@ -112,7 +117,7 @@ async function getData() {
         const strPassage = document.createTextNode(`${item.passage}`);
         const strNote = document.createTextNode(`${item.annotation}`);
 
-        newAnnot.setAttribute("id", `${item._id}`);
+        newAnnot.setAttribute("id", `${item.id}`);
         newAnnot.setAttribute("draggable", "true");
         newAnnot.setAttribute("ondragstart", "drag(event)");
         const fileId = `${item.fileId}`;
@@ -270,11 +275,15 @@ function tableCoordinate() {
 		for (j = 1 ; j <= col ; j++) {
 			$('.tbl tr:nth-child('+i+') td:nth-child('+j+')').each(function() {
 				$(this).attr('data-row', i);
-        		$(this).attr('data-col', j);
+        $(this).attr('data-col', j);
+        //add mousedown and up events
+        $(this).attr("onmousedown", "dragAutoF("+j+","+i+")");
+        $(this).attr("onmouseup", "dropAutoF("+j+","+i+")")
+
 			})
 			$('.tbl tr:nth-child('+i+') td:nth-child('+j+') div').each(function() {
 				$(this).attr('data-row', i);
-        		$(this).attr('data-col', j);
+        $(this).attr('data-col', j);
 			})
 		}
 	}
@@ -315,11 +324,12 @@ function addCol() {
 //export into editor
 async function exportToEditor() {
 	//create data
+  var inc = 1
 	for (i = 1 ; i <= col ; i++) {
 		$('.tbl tr td:nth-child('+i+') div').each(function(index) {  
       const tis = $(this)[0];
       const note = {
-        id : "tableId" + i,
+        id : "tableId" + inc,
         docId : tis.id,
         fileId : tis.attributes[3].value,
         startOffset : tis.attributes[4].value,
@@ -330,6 +340,7 @@ async function exportToEditor() {
         col: tis.attributes[10].value, 
       }
       data.push(note);
+      inc += 1
 		})
 	}
   sendToServer();
@@ -384,6 +395,78 @@ function deleteRow(r) {
 }
 
 
+var isMouseDown = false;
+
+
+//begin autofill
+function dragAutoF(x, y) {
+  var tis = getCell(x, y);
+  if (tis.childNodes.length > 0) {
+    isMouseDown = true;
+    console.log("autoFstart");
+    console.log(tis);
+    startCell = [parseInt(tis.getAttribute("data-col")), parseInt(tis.getAttribute("data-row"))]; //get the startCell 
+    console.log(startCell);
+    doc = document.getElementById("docFolder" + tis.firstElementChild.getAttribute("data-fileid"));
+    console.log(doc)
+  }
+  tis.style.backgroundColor= "#E8E8E8";
+}
+
+
+//end autofill
+function dropAutoF(x, y) {
+  var tos = getCell(x,y);
+  if (isMouseDown == true) {
+    isMouseDown = false;
+    console.log("autoFend");
+    console.log(tos);
+    endCell = parseInt(tos.getAttribute("data-row")); //get the end cell 
+    //call the auto-fill function 
+    offset = endCell - startCell[1];
+    console.log(offset)
+    autoFill(doc, startCell, offset);   
+  }
+}
+
+
+
+//it should also have a fillDirection parameter (up, down, left, right)
+function autoFill(doc, startPosition, offset){
+
+  if (doc.childNodes.length > 1) {
+    //get the rest of the passages, starting from the start passage 
+    let restOfPassages = []; 
+    for (let i = 1; i<= doc.childNodes.length; i++){
+      restOfPassages.push(doc.childNodes[i]);
+    }
+    console.log("rest");
+    console.log(restOfPassages);
+
+    //loop over the array of restOfPassages and push each one to an array of cells 
+    console.log(startPosition);
+    let xPosition = startPosition[0]; 
+    console.log(xPosition); 
+    let yPosition = startPosition[1]; 
+    let currentCell; 
+    
+    console.log(yPosition);
+
+    for (j = 0; j < offset; j++){
+      //get the current cell 
+      yPosition++; 
+      currentCell = getCell(xPosition,yPosition);
+      console.log("curr")
+      console.log(currentCell);
+      //replace the text 
+      currentCell.innerHTML = ''; 
+      currentCell.append(restOfPassages[j]);
+      console.log(restOfPassages[j]);
+      
+    }
+  }
+}
+
 
 //add column
 $(".tbl tr:nth-child(1) td").each(function(index) {
@@ -413,16 +496,33 @@ $(".new-row").on("dragenter", function(event) {
   addRow();
 });
 
+//drag to add row
+$(".new-row").mousedown(function(event) {
+  addRow();
+});
+
 //drag to add column
 $(".new-column").on("dragenter", function(event) {
   addCol();
 });
 
+$(".new-column").mousedown(function(event) {
+  addCol();
+});
+
+$("td").on("dragenter", function(event) {
+  $(this).css({backgroundColor: "#ADD8E6"})
+})
+
+$("td").on("dragend dragleave", function(event) {
+  $(this).css({backgroundColor: "white"})
+})
 
 //add dnd attribute and updates things
 $(document).on("changetext", function() {
   $("td").attr("ondrop", "drop(event)");
   tableCoordinate();
+  
   //update col
   $(".del-col").each(function(id) {
     $(this).attr("onclick", "deleteCol("+id+")");
@@ -437,9 +537,23 @@ $(document).on("changetext", function() {
     $(this).attr("onclick", "deleteRow("+id+")");
 	$(this).css({top: h -140 +'px', left: '5px', position:'absolute'});
   })
+
+  //highlight on autofill
+  $("td").mouseover(function () { 
+    if (isMouseDown) {
+      $(this).css("background-color", "#E8E8E8")
+    }
+  });
+
 })
 
 
+
+
+//disable highlight
+$(document).mouseup(function() {
+  $("td").css("background-color", "white");
+})
 
 
 //export button
@@ -451,36 +565,99 @@ $(".exporter").on("click", function(event) {
 
 
 
- //selectable table using jQuery 
- $(function () {
-	var isMouseDown = false;
-	$(".tbl td").mousedown(function () {
-      isMouseDown = true;
-      $(this).toggleClass("highlighted");
-      console.log("start");
-      console.log(this);
-      startCell = this; //get the startCell 
+//selectable table using jQuery 
 
-      return false; // prevent text selection
-      })
-	  .mouseover(function () {
-		if (isMouseDown) {
-		  $(this).toggleClass("highlighted");
-		}
-	  })
-	  .bind("selectstart", function () {
-		return false; // prevent text selection in IE
-	  });
+// $(function () {
+//   var isMouseDown = false;
+//   var tds = document.getElementsByTagName('td');
+//   for (td of tds) {
+//     $(".tbl td").addEventListener('mousedown', e => {
+//       console.log("mouse")
+//       if (e.children().length > 0) {
+//         isMouseDown = true;
+//         e.toggleClass("highlighted");
+//         console.log("start");
+//         console.log(e);
+//         startCell = [parseInt(e.getAttribute("data-col")), parseInt(e.getAttribute("data-row"))]; //get the startCell 
+//         console.log(startCell);
+//         doc = document.getElementById("docFolder" + e.firstElementChild.getAttribute("data-fileid"));
+//         console.log(doc)
+//       }
 
-	// $(document)
-	$(".tbl td")
-	  .mouseup(function () {
-		isMouseDown = false;
-		console.log("end");
-		console.log(this);
-		//endCell = this; //get the end cell 
-		//call the auto-fill function 
-		//offset = parseInt(endCell.id.slice(-1)) - parseInt(startCell.id.slice(-1));
-		//autoFill(1, startCell.id, offset); 
-	  });
-  });
+//       return false; // prevent text selection
+//     })
+
+//     .addEventListener('mouseover', e => {
+//       if (isMouseDown) {
+//         e.toggleClass("highlighted");
+//       }
+//     })
+
+
+      
+//     // $(document)
+//     $(".tbl td")
+//       .addEventListener('mouseup', e => {
+//         if (isMouseDown == true) {
+//           isMouseDown = false;
+//           console.log("end");
+//           console.log(e);
+//           endCell = parseInt(e.getAttribute("data-row")); //get the end cell 
+//           //call the auto-fill function 
+//           offset = endCell - startCell[1];
+//           console.log(offset)
+//           autoFill(doc, startCell, offset);   
+//         }
+//       });
+//   }
+// });
+
+
+
+
+//selectable table using jQuery 
+
+// $(function () {
+//   var isMouseDown = false;
+//   $(".tbl td").mousedown(function () {
+//     console.log("mouse")
+//     if ($(this).children().length > 0) {
+//       isMouseDown = true;
+//       $(this).toggleClass("highlighted");
+//       console.log("start");
+//       console.log(this);
+//       startCell = [parseInt(this.getAttribute("data-col")), parseInt(this.getAttribute("data-row"))]; //get the startCell 
+//       console.log(startCell);
+//       doc = document.getElementById("docFolder" + this.firstElementChild.getAttribute("data-fileid"));
+//       console.log(doc)
+//     }
+
+//     return false; // prevent text selection
+//   })
+
+//   .mouseover(function () {
+//     if (isMouseDown) {
+//       $(this).toggleClass("highlighted");
+//     }
+//   })
+
+//   .bind("selectstart", function () {
+//     return false; // prevent text selection in IE
+//   });
+
+    
+//   // $(document)
+//   $(".tbl td")
+//     .mouseup(function () {
+//       if (isMouseDown == true) {
+//         isMouseDown = false;
+//         console.log("end");
+//         console.log(this);
+//         endCell = parseInt(this.getAttribute("data-row")); //get the end cell 
+//         //call the auto-fill function 
+//         offset = endCell - startCell[1];
+//         console.log(offset)
+//         autoFill(doc, startCell, offset);   
+//       }
+//     });
+// });

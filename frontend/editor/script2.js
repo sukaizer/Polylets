@@ -1,13 +1,15 @@
 let Inline = Quill.import("blots/inline");
 var nbFile = 4;
-var passagesDiv = [];
+var allPassages = [];
 const files = []  
 
 getData();
 
 setTimeout(function() {
   fillQuill();
-}, 100);
+}, 500);
+
+
 
 //fill quill with database
 async function fillQuill() {
@@ -39,7 +41,6 @@ async function fillQuill() {
     });
   }
 
-  var currentcol = 1;
   //any item in /tbl
   quill.setSelection(0, 0);
   for (item of data) {
@@ -47,6 +48,8 @@ async function fillQuill() {
       const cursor = getCursorPosition();
       var id = elem.docId;
       console.log("id");
+      console.log(id)
+      console.log(document.getElementById(id));
       var highlength = 0;
 
       quill.insertText(getCursorPosition(), " [");
@@ -80,6 +83,8 @@ async function fillQuill() {
   }
 }
 
+
+
 // create a passage object which will be added to the sidebar and sets the listeners
 function createPassage(data) {
   const passage = document.createElement("div");
@@ -94,6 +99,16 @@ function createPassage(data) {
   passage.setAttribute("data-endOffset", data.endOffset);
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
+
+
+  passage.ondblclick = () => {
+    openWindow(passage.getAttribute("data-fileid"),
+                passage.getAttribute("data-startOffset"),
+                passage.getAttribute("data-endOffset"),
+                passage.getAttribute("data-startIndex"),
+                passage.getAttribute("data-endIndex"),);
+  }
+
 
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
@@ -279,6 +294,7 @@ function createPassage(data) {
   return passage;
 }
 
+
 function showAllPassages() {
   const annotationList = document.getElementById("sidebar");
   annotationList.innerHTML = "";
@@ -287,6 +303,7 @@ function showAllPassages() {
     annotationList.appendChild(element);
   });
 }
+
 
 function ShowNotesWithSameTag(color) {
   // get all the notes with the given tag
@@ -308,6 +325,7 @@ function ShowNotesWithSameTag(color) {
     annotationList.appendChild(element);
   });
 }
+
 
 class HighlightBlot extends Inline {
   static create(id) {
@@ -356,6 +374,8 @@ class HighlightBlot extends Inline {
 HighlightBlot.blotName = "highlight";
 HighlightBlot.tagName = "a";
 
+
+
 var iter = 0;
 
 Quill.register(HighlightBlot);
@@ -373,6 +393,7 @@ const quill = new Quill("#editor", {
   theme: "snow",
 });
 
+
 function downloadInnerHtml(filename, elId, mimeType) {
   var elHtml = document.getElementById(elId).firstElementChild.innerHTML;
   var link = document.createElement("a");
@@ -386,6 +407,7 @@ function downloadInnerHtml(filename, elId, mimeType) {
   link.click();
 }
 
+
 var fileName = "file.html"; // You can use the .txt extension if you want
 
 $("#save-button").click(function () {
@@ -393,6 +415,8 @@ $("#save-button").click(function () {
   downloadInnerHtml(fileName, "editor", "text/html");
   zipFile();
 });
+
+
 
 const saver = document.querySelector(".save-button");
 
@@ -428,6 +452,7 @@ async function zipFile() {
   });
 }
 
+
 function buildDOM(element, jsonObject) {
   // element is the parent element to add the children to
   if (typeof jsonObject == "string") {
@@ -454,6 +479,8 @@ function buildDOM(element, jsonObject) {
   }
 }
 
+
+
 function highlight(id) {
   //document.getElementById(id).className = "hightlighted-element";
   $("#" + id).css({ transform: "scale(1.2)" });
@@ -464,15 +491,26 @@ function unhighlight(id) {
   $("#" + id).css({ transform: "scale(1)" });
 }
 
+
 function iterId() {
   console.log("iteration");
   console.log(iter);
   iter += 1;
 }
 
+
+
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
+
+  for (let index = 0; index < 4; index++) {
+		var element = document.createElement("div");
+		element.setAttribute("id", "document");
+		this.buildDOM(element, filesData[index]);
+		files[index] = element;
+	}
+
 
   // for (let i = 0; i < nbFile; i++) {
   //     const container = document.createElement('div');
@@ -492,6 +530,8 @@ async function getData() {
   }
 }
 
+
+
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   var myWindow = window.open("", "", "");
@@ -502,6 +542,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
 
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
 }
+
 
 //select passage in new window
 function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
@@ -567,14 +608,17 @@ function getCursorPosition() {
   }
 }
 
+
 // This name will be passed to the destination window during drag-and-drop
 // and can be used to distinguish among several source windows
 let windowId = "demo";
+
 
 // Return the id of the closest enclosing dropzone, if any
 function getDropZoneId(elem) {
   return $(elem).closest(".dropzone").attr("id");
 }
+
 
 // Move jQuery `elem` by deltaX, deltaY
 function moveElem(elem, deltaX, deltaY) {
@@ -584,19 +628,23 @@ function moveElem(elem, deltaX, deltaY) {
   elem.offset(offset);
 }
 
+
+
 // Return the HTML content of a note
 function getNoteContent(note) {
   return note.lastElementChild.innerHTML;
 }
+
 
 // Return the HTML content of a note
 function getPassageContent(note) {
   return note.firstElementChild.nextElementSibling.innerHTML;
 }
 
+
+
 function moveNoteToEditor(note, sidebar, ev, dnd) {
   const cursor = getCursorPosition();
-
   // quill.format('highlight', note);
   var highlength = 0;
   if (note.lastElementChild.innerText.length != 0) {
@@ -625,15 +673,23 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
     "highlight",
     note.id
   );
-
   iterId();
 }
+
+
+
 
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
   $("#sidebar").append(createPassage(xferData));
 }
+
+
+
+
+
+
 
 // Global holding the current drag-and-drop interaction, if any
 let dnd = null;
