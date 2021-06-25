@@ -7,13 +7,10 @@ var col = 3;
 //drag single element
 function drag(dragevent) {
     var text = dragevent.target.id;
-    console.log("drag")
-    console.log(text)
-    console.log(document.getElementById(text))
     const dt = dragevent.dataTransfer
     dt.setData("text", text);
 
-    dt.setDragImage(document.getElementById("2"), 0, 0);
+    dt.setDragImage(document.getElementById(text), 0, 0);
 }
 
 //drag entire document

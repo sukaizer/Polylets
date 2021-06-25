@@ -52,16 +52,30 @@ body {
 }
 
 .element {
-text-align: justify;
-text-overflow: ellipsis;
-padding: 5px 20px;
-border: 1px solid #d8d8d8;
-cursor: move;
-border-radius: 12px;
-width: 80%;
-height: 180px;
-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-overflow-y: auto;
+  text-align: justify;
+  text-overflow: ellipsis;
+  padding: 5px 20px;
+  border: 1px solid #d8d8d8;
+  cursor: move;
+  border-radius: 12px;
+  width: 80%;
+  height: 180px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: auto;
+}
+
+
+.little-element {
+  text-align: justify;
+  text-overflow: ellipsis;
+  padding: 5px 20px;
+  border: 1px solid #d8d8d8;
+  cursor: move;
+  border-radius: 12px;
+  width: 40%;
+  height: 40px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: auto;
 }
 
 

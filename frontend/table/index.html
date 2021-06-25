@@ -28,23 +28,25 @@
     </div>
 
 
-    <div class="editor">
+    <div class="container">
 
         <button class="exporter">Export to Editor</button>
 
-        <div id="annotations" class="annotation" ondragover="p(event)" ondrop="drop(event)">
+        <div id="annotations" class="annotation" >
+            
             <p style="border: 1px solid #d8d8d8;"></p>
+          
         </div>
 
         
 
         <!-- Create the editor container -->
-        <div  class="document" ondragover="p(event)">
+        <div  class="document">
           
 
           <div class="table-line">
           
-          <div class="table-form">
+          <div class="table-form" id="tbl-frm">
             
             <table class="tbl" id="tbl"> 
               <colgroup>
@@ -78,7 +80,7 @@
 
     </div>
 
-    <script src="script.js"></script>
+    <script src="script2.js"></script>
 
 </body>
 
