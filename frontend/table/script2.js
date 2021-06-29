@@ -100,6 +100,7 @@ async function getData() {
 	//adding each element in the annotation tab
     for (item of data) {
         const newAnnot = document.createElement('div');
+        const divPassage = document.createElement('div');
         const passage = document.createElement('a');
         const note = document.createElement('p');
         const strPassage = document.createTextNode(`${item.passage}`);
@@ -123,14 +124,79 @@ async function getData() {
 						newAnnot.getAttribute("data-endIndex"),);
         }
 
+
+        const draghandle = document.createElement("div");
+        draghandle.setAttribute("class", "draghandle");
+
+        const draghandlebutton = document.createElement("button");
+        draghandlebutton.setAttribute("class", "draghandle-button");
+        draghandlebutton.appendChild(
+          document.createTextNode(String.fromCharCode(10005))
+        );
+
+        draghandlebutton.onclick = () => {
+          passage.remove();
+          for (let i = 0; i < allPassages.length; i++) {
+            if (allPassages[i] == passage) {
+              allPassages.splice(i, 1);
+            }
+          }
+        };
+
+        draghandlebutton.onmouseover = () => {
+          draghandlebutton.style.color = "red";
+        };
+
+        draghandlebutton.onmouseleave = () => {
+          draghandlebutton.style.color = "black";
+        };
+
+        draghandle.appendChild(draghandlebutton);
+
+
+
+        const annotationArea = document.createElement("div");
+        annotationArea.setAttribute("class", "annotationArea");
+        const title = document.createElement("span");
+        title.setAttribute("class", "field-title");
+        title.appendChild(document.createTextNode("Note"));
+        const hide = document.createElement("button");
+        hide.setAttribute("class", "hide-button");
+        hide.appendChild(document.createTextNode(String.fromCharCode(9660)));
+        hide.onclick = () => {
+          if (
+            newAnnot.lastElementChild.lastElementChild.style.visibility != "hidden"
+          ) {
+            newAnnot.lastElementChild.lastElementChild.style.visibility = "hidden";
+            hide.innerText = String.fromCharCode(9658);
+          } else {
+            newAnnot.lastElementChild.lastElementChild.style.visibility = "visible";
+            hide.innerText = String.fromCharCode(9660);
+          }
+        };
+        const edit = document.createElement("div");
+        edit.setAttribute("class", "edit-area");
+        const textarea = document.createElement("span");
+        textarea.appendChild(note);
+        edit.appendChild(textarea);
+        annotationArea.appendChild(title);
+        annotationArea.appendChild(hide);
+        annotationArea.appendChild(edit);
+
+
+
         note.setAttribute("class", "annot-note");
         passage.setAttribute("class", "annot-pass");
         newAnnot.setAttribute("class", "element draggable");
+        divPassage.setAttribute("class", "quote");
 
         passage.appendChild(strPassage);
+        divPassage.appendChild(passage);
         note.appendChild(strNote);
-        newAnnot.appendChild(passage);
-        newAnnot.appendChild(note);
+
+        newAnnot.appendChild(draghandle)
+        newAnnot.appendChild(divPassage);
+        newAnnot.appendChild(annotationArea);
 
         document.getElementById("docFolder" + fileId).append(newAnnot);
     }
@@ -541,7 +607,7 @@ $(document).on("changetext", function() {
     $(this).attr("onclick", "deleteCol("+id+")");
 	const i = id+1;
 	const pos = $(".tbl tr:nth-child(1) td:nth-child("+i+")").position().left;
-	$(this).css({top: 5 +'px', left: pos + 45 + 'px', position:'absolute'});
+	$(this).css({top: 5 +'px', left: pos + 68 + 'px', position:'absolute'});
   })
   //update rows
   $(".del-row").each(function(id) {
@@ -617,6 +683,7 @@ function moveElem(elem, deltaX, deltaY) {
 
 function createPassage(data) {
   const newAnnot = document.createElement("div");
+  const divPassage = document.createElement('div');
   const passage = document.createElement('a');
   const note = document.createElement('p');
   const strPassage = document.createTextNode(data.passage);
@@ -642,13 +709,84 @@ function createPassage(data) {
 }
 
 
-  note.setAttribute("class", "annot-note");
-  passage.setAttribute("class", "annot-pass");
 
-  passage.appendChild(strPassage);
-  note.appendChild(strNote);
-  newAnnot.appendChild(passage);
-  newAnnot.appendChild(note);
+        const draghandle = document.createElement("div");
+        draghandle.setAttribute("class", "draghandle");
+
+        const draghandlebutton = document.createElement("button");
+        draghandlebutton.setAttribute("class", "draghandle-button");
+        draghandlebutton.appendChild(
+          document.createTextNode(String.fromCharCode(10005))
+        );
+
+        draghandlebutton.onclick = () => {
+          passage.remove();
+          for (let i = 0; i < allPassages.length; i++) {
+            if (allPassages[i] == passage) {
+              allPassages.splice(i, 1);
+            }
+          }
+        };
+
+        draghandlebutton.onmouseover = () => {
+          draghandlebutton.style.color = "red";
+        };
+
+        draghandlebutton.onmouseleave = () => {
+          draghandlebutton.style.color = "black";
+        };
+
+        draghandle.appendChild(draghandlebutton);
+
+
+
+        const annotationArea = document.createElement("div");
+        annotationArea.setAttribute("class", "annotationArea");
+        const title = document.createElement("span");
+        title.setAttribute("class", "field-title");
+        title.appendChild(document.createTextNode("Note"));
+        const hide = document.createElement("button");
+        hide.setAttribute("class", "hide-button");
+        hide.appendChild(document.createTextNode(String.fromCharCode(9660)));
+        hide.onclick = () => {
+          if (
+            passage.lastElementChild.lastElementChild.style.visibility != "hidden"
+          ) {
+            passage.lastElementChild.lastElementChild.style.visibility = "hidden";
+            hide.innerText = String.fromCharCode(9658);
+          } else {
+            passage.lastElementChild.lastElementChild.style.visibility = "visible";
+            hide.innerText = String.fromCharCode(9660);
+          }
+        };
+        const edit = document.createElement("div");
+        edit.setAttribute("class", "edit-area");
+        const textarea = document.createElement("span");
+        textarea.appendChild(note);
+        edit.appendChild(textarea);
+        annotationArea.appendChild(title);
+        annotationArea.appendChild(hide);
+        annotationArea.appendChild(edit);
+
+
+
+        note.setAttribute("class", "annot-note");
+        passage.setAttribute("class", "annot-pass");
+        newAnnot.setAttribute("class", "element draggable");
+        divPassage.setAttribute("class", "quote");
+
+        passage.appendChild(strPassage);
+        divPassage.appendChild(passage);
+        note.appendChild(strNote);
+
+        newAnnot.appendChild(draghandle)
+        newAnnot.appendChild(divPassage);
+        newAnnot.appendChild(annotationArea);
+
+
+
+
+ 
 
   return newAnnot;
 }
@@ -704,12 +842,12 @@ class DragAndDropInteraction {
       endOffset: this.draggedElem.getAttribute("data-endoffset"),
       startIndex: this.draggedElem.getAttribute("data-startindex"),
       endIndex: this.draggedElem.getAttribute("data-endoffset"),
-      passage: this.draggedElem.firstElementChild.innerText,
-      annotation: this.draggedElem.lastElementChild.innerText
+      passage: this.draggedElem.firstElementChild.nextElementSibling.firstElementChild.innerText,
+      annotation: this.draggedElem.lastElementChild.lastElementChild.innerText
     };
 
     this.crt = null;
-    this.crt = this.draggedElem.cloneNode(true);
+    this.crt = this.draggedElem.firstElementChild.nextElementSibling.cloneNode(true);
     this.crt.style.height = "80px";
     this.crt.style.width = "80px";
     document.body.appendChild(this.crt);
