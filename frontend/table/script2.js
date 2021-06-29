@@ -5,8 +5,6 @@ var col = 3;
 
 
 
-
-
 //drop single element
 function moveNote(dragElem, dropZone, dropevent, tis) {
   // const note = document.getElementById(dropevent.dataTransfer.getData("text"));
@@ -90,6 +88,9 @@ async function getData() {
       h3FDecoy.innerText = "Document " + i;
       h3.appendChild(h3FDecoy);
       const h3SDecoy = document.createElement('span');
+      
+      const h3SSDecoy = document.createElement('span');
+      h3SDecoy.appendChild(h3SSDecoy);
       h3.appendChild(h3SDecoy);
 			// h3.setAttribute("ondragstart", "dragDoc(event)");
 			newDoc.appendChild(h3);
@@ -607,7 +608,7 @@ $(document).on("changetext", function() {
     $(this).attr("onclick", "deleteCol("+id+")");
 	const i = id+1;
 	const pos = $(".tbl tr:nth-child(1) td:nth-child("+i+")").position().left;
-	$(this).css({top: 5 +'px', left: pos + 68 + 'px', position:'absolute'});
+	$(this).css({top: 5 +'px', left: pos + 100 + 'px', position:'absolute'});
   })
   //update rows
   $(".del-row").each(function(id) {

@@ -16,7 +16,7 @@ body {
 }
 
 .document {
-  width: 60%;
+  width: 75%;
   height: 1000px;
   margin: 10px 10px;
   border: 1px solid #d8d8d8;
@@ -31,7 +31,7 @@ body {
 
 .annotation {
   background-color: rgb(255, 255, 255);
-  width: 20%;
+  width: 14%;
   height: 850px;
   margin: 10px 10px;
   float: left;
@@ -226,7 +226,7 @@ transform: scale(1.1, 1.2);
 
 .new-row{
   width: 80%;
-  height: 50%;
+  height: 80%;
 }
 
 .tbl {
