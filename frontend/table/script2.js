@@ -136,12 +136,7 @@ async function getData() {
         );
 
         draghandlebutton.onclick = () => {
-          passage.remove();
-          for (let i = 0; i < allPassages.length; i++) {
-            if (allPassages[i] == passage) {
-              allPassages.splice(i, 1);
-            }
-          }
+          newAnnot.remove();
         };
 
         draghandlebutton.onmouseover = () => {
