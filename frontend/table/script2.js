@@ -369,8 +369,8 @@ async function exportToEditor() {
 	//create data
   var inc = 1
 	for (i = 1 ; i <= col ; i++) {
-		$('.tbl tr td:nth-child('+i+') div').each(function(index) {  
-      const tis = $(this)[0];
+		$('.tbl tr td:nth-child('+i+') .element').each(function(index) {  
+      const tis = $(this).get(0);
       const note = {
         id : "tableId" + inc,
         docId : tis.id,
