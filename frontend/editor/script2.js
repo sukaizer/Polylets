@@ -79,6 +79,7 @@ async function fillQuill() {
         "highlight",
         id
       );
+      iter += 1;
     }
     quill.insertText(getCursorPosition(), "\n\n");
   }

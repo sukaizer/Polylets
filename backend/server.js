@@ -4,6 +4,7 @@ const open = require("open");
 const Datastore = require("nedb");
 
 const app = express();
+const {Pool} = require("pg");
 
 // setup of different routes
 app.use("/viewer", express.static("../frontend/viewer"));
@@ -11,6 +12,7 @@ app.use("/editor", express.static("../frontend/editor"));
 app.use("/reader", express.static("../frontend/reader"));
 app.use("/table", express.static("../frontend/table"));
 app.use("/canvas", express.static("../frontend/canvas"));
+app.use("/canvas", express.static("../frontend/searcher"));
 app.use("/", express.static("../frontend/"));
 
 app.use(express.json());
@@ -35,6 +37,7 @@ databaseHtmlFiles.loadDatabase();
 
 const databaseTable = new Datastore("databaseTable.db");
 databaseTable.loadDatabase();
+
 
 // get the data
 app.get("/files", (rq, rs) => {
@@ -93,5 +96,8 @@ app.post("/tbl", (rq, rs) => {
   databaseTable.insert(data);
   rs.json(data);
 });
+
+
+
 
 app.delete("/api", (rq, rs) => {});
