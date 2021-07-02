@@ -5,6 +5,8 @@ const Datastore = require("nedb");
 
 const app = express();
 const {Pool} = require("pg");
+const db = require('./query.js')
+
 
 // setup of different routes
 app.use("/viewer", express.static("../frontend/viewer"));
@@ -37,6 +39,9 @@ databaseHtmlFiles.loadDatabase();
 
 const databaseTable = new Datastore("databaseTable.db");
 databaseTable.loadDatabase();
+
+
+app.get('/', db.getTextName)
 
 
 // get the data
@@ -101,3 +106,4 @@ app.post("/tbl", (rq, rs) => {
 
 
 app.delete("/api", (rq, rs) => {});
+

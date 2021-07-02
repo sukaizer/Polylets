@@ -28,3 +28,59 @@ text-align: center;
     border-radius: 6px;
     box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
+
+
+.docBar{
+   
+    font-size:80%;
+    width: 65%;
+    height: 1000px;
+    margin: 10px 10px;
+    border: 1px solid #d8d8d8;
+    overflow-y: auto;  /* this makes the div scrollable  */
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    
+    position: relative;
+      
+}
+
+
+
+
+.file {
+    float: left;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    /* background-color: #f8f8f8; */
+    width: 90%;
+    height: 260px;
+    border: 1px solid #d8d8d8;
+    border-radius: 7px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    background-color: white;
+    overflow-y: auto;
+}
+
+.scroll-bar{
+    float: left;
+    border: 1px solid black;
+    width: 3%;
+    height: 260px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.mark {
+    border: 1px solid green;
+    height: 2px;
+    width: 10px;
+}
+
+
+span.highlight {
+    background-color: aqua;
+    color: red;
+    text-shadow: 0 1px 1px red;
+}
