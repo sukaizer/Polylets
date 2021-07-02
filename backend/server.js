@@ -4,7 +4,9 @@ const open = require("open");
 const Datastore = require("nedb");
 
 const app = express();
-const {Pool} = require("pg");
+
+const pool = require("./queries");
+const fs = require("fs");
 
 // setup of different routes
 app.use("/viewer", express.static("../frontend/viewer"));
@@ -17,9 +19,13 @@ app.use("/", express.static("../frontend/"));
 
 app.use(express.json());
 
-// sends a message to the client
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get("/text", (request, response) => {
+  pool.query("SELECT * FROM files ORDER BY id", (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
 });
 
 // automatically opens the link
@@ -37,7 +43,6 @@ databaseHtmlFiles.loadDatabase();
 
 const databaseTable = new Datastore("databaseTable.db");
 databaseTable.loadDatabase();
-
 
 // get the data
 app.get("/files", (rq, rs) => {
@@ -97,7 +102,15 @@ app.post("/tbl", (rq, rs) => {
   rs.json(data);
 });
 
-
-
-
 app.delete("/api", (rq, rs) => {});
+
+pool.query("DELETE FROM files *");
+
+for (let i = 0; i < 10; i++) {
+  try {
+    const data = fs.readFileSync("../files/file" + i + ".html", "utf8");
+    pool.query("INSERT INTO files (text) VALUES ($1)", [data]);
+  } catch (err) {
+    console.error(err);
+  }
+}
