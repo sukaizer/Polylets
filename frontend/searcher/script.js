@@ -2,9 +2,16 @@ var files = []
 getData();
 
 $(".execSearch").on("click", () => {
-    const search = $("input")[0].value;
-    findAllMatches(search)
+    var search = $("input")[0].value;
+    findAllMatches(search);
+	var search2 = $("input")[1].value;
+    findAllMatches(search2)
     //sendToServer(search);
+})
+
+$("input").on('change', () => {
+	
+
 })
 
 
@@ -44,9 +51,11 @@ async function getData() {
 		var scroll = document.createElement("div");
 		scroll.setAttribute("id", "scroll" + i);
 		scroll.setAttribute("class", "scroll-bar");
+		
 		docu.appendChild(files[i]);
 		docu.appendChild(scroll);
 		document.getElementById("docBar").appendChild(docu);
+		files[i].setAttribute("data-height", files[i].lastElementChild.lastElementChild.offsetHeight);
 	}
 }
 
@@ -96,71 +105,84 @@ function getYcoords(elem) {
 //output: all the matches of the seach term displayed in the scroll zone 
 //you might need to think about if we have multiple search terms, how we display the matches 
 function findAllMatches(searchTerm){
+	console.log(searchTerm)
 	//use the searchTerm to create a regular expression object: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-	const reg = new RegExp(searchTerm); 
-	let scrollbarYCoord; 
-	var scrollbarZone;
-	//loop over every node in the DOM tree 
-	for (i = 0 ; i < files.length ; i++) {
-		scrollbarZone = document.getElementById("scroll" + i); 
-		const file = document.getElementById("file" + i);
-		file.querySelectorAll('*').forEach(function(node) {
-			if (reg.test(node.innerHTML)){
-				console.log("there is a match", i)
-				//get the y coordinate of the node relative to the scrollzone 
-				//I have a third function to covert coordinate even though I dont really use it...
-				//according to stack overflow and documentations, the coordiante is quite tricky 
-				scrollbarYCoord = Math.round(getYcoords(node)*260/file.lastElementChild.lastElementChild.offsetHeight);
-	
-				//once get the y coordinate, we create a div called mark with the corresponding y position 
-				let mark = document.createElement("div"); 
-				mark.className = "mark"; 
-				mark.style.position = "absolute"; 
-				mark.style.top = (scrollbarZone.offsetTop-5) + scrollbarYCoord + "px"; 
-				scrollbarZone.appendChild(mark);
-			}
-		})
+	if (searchTerm != " ") {
+		var reg = new RegExp(searchTerm, "ig"); 
+		var rgb = "("+ getRandomInt(255) + ", " + getRandomInt(255) + ", " + getRandomInt(255) + ")";
+		let scrollbarYCoord; 
+		var scrollbarZone;
+		//loop over every node in the DOM tree 
+		for (i = 0 ; i < files.length ; i++) {
+			scrollbarZone = document.getElementById("scroll" + i); 
+			const file = document.getElementById("file" + i);
+			file.lastElementChild.lastElementChild.querySelectorAll('*').forEach(function(node) {
+				if (reg.test(node.innerText) && (node.tagName == "P")){
+					console.log("there is a match", i)
+					//var search = new RegExp("(\\b" + text + "\\b)", "gim");
+					
+					//get the y coordinate of the node relative to the scrollzone 
+					//I have a third function to covert coordinate even though I dont really use it...
+					//according to stack overflow and documentations, the coordiante is quite tricky 
+					
+					const fileHeight = file.attributes[2].value;
+					scrollbarYCoord = getYcoords(node)*260/fileHeight;
+					//once get the y coordinate, we create a div called mark with the corresponding y position 
+					let mark = document.createElement("div"); 
+					mark.className = "mark"; 
+					mark.style.position = "absolute"; 
+					mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px"; 
+					scrollbarZone.appendChild(mark);
 
-		//var search = new RegExp("(\\b" + text + "\\b)", "gim");
-		var e = document.getElementById("file" + i).innerHTML;
-		var newe = e.replace(reg, "<span class=highlight>"+ searchTerm +"</span>");
-		document.getElementById("file" + i).innerHTML = newe;
+					//highlight
+					const repl = "<span style='background-color:rgb"+ rgb +";'>" + searchTerm + "</span>";
+
+					var newe = node.innerHTML.replace(reg, repl);
+					node.innerHTML = newe;
+				}
+			})
+
+			
 
 
-		// var content = $(file).text();
-		// var matches = content.match(reg);       
+			// var content = $(file).text();
+			// var matches = content.match(reg);       
 
-		// if(matches) {
-		// $(file).html(content.replace(reg, function(match){
-		// 	return "<span class='highlight'>"+match+"</span>";
-		// }));
-		// }else {
-		// 	$('.highlight').removeClass('highlight');
-		// }
-	
+			// if(matches) {
+			// $(file).html(content.replace(reg, function(match){
+			// 	return "<span class='highlight'>"+match+"</span>";
+			// }));
+			// }else {
+			// 	$('.highlight').removeClass('highlight');
+			// }
+		
+		}
+
+		// document.body.querySelectorAll('*').forEach(function(node) {
+		// 	//for each node when there is a match, 
+		// 	if (reg.test(node.innerHTML)){
+		// 		console.log("there is a match")
+		// 		//get the y coordinate of the node relative to the scrollzone 
+		// 		//I have a third function to covert coordinate even though I dont really use it...
+		// 		//according to stack overflow and documentations, the coordiante is quite tricky 
+		// 		scrollbarYCoord = Math.round(getYcoords(node) * 0.14); 
+		// 		console.log(scrollbarYCoord);
+
+		// 		//once get the y coordinate, we create a div called mark with the corresponding y position 
+		// 		let mark = document.createElement("div"); 
+		// 		mark.className = "mark"; 
+		// 		mark.style.position = "absolute"; 
+		// 		mark.style.top = scrollbarYCoord; 
+		// 		scrollbarZone.appendChild(mark);
+		// 		console.log(mark);
+		// 	}
+		// });
 	}
-
-	// document.body.querySelectorAll('*').forEach(function(node) {
-	// 	//for each node when there is a match, 
-	// 	if (reg.test(node.innerHTML)){
-	// 		console.log("there is a match")
-	// 		//get the y coordinate of the node relative to the scrollzone 
-	// 		//I have a third function to covert coordinate even though I dont really use it...
-	// 		//according to stack overflow and documentations, the coordiante is quite tricky 
-	// 		scrollbarYCoord = Math.round(getYcoords(node) * 0.14); 
-	// 		console.log(scrollbarYCoord);
-
-	// 		//once get the y coordinate, we create a div called mark with the corresponding y position 
-	// 		let mark = document.createElement("div"); 
-	// 		mark.className = "mark"; 
-	// 		mark.style.position = "absolute"; 
-	// 		mark.style.top = scrollbarYCoord; 
-	// 		scrollbarZone.appendChild(mark);
-	// 		console.log(mark);
-	// 	}
-	// });
-
-
-
 }
+  
+function getRandomInt(max) {
+	var r = Math.floor(Math.random() * max);
+	if (r <150) r= 150;
+	return r;
+  }
   
