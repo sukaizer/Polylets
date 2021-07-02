@@ -52,7 +52,8 @@ function iterId() {
 getData();
 async function getData() {
 
-    const rf = await fetch('/files');
+  //html files
+  const rf = await fetch('/files');
 	const filesData = await rf.json();
 
 	for (let index = 0; index < 4; index++) {
@@ -62,9 +63,9 @@ async function getData() {
 		files[index] = element;
 	}
 
-
-    const res = await fetch('/notes');
-    const data = await res.json();
+  //passages
+  const res = await fetch('/notes');
+  const data = await res.json();
 
 	var list = [];
 
