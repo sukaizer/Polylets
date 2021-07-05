@@ -6,71 +6,77 @@
 
 <script src=”./REDIPS_drag/redips-drag-min.js”></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/@revolist/revogrid@latest/dist/revo-grid/revo-grid.js"></script>
 
 <body>
 
+  <div class="main">
     <div class="navigationBar">
-        <a href="../viewer">Viewer</a>
-        <a href="../editor">Editor</a>
-        <a href="../reader">Reader</a>
-        <a>Table</a>
-        <a href="../canvas">Canvas</a>
-        <a href="../searcher">Searcher</a>
+      <a href="../viewer">Viewer</a>
+      <a href="../editor">Editor</a>
+      <a href="../reader">Reader</a>
+      <a>Table</a>
+      <a href="../canvas">Canvas</a>
+      <a href="../searcher">Searcher</a>
     </div>
-
+    
     <div class="container">
-
-      <div class="main">
-        <button class="exporter">Export to Editor</button>
-        
-        <div id="annotations" class="annotation">
-        
-          <p style="border: 1px solid #d8d8d8;"></p>
-        
-        </div>
-        
-        <div class="document">
-        
-          <div class="table-line">
-        
-            <div class="table-form" id="tbl-frm">
-        
-              <table class="tbl" id="tbl">
-                <colgroup>
-                </colgroup>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-        
-              </table>
-        
-            </div>
-        
-        
-            <div class="new-column">
-              <p></p>
-            </div>
-        
+    
+      <button class="exporter button">Export to Editor</button>
+    
+      <div id="annotations" class="annotation">
+    
+        <p style="border: 1px solid #d8d8d8;"></p>
+    
+      </div>
+    
+    
+    
+      <!-- Create the editor container -->
+      <div class="document">
+    
+    
+        <div class="table-line">
+    
+          <div class="table-form" id="tbl-frm">
+    
+            <table class="tbl" id="tbl">
+              <colgroup>
+              </colgroup>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+    
+            </table>
+    
           </div>
-        
-          <div class="new-row">
+    
+    
+          <div class="new-column">
             <p></p>
           </div>
+    
+        </div>
+    
+        <div class="new-row">
+          <p></p>
+        </div>
+    
+    
       </div>
-
+  </div>
 
 
     <script src="script2.js"></script>
