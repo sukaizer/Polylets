@@ -4,15 +4,12 @@ getData();
 $(".execSearch").on("click", () => {
     var search = $("input")[0].value;
     findAllMatches(search);
-	var search2 = $("input")[1].value;
-    findAllMatches(search2)
+	// var search2 = $("input")[1].value;
+    // findAllMatches(search2)
     //sendToServer(search);
 })
 
-$("input").on('change', () => {
-	
 
-})
 
 
 //send data to server
@@ -26,7 +23,7 @@ async function sendToServer(data) {
 		},
 		body: JSON.stringify(data)
 	};
-	fetch('', options);
+	fetch('/search', options);
 	await delay(1000);
 }
 
@@ -108,7 +105,8 @@ function findAllMatches(searchTerm){
 	console.log(searchTerm)
 	//use the searchTerm to create a regular expression object: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 	if (searchTerm != " ") {
-		var reg = new RegExp(searchTerm, "ig"); 
+		const reg = new RegExp(searchTerm, "ig");
+		console.log(reg)
 		var rgb = "("+ getRandomInt(255) + ", " + getRandomInt(255) + ", " + getRandomInt(255) + ")";
 		let scrollbarYCoord; 
 		var scrollbarZone;
@@ -117,7 +115,7 @@ function findAllMatches(searchTerm){
 			scrollbarZone = document.getElementById("scroll" + i); 
 			const file = document.getElementById("file" + i);
 			file.lastElementChild.lastElementChild.querySelectorAll('*').forEach(function(node) {
-				if (reg.test(node.innerText) && (node.tagName == "P")){
+				if (reg.test(node.innerText)){
 					console.log("there is a match", i)
 					//var search = new RegExp("(\\b" + text + "\\b)", "gim");
 					
