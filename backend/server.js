@@ -108,9 +108,20 @@ pool.query("DELETE FROM files *");
 
 for (let i = 0; i < 10; i++) {
   try {
-    const data = fs.readFileSync("../files/file" + i + ".html", "utf8");
+    var data = fs.readFileSync("../files/file" + i + ".html", "utf8");
+    data = data.replace(/ *\<[^)]*\> */g, "");
+    console.log(data);
     pool.query("INSERT INTO files (text) VALUES ($1)", [data]);
   } catch (err) {
     console.error(err);
   }
 }
+
+app.post("/search", (rq, rs) => {
+  pool.query("SELECT * FROM files ORDER BY id", (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+});
