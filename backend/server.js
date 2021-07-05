@@ -4,8 +4,9 @@ const open = require("open");
 const Datastore = require("nedb");
 
 const app = express();
-const { Pool } = require("pg");
-const db = require("./query.js");
+
+const pool = require("./queries");
+const fs = require("fs");
 
 // setup of different routes
 app.use("/viewer", express.static("../frontend/viewer"));

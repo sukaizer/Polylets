@@ -1,8 +1,13 @@
 body {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   color: #333;
   font-weight: 300;
   /* display: flex; */
+}
+
+.main {
+  width: 1500px;
+  margin: 0 auto;
 }
 
 .navigationBar {
@@ -20,14 +25,13 @@ body {
   height: 1000px;
   margin: 10px 10px;
   border: 1px solid #d8d8d8;
-  overflow-y: auto;  /* this makes the div scrollable  */
+  overflow-y: auto; /* this makes the div scrollable  */
   padding: 20px;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 
   position: relative;
 }
-
 
 .annotation {
   background-color: rgb(255, 255, 255);
@@ -68,7 +72,6 @@ body {
   background-color: white;
 }
 
-
 .little-element {
   text-align: justify;
   text-overflow: ellipsis;
@@ -82,25 +85,23 @@ body {
   overflow-y: auto;
 }
 
-
 .hightlighted-element {
-text-align: justify;
-margin: 20px 5px 5px 10px;
-padding: 5px 20px;
-border: 1px solid #d8d8d8;
-border-radius: 12px;
-width: 90%;
-height: 180px;
-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-display: inline-block;
+  text-align: justify;
+  margin: 20px 5px 5px 10px;
+  padding: 5px 20px;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  width: 90%;
+  height: 180px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  display: inline-block;
 
-background-color: #a7e4fc;
+  background-color: #a7e4fc;
 
-transition: transform 250ms;
-transition-timing-function: ease-out;
-transform: scale(1.1, 1.2);
+  transition: transform 250ms;
+  transition-timing-function: ease-out;
+  transform: scale(1.1, 1.2);
 }
-
 
 .draghandle-button {
   background-color: #d8d8d8;
@@ -112,7 +113,6 @@ transform: scale(1.1, 1.2);
   /* border-radius: 50%; */
   /* border: 1px solid #999999; */
 }
-
 
 .hide-button {
   border: 0px;
@@ -133,23 +133,21 @@ transform: scale(1.1, 1.2);
   background-color: rgb();
   /* color: #ffffff; */
   padding: 5px 10px;
-  margin: 5px 5px 10px 5px; 
+  margin: 5px 5px 10px 5px;
   cursor: pointer;
   border-radius: 15px;
   border: 1px solid #999999;
 }
-
 
 .button:hover {
   /* background-color: #ffffff;
   box-shadow: 0px 15px 20px rgba(219, 26, 12, 0.4);
   color: #e80505; */
 
-  background-color: rgb(88, 88, 88)	;
+  background-color: rgb(88, 88, 88);
   color: #ffffff;
   padding: 5px 10px;
   border: 1px solid #999999;
-
 }
 
 .button:disabled {
@@ -186,14 +184,12 @@ transform: scale(1.1, 1.2);
   /* this makes the div scrollable  */
 }
 
-
 .draghandle {
   width: 100%;
   height: 18px;
   background-color: #d8d8d8;
   cursor: grab;
 }
-
 
 .button-bar {
   border: 1px solid #0066cc;
@@ -202,36 +198,36 @@ transform: scale(1.1, 1.2);
   padding: 5px 10px;
   text-align: center;
   text-decoration: none;
-  margin: 5px 5px 10px 5px; 
+  margin: 5px 5px 10px 5px;
   cursor: pointer;
   border-radius: 15px;
   font-size: 16px;
 }
 
-.table-line{
-  height:8%;
+.table-line {
+  height: 8%;
 }
 
-.table-form{
+.table-form {
   float: left;
-  width:80%;
+  width: 80%;
 }
 
-.new-column{
-  height:100%;
-  width:20%;
+.new-column {
+  height: 100%;
+  width: 20%;
   display: inline-block;
   text-align: center;
 }
 
-.new-row{
+.new-row {
   width: 80%;
   height: 80%;
 }
 
 .tbl {
   width: 100%;
-  table-layout: fixed ;
+  table-layout: fixed;
   margin-left: 7%;
   empty-cells: show;
 }
@@ -251,5 +247,5 @@ td {
 }
 
 table td.highlighted {
-  background-color: #E8E8E8;;
+  background-color: #e8e8e8;
 }

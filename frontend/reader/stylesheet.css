@@ -4,6 +4,12 @@ body {
   font-weight: 300;
   /* display: flex; */
 }
+
+.main {
+  margin: 0 auto;
+  width: 2000px;
+}
+
 .navigationBar {
   padding: 5px;
   text-align: center;
@@ -11,6 +17,12 @@ body {
 
 .document a {
   font-style: oblique;
+  font-weight: 300;
+  color: #0099cc;
+}
+
+.document p {
+  font-weight: 300;
 }
 
 .navigationBar a {
@@ -56,27 +68,21 @@ body {
 .document {
   width: 60%;
   height: 1000px;
-  margin: 10px 10px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
   float: left;
   padding: 20px;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
 
 .annotationBar {
-  border: 1mm ridge rgba(101, 159, 247, 0.6);
+  margin: 0;
   background-color: #f8f8f8;
-  margin-left: 5px;
   width: 30%;
   height: 1000px;
   float: left;
-  border: 1px solid #d8d8d8;
-  margin: 10px 10px;
   padding: 20px;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
   overflow-y: auto; /* this makes the div scrollable  */
 }
 

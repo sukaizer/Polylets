@@ -15,7 +15,7 @@ app.component("annotation-list", {
         <template v-if="note.fileId === current">
           <div class="passage draggable" :id="'pass'+note.id" draggable="true">
             <div class="draghandle" @click="dragObject(note.locId)">
-              <button class="draghandle-button" @click="del(note.locId)">✕</button>
+              <button class="draghandle-button" @click="del(note.locId)" ref="button" @mouseover="mouseover" @mouseleave="mouseleave">✕</button>
             </div>
             <div class="quote">
               <a title="retrace quote" class="notes" @click="selectText">{{ note.passage }}</a>
@@ -61,6 +61,12 @@ app.component("annotation-list", {
     },
     dragObject(index) {
       this.$emit("drag", index);
+    },
+    mouseover() {
+      this.$refs.button.style.color = "red";
+    },
+    mouseleave() {
+      this.$refs.button.style.color = "black";
     },
   },
 });
