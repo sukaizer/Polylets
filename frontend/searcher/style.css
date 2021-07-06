@@ -86,7 +86,7 @@ body {
 }
 
 .mark {
-  border: 1px solid green;
+  border: 1px solid;
   height: 2px;
   width: 10px;
 }

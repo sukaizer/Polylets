@@ -1,4 +1,5 @@
 var files = [];
+const colours = ["lightblue", "thistle", "lightyellow", "magenta", "salmon", "cyan", "orange", "violet"]
 //getData();
 var i = 0;
 
@@ -140,6 +141,7 @@ function createPassage() {
 
 
 $(".execSearch").on("click", () => {
+  $(".doc").remove();
   var matches = []
   var search = $("textarea")[0].value;
   search = search.split(/[\s,]+/);
@@ -159,9 +161,11 @@ $(".execSearch").on("click", () => {
     searchResponse();
   }, 200);
 
+  var i = 0
   setTimeout(function () {
     for (item of matches) {
-      findAllMatches(item);
+      findAllMatches(item, i);
+      i += 1;
     }
   }, 400);
 });
@@ -322,7 +326,7 @@ function getYcoords(elem) {
 //input: a search term
 //output: all the matches of the seach term displayed in the scroll zone
 //you might need to think about if we have multiple search terms, how we display the matches
-function findAllMatches(searchTerm) {
+function findAllMatches(searchTerm, left) {
   //use the searchTerm to create a regular expression object: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
   if (searchTerm != " ") {
     const reg = new RegExp(searchTerm, "ig");
@@ -353,16 +357,19 @@ function findAllMatches(searchTerm) {
           const fileHeight = file.attributes[2].value;
           scrollbarYCoord = getYcoords(node)*262/fileHeight;
           //once get the y coordinate, we create a div called mark with the corresponding y position
+          scrollbarZone.style.width = (15*(left+1)) + "px";
           let mark = document.createElement("div");
           mark.className = "mark";
           mark.style.position = "absolute";
           mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px";
+          mark.style.left = scrollbarZone.offsetLeft + 12*left + "px";
+          mark.style.backgroundColor = colours[left];
           scrollbarZone.appendChild(mark);
 
           //highlight
           const repl =
-            "<span style='background-color:rgb" +
-            rgb +
+            "<span style='background-color:" +
+            colours[left] +
             ";'>" +
             searchTerm +
             "</span>";
