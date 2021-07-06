@@ -140,21 +140,51 @@ function createPassage() {
 
 
 $(".execSearch").on("click", () => {
+  var matches = []
   var search = $("textarea")[0].value;
-  findAllMatches(search);
+  search = search.split(/[\s,]+/);
+  console.log("search", search);
   // var search2 = $("input")[1].value;
   // findAllMatches(search2)
-  const keyword = {
-    sQuery: search,
-  };
-  sendToServer(keyword);
+  for (item of search) {
+    const keyword = {
+      sQuery: item,
+    };
+    console.log(item);
+    matches.push(item)
+    sendToServer(keyword);
+  }
+
   setTimeout(function () {
     searchResponse();
   }, 200);
+
   setTimeout(function () {
-    findAllMatches(search);
+    for (item of matches) {
+      findAllMatches(item);
+    }
   }, 400);
 });
+
+// $(".execSearch").on("click", () => {
+//   $("textarea").each(function(index) {
+//     const search = $("textarea")[index].value;
+//     console.log(search);
+//     findAllMatches(search);
+//     // var search2 = $("input")[1].value;
+//     // findAllMatches(search2)
+//     const keyword = {
+//       sQuery: search,
+//     };
+//     sendToServer(keyword);
+//     setTimeout(function () {
+//       searchResponse();
+//     }, 200);
+//     setTimeout(function () {
+//       findAllMatches(search);
+//     }, 400);
+//   });
+// });
 
 
 //send data to server
@@ -169,7 +199,6 @@ async function sendToServer(data) {
     body: JSON.stringify(data),
   };
   fetch("/srch", options);
-  await delay(1000);
 }
 
 async function searchResponse() {
