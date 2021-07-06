@@ -175,17 +175,6 @@ async function sendToServer(data) {
 	await delay(1000);
 }
 
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  };
-  fetch("", options);
-  await delay(1000);
-}
-
 async function searchResponse() {
 	const rs = await fetch('/srch');
 	const sData = await rs.json();
@@ -265,7 +254,7 @@ async function getData() {
     docu.appendChild(scroll);
     document.getElementById("docBar").appendChild(docu);
   }
-}
+
 
 function buildDOM(element, jsonObject) {
   // element is the parent element to add the children to
