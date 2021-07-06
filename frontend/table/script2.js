@@ -173,6 +173,7 @@ async function getData() {
         };
         const edit = document.createElement("div");
         edit.setAttribute("class", "edit-area");
+        //edit.setAttribute("contenteditable","true");        if you want to make notes editables, need little fixes with dnd and css
         const textarea = document.createElement("span");
         textarea.appendChild(note);
         edit.appendChild(textarea);
@@ -278,6 +279,7 @@ async function sendToServer() {
 		},
 		body: JSON.stringify(data)
 	};
+  console.log(options)
 	fetch('/tbl', options);
 	await delay(1000);
 }
@@ -646,8 +648,8 @@ $(document).mouseup(function() {
 //export button
 $(".exporter").on("click", function(event) {
 	exportToEditor();
-	var href = $("a[href='../editor']").attr('href');
-	window.location.href = href;
+	// var href = $("a[href='../editor']").attr('href');
+	// window.location.href = href;
 })
 
 

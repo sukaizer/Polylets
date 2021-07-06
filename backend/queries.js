@@ -1,4 +1,4 @@
-const { Pool } = require("pg");
+const Pool = require('pg').Pool
 
 const pool = new Pool({
   user: "me",
@@ -40,6 +40,19 @@ const addText = (request, response) => {
     };
 };
 
+
+const searchRank = (request, response) => {
+  console.log("1");
+  const { s } = request.body;
+  console.log(s);
+  pool.query("SELECT * FROM files WHERE MATCH (text) AGAINST ($1) ORDER BY RANK desc\G"), [s], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  };
+};
+
 // const updateUser = (request, response) => {
 //   const id = parseInt(request.params.id);
 //   const { name, email } = request.body;
@@ -70,6 +83,7 @@ const addText = (request, response) => {
 module.exports = {
   addText,
   getTexts,
+  searchRank,
 };
 
 module.exports = pool;

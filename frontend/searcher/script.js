@@ -1,12 +1,23 @@
+
+
 var files = []
-getData();
+//getData();
 
 $(".execSearch").on("click", () => {
     var search = $("input")[0].value;
     findAllMatches(search);
 	// var search2 = $("input")[1].value;
     // findAllMatches(search2)
-    //sendToServer(search);
+	const keyword = {
+		sQuery : search
+	}
+    sendToServer(keyword);
+	setTimeout(function() {
+		searchResponse()
+	}, 100);
+	setTimeout(function() {
+		findAllMatches(search);
+	}, 200);
 })
 
 
@@ -23,8 +34,39 @@ async function sendToServer(data) {
 		},
 		body: JSON.stringify(data)
 	};
-	fetch('/search', options);
+	console.log(options)
+	fetch('/srch', options);
 	await delay(1000);
+}
+
+
+async function searchResponse() {
+	const rs = await fetch('/srch');
+	const sData = await rs.json();
+	console.log("before", sData)
+	for (let index = 0; index < sData.length; index++) {
+		var element = document.createElement("div");
+		element.setAttribute("id", "file" + index);
+		element.setAttribute("class", "file");
+		const file = sData[index].nfile;
+		element.innerHTML = file;
+		files[index] = element;
+	}
+	
+
+	for (let i = 0; i < files.length ; i++) {
+		var docu = document.createElement("div");
+		docu.setAttribute("id", "document" + i);
+		docu.setAttribute("class", "doc");
+		var scroll = document.createElement("div");
+		scroll.setAttribute("id", "scroll" + i);
+		scroll.setAttribute("class", "scroll-bar");
+		
+		docu.appendChild(files[i]);
+		docu.appendChild(scroll);
+		document.getElementById("docBar").appendChild(docu);
+		//files[i].setAttribute("data-height", files[i].lastElementChild.lastElementChild.offsetHeight);
+	}
 }
 
 
@@ -37,9 +79,11 @@ async function getData() {
 		var element = document.createElement("div");
 		element.setAttribute("id", "file" + index);
 		element.setAttribute("class", "file");
+		console.log(filesData[index])
 		this.buildDOM(element, filesData[index]);
 		files[index] = element;
 	}
+	console.log(files)
 
 	for (let i = 0; i < files.length ; i++) {
 		var docu = document.createElement("div");
@@ -114,7 +158,7 @@ function findAllMatches(searchTerm){
 		for (i = 0 ; i < files.length ; i++) {
 			scrollbarZone = document.getElementById("scroll" + i); 
 			const file = document.getElementById("file" + i);
-			file.lastElementChild.lastElementChild.querySelectorAll('*').forEach(function(node) {
+			file.querySelectorAll('*').forEach(function(node) {
 				if (reg.test(node.innerText)){
 					console.log("there is a match", i)
 					//var search = new RegExp("(\\b" + text + "\\b)", "gim");
@@ -123,14 +167,14 @@ function findAllMatches(searchTerm){
 					//I have a third function to covert coordinate even though I dont really use it...
 					//according to stack overflow and documentations, the coordiante is quite tricky 
 					
-					const fileHeight = file.attributes[2].value;
-					scrollbarYCoord = getYcoords(node)*260/fileHeight;
-					//once get the y coordinate, we create a div called mark with the corresponding y position 
-					let mark = document.createElement("div"); 
-					mark.className = "mark"; 
-					mark.style.position = "absolute"; 
-					mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px"; 
-					scrollbarZone.appendChild(mark);
+					// const fileHeight = file.attributes[2].value;
+					// scrollbarYCoord = getYcoords(node)*260/fileHeight;
+					// //once get the y coordinate, we create a div called mark with the corresponding y position 
+					// let mark = document.createElement("div"); 
+					// mark.className = "mark"; 
+					// mark.style.position = "absolute"; 
+					// mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px"; 
+					// scrollbarZone.appendChild(mark);
 
 					//highlight
 					const repl = "<span style='background-color:rgb"+ rgb +";'>" + searchTerm + "</span>";
