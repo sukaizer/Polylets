@@ -3,6 +3,9 @@ body {
   color: #333;
   font-weight: 300;
   /* display: flex; */
+  margin: 0 auto;
+  width: 1300px;
+  height: 100%;
 }
 
 .navigationBar {
@@ -15,13 +18,9 @@ body {
   color: #2c3e50;
 }
 
-.main {
-  margin: 0 auto;
-  width: 1500px;
-}
-
 .document {
-  width: 1200px;
+  position: relative;
+  width: 1000px;
   height: 1000px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
@@ -42,7 +41,7 @@ body {
   background-color: #f8f8f8;
   width: 250px;
   height: 1000px;
-  float: left;
+  float: none;
   padding: 20px 0px 20px 0px;
   border-radius: 6px;
   overflow-y: auto; /* this makes the div scrollable  */

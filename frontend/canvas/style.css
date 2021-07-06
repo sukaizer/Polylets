@@ -3,6 +3,8 @@ body {
   color: #333;
   font-weight: 400;
   /* display: flex; */
+  width: 1500px;
+  margin: 0 auto;
 }
 
 button {
@@ -20,22 +22,21 @@ button {
 }
 
 .document {
-  width: 55%;
-  height: 800px;
-  margin: 10px 10px;
+  width: 70%;
+  height: 900px;
+  margin: 10px 0px;
   border: 1px solid #d8d8d8;
   overflow-y: auto;
   /* this makes the div scrollable  */
   float: left;
   padding: 20px;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
 
 #sidebar {
-  background-color: rgb(255, 255, 255);
-  width: 250px;
-  height: 800px;
+  background-color: #f8f8f8;
+  width: 220px;
+  height: 900px;
   margin: 10px 10px;
   float: left;
   font-size: 15px;
@@ -45,17 +46,15 @@ button {
 }
 
 .sidepannel {
-  background-color: rgb(255, 255, 255);
-  width: 280px;
-  height: 850px;
-  margin: 10px 10px;
+  background-color: #f8f8f8;
+  width: 250px;
+  height: 925px;
+  margin: 10px 0px;
   float: left;
   font-size: 15px;
   padding: 10px 20px 5px 5px;
-  border: 1px solid #d8d8d8;
   border-radius: 10px;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
 
 .button {

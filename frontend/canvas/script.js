@@ -19,16 +19,6 @@ function createPassage(data) {
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
 
-
-    passage.ondblclick = () => {
-      openWindow(passage.getAttribute("data-fileid"),
-      passage.getAttribute("data-startOffset"),
-      passage.getAttribute("data-endOffset"),
-      passage.getAttribute("data-startIndex"),
-      passage.getAttribute("data-endIndex"),);
-    }
-
-
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
 
@@ -62,6 +52,15 @@ function createPassage(data) {
   const quoteA = document.createElement("a");
   quoteA.setAttribute("class", "notes");
   quoteA.appendChild(document.createTextNode(data.passage));
+  quote.ondblclick = () => {
+    openWindow(
+      passage.getAttribute("data-fileid"),
+      passage.getAttribute("data-startOffset"),
+      passage.getAttribute("data-endOffset"),
+      passage.getAttribute("data-startIndex"),
+      passage.getAttribute("data-endIndex")
+    );
+  };
   quote.appendChild(quoteA);
 
   const annotationArea = document.createElement("div");
@@ -99,26 +98,12 @@ function createPassage(data) {
   return passage;
 }
 
-
-
-//open window when double click
-function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
-  var myWindow = window.open("", "", "");
-  var element = document.createElement("div");
-  element.setAttribute("id", "document");
-  element.appendChild(files[id - 1]);
-  myWindow.document.write(element.innerHTML);
-  
-  reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
-}
-
-
 //select passage in new window
-function reselect(myWindow, startOffset, endOffset, startIndex, endIndex)  {
-  //scroll to the position 
-  //myWindow.document.getElementById("document").scrollTo(0, yPosition); 
+function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
+  //scroll to the position
+  //myWindow.document.getElementById("document").scrollTo(0, yPosition);
 
-  //reselect the selection using startIndex and endIndex 
+  //reselect the selection using startIndex and endIndex
   let documentNode = myWindow.document.getElementById("document");
   let node = documentNode.firstElementChild;
   let i = 0;
@@ -126,44 +111,41 @@ function reselect(myWindow, startOffset, endOffset, startIndex, endIndex)  {
   let endNode;
 
   while (node) {
-      if (i == startIndex) {
-          startNode = node;
-      } if (i == endIndex) {
-          endNode = node;
-      }
-      i++;
-      node = node.nextElementSibling || node.nextSibling;
+    if (i == startIndex) {
+      startNode = node;
+    }
+    if (i == endIndex) {
+      endNode = node;
+    }
+    i++;
+    node = node.nextElementSibling || node.nextSibling;
   }
   console.log(startNode);
   console.log(endNode);
 
-  //re-create the selection using offset 
+  //re-create the selection using offset
   const newRange = new Range();
   console.log(startNode.firstChild.firstChild);
 
   if (startNode.firstChild.nodeName == "STRONG") {
-      console.log("start strong");
-      newRange.setStart(startNode.firstChild.firstChild, startOffset);
-  }
-  else {
-      newRange.setStart(startNode.firstChild, startOffset);
+    console.log("start strong");
+    newRange.setStart(startNode.firstChild.firstChild, startOffset);
+  } else {
+    newRange.setStart(startNode.firstChild, startOffset);
   }
 
   if (endNode.firstChild.nodeName == "STRONG") {
-      console.log("end strong");
-      newRange.setEnd(endNode.firstChild.firstChild, endOffset);
+    console.log("end strong");
+    newRange.setEnd(endNode.firstChild.firstChild, endOffset);
   } else {
-      console.log(endNode.firstChild);
-      newRange.setEnd(endNode.firstChild, endOffset);
+    console.log(endNode.firstChild);
+    newRange.setEnd(endNode.firstChild, endOffset);
   }
 
   let selection = myWindow.window.getSelection();
   selection.removeAllRanges();
   selection.addRange(newRange);
 }
-
-
-
 
 $("#save-button").click(function () {
   console.log("save");
@@ -201,13 +183,12 @@ async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
 
-
   for (let index = 0; index < 4; index++) {
-		var element = document.createElement("div");
-		element.setAttribute("id", "document");
-		this.buildDOM(element, filesData[index]);
-		files[index] = element;
-	}
+    var element = document.createElement("div");
+    element.setAttribute("id", "document");
+    this.buildDOM(element, filesData[index]);
+    files[index] = element;
+  }
 
   // for (let i = 0; i < nbFile; i++) {
   //     const container = document.createElement('div');
