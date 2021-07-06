@@ -1,5 +1,5 @@
 var files = [];
-//getData();
+getData();
 var i = 0;
 
 var createButton = $("#create");
@@ -102,22 +102,22 @@ function createPassage() {
   quoteA.setAttribute("class", "notes");
   quoteA.appendChild(document.createTextNode(string));
   quote.appendChild(quoteA);
-$(".execSearch").on("click", () => {
+  $(".execSearch").on("click", () => {
     var search = $("input")[0].value;
     findAllMatches(search);
-	// var search2 = $("input")[1].value;
+    // var search2 = $("input")[1].value;
     // findAllMatches(search2)
-	const keyword = {
-		sQuery : search
-	}
+    const keyword = {
+      sQuery: search,
+    };
     sendToServer(keyword);
-	setTimeout(function() {
-		searchResponse()
-	}, 100);
-	setTimeout(function() {
-		findAllMatches(search);
-	}, 200);
-})
+    setTimeout(function () {
+      searchResponse();
+    }, 100);
+    setTimeout(function () {
+      findAllMatches(search);
+    }, 200);
+  });
 
   const annotationArea = document.createElement("div");
   annotationArea.setAttribute("class", "annotationArea");
@@ -157,83 +157,82 @@ $(".execSearch").on("click", () => {
   //sendToServer(search);
 });
 
-
-
 //send data to server
 async function sendToServer(data) {
-	const delay = ms => new Promise(res => setTimeout(res, ms));
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-	const options = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	};
-	console.log(options)
-	fetch('/srch', options);
-	await delay(1000);
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  };
+  console.log(options);
+  fetch("/srch", options);
+  await delay(1000);
 }
 
 async function searchResponse() {
-	const rs = await fetch('/srch');
-	const sData = await rs.json();
-	console.log("before", sData)
-	for (let index = 0; index < sData.length; index++) {
-		var element = document.createElement("div");
-		element.setAttribute("id", "file" + index);
-		element.setAttribute("class", "file");
-		const file = sData[index].nfile;
-		element.innerHTML = file;
-		files[index] = element;
-	}
-	
+  const rs = await fetch("/srch");
+  const sData = await rs.json();
+  console.log("before", sData);
+  for (let index = 0; index < sData.length; index++) {
+    var element = document.createElement("div");
+    element.setAttribute("id", "file" + index);
+    element.setAttribute("class", "file");
+    const file = sData[index].nfile;
+    element.innerHTML = file;
+    files[index] = element;
+  }
 
-	for (let i = 0; i < files.length ; i++) {
-		var docu = document.createElement("div");
-		docu.setAttribute("id", "document" + i);
-		docu.setAttribute("class", "doc");
-		var scroll = document.createElement("div");
-		scroll.setAttribute("id", "scroll" + i);
-		scroll.setAttribute("class", "scroll-bar");
-		
-		docu.appendChild(files[i]);
-		docu.appendChild(scroll);
-		document.getElementById("docBar").appendChild(docu);
-		//files[i].setAttribute("data-height", files[i].lastElementChild.lastElementChild.offsetHeight);
-	}
+  for (let i = 0; i < files.length; i++) {
+    var docu = document.createElement("div");
+    docu.setAttribute("id", "document" + i);
+    docu.setAttribute("class", "doc");
+    var scroll = document.createElement("div");
+    scroll.setAttribute("id", "scroll" + i);
+    scroll.setAttribute("class", "scroll-bar");
+
+    docu.appendChild(files[i]);
+    docu.appendChild(scroll);
+    document.getElementById("docBar").appendChild(docu);
+    //files[i].setAttribute("data-height", files[i].lastElementChild.lastElementChild.offsetHeight);
+  }
 }
-
 
 async function getData() {
-	//html files
-	const rf = await fetch('/files');
-	const filesData = await rf.json();
+  //html files
+  const rf = await fetch("/files");
+  const filesData = await rf.json();
 
-	for (let index = 0; index < 4; index++) {
-		var element = document.createElement("div");
-		element.setAttribute("id", "file" + index);
-		element.setAttribute("class", "file");
-		console.log(filesData[index])
-		this.buildDOM(element, filesData[index]);
-		files[index] = element;
-	}
-	console.log(files)
+  for (let index = 0; index < 4; index++) {
+    var element = document.createElement("div");
+    element.setAttribute("id", "file" + index);
+    element.setAttribute("class", "file");
+    console.log(filesData[index]);
+    this.buildDOM(element, filesData[index]);
+    files[index] = element;
+  }
+  console.log(files);
 
-	for (let i = 0; i < files.length ; i++) {
-		var docu = document.createElement("div");
-		docu.setAttribute("id", "document" + i);
-		docu.setAttribute("class", "doc");
-		var scroll = document.createElement("div");
-		scroll.setAttribute("id", "scroll" + i);
-		scroll.setAttribute("class", "scroll-bar");
-		
-		docu.appendChild(files[i]);
-		docu.appendChild(scroll);
-		document.getElementById("docBar").appendChild(docu);
-		files[i].setAttribute("data-height", files[i].lastElementChild.lastElementChild.offsetHeight);
-	}
-}
+  for (let i = 0; i < files.length; i++) {
+    var docu = document.createElement("div");
+    docu.setAttribute("id", "document" + i);
+    docu.setAttribute("class", "doc");
+    var scroll = document.createElement("div");
+    scroll.setAttribute("id", "scroll" + i);
+    scroll.setAttribute("class", "scroll-bar");
+
+    docu.appendChild(files[i]);
+    docu.appendChild(scroll);
+    document.getElementById("docBar").appendChild(docu);
+    files[i].setAttribute(
+      "data-height",
+      files[i].lastElementChild.lastElementChild.offsetHeight
+    );
+  }
+
 
   for (let index = 0; index < 4; index++) {
     var element = document.createElement("div");
@@ -254,7 +253,7 @@ async function getData() {
     docu.appendChild(scroll);
     document.getElementById("docBar").appendChild(docu);
   }
-
+}
 
 function buildDOM(element, jsonObject) {
   // element is the parent element to add the children to
@@ -290,92 +289,100 @@ function getYcoords(elem) {
   let box = elem.getBoundingClientRect();
   return box.top;
 }
-  
-  
+
 //function: find all the matches of a given search term in the document and display them in the scrollzone
-//input: a search term 
-//output: all the matches of the seach term displayed in the scroll zone 
-//you might need to think about if we have multiple search terms, how we display the matches 
-function findAllMatches(searchTerm){
-	console.log(searchTerm)
-	//use the searchTerm to create a regular expression object: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-	if (searchTerm != " ") {
-		const reg = new RegExp(searchTerm, "ig");
-		console.log(reg)
-		var rgb = "("+ getRandomInt(255) + ", " + getRandomInt(255) + ", " + getRandomInt(255) + ")";
-		let scrollbarYCoord; 
-		var scrollbarZone;
-		//loop over every node in the DOM tree 
-		for (i = 0 ; i < files.length ; i++) {
-			scrollbarZone = document.getElementById("scroll" + i); 
-			const file = document.getElementById("file" + i);
-			file.querySelectorAll('*').forEach(function(node) {
-				if (reg.test(node.innerText)){
-					console.log("there is a match", i)
-					//var search = new RegExp("(\\b" + text + "\\b)", "gim");
-					
-					//get the y coordinate of the node relative to the scrollzone 
-					//I have a third function to covert coordinate even though I dont really use it...
-					//according to stack overflow and documentations, the coordiante is quite tricky 
-					
-					// const fileHeight = file.attributes[2].value;
-					// scrollbarYCoord = getYcoords(node)*260/fileHeight;
-					// //once get the y coordinate, we create a div called mark with the corresponding y position 
-					// let mark = document.createElement("div"); 
-					// mark.className = "mark"; 
-					// mark.style.position = "absolute"; 
-					// mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px"; 
-					// scrollbarZone.appendChild(mark);
+//input: a search term
+//output: all the matches of the seach term displayed in the scroll zone
+//you might need to think about if we have multiple search terms, how we display the matches
+function findAllMatches(searchTerm) {
+  console.log(searchTerm);
+  //use the searchTerm to create a regular expression object: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+  if (searchTerm != " ") {
+    const reg = new RegExp(searchTerm, "ig");
+    console.log(reg);
+    var rgb =
+      "(" +
+      getRandomInt(255) +
+      ", " +
+      getRandomInt(255) +
+      ", " +
+      getRandomInt(255) +
+      ")";
+    let scrollbarYCoord;
+    var scrollbarZone;
+    //loop over every node in the DOM tree
+    for (i = 0; i < files.length; i++) {
+      scrollbarZone = document.getElementById("scroll" + i);
+      const file = document.getElementById("file" + i);
+      file.querySelectorAll("*").forEach(function (node) {
+        if (reg.test(node.innerText)) {
+          console.log("there is a match", i);
+          //var search = new RegExp("(\\b" + text + "\\b)", "gim");
 
-					//highlight
-					const repl = "<span style='background-color:rgb"+ rgb +";'>" + searchTerm + "</span>";
+          //get the y coordinate of the node relative to the scrollzone
+          //I have a third function to covert coordinate even though I dont really use it...
+          //according to stack overflow and documentations, the coordiante is quite tricky
 
-					var newe = node.innerHTML.replace(reg, repl);
-					node.innerHTML = newe;
-				}
-			})
+          // const fileHeight = file.attributes[2].value;
+          // scrollbarYCoord = getYcoords(node)*260/fileHeight;
+          // //once get the y coordinate, we create a div called mark with the corresponding y position
+          // let mark = document.createElement("div");
+          // mark.className = "mark";
+          // mark.style.position = "absolute";
+          // mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px";
+          // scrollbarZone.appendChild(mark);
 
-			
+          //highlight
+          const repl =
+            "<span style='background-color:rgb" +
+            rgb +
+            ";'>" +
+            searchTerm +
+            "</span>";
 
+          var newe = node.innerHTML.replace(reg, repl);
+          node.innerHTML = newe;
+        }
+      });
 
-			// var content = $(file).text();
-			// var matches = content.match(reg);       
+      // var content = $(file).text();
+      // var matches = content.match(reg);
 
-			// if(matches) {
-			// $(file).html(content.replace(reg, function(match){
-			// 	return "<span class='highlight'>"+match+"</span>";
-			// }));
-			// }else {
-			// 	$('.highlight').removeClass('highlight');
-			// }
-		
-		}
+      // if(matches) {
+      // $(file).html(content.replace(reg, function(match){
+      // 	return "<span class='highlight'>"+match+"</span>";
+      // }));
+      // }else {
+      // 	$('.highlight').removeClass('highlight');
+      // }
+    }
 
-		// document.body.querySelectorAll('*').forEach(function(node) {
-		// 	//for each node when there is a match, 
-		// 	if (reg.test(node.innerHTML)){
-		// 		console.log("there is a match")
-		// 		//get the y coordinate of the node relative to the scrollzone 
-		// 		//I have a third function to covert coordinate even though I dont really use it...
-		// 		//according to stack overflow and documentations, the coordiante is quite tricky 
-		// 		scrollbarYCoord = Math.round(getYcoords(node) * 0.14); 
-		// 		console.log(scrollbarYCoord);
+    // document.body.querySelectorAll('*').forEach(function(node) {
+    // 	//for each node when there is a match,
+    // 	if (reg.test(node.innerHTML)){
+    // 		console.log("there is a match")
+    // 		//get the y coordinate of the node relative to the scrollzone
+    // 		//I have a third function to covert coordinate even though I dont really use it...
+    // 		//according to stack overflow and documentations, the coordiante is quite tricky
+    // 		scrollbarYCoord = Math.round(getYcoords(node) * 0.14);
+    // 		console.log(scrollbarYCoord);
 
-		// 		//once get the y coordinate, we create a div called mark with the corresponding y position 
-		// 		let mark = document.createElement("div"); 
-		// 		mark.className = "mark"; 
-		// 		mark.style.position = "absolute"; 
-		// 		mark.style.top = scrollbarYCoord; 
-		// 		scrollbarZone.appendChild(mark);
-		// 		console.log(mark);
-		// 	}
-		// });
-	}
-}
-  
-function getRandomInt(max) {
-	var r = Math.floor(Math.random() * max);
-	if (r <150) r= 150;
-	return r;
+    // 		//once get the y coordinate, we create a div called mark with the corresponding y position
+    // 		let mark = document.createElement("div");
+    // 		mark.className = "mark";
+    // 		mark.style.position = "absolute";
+    // 		mark.style.top = scrollbarYCoord;
+    // 		scrollbarZone.appendChild(mark);
+    // 		console.log(mark);
+    // 	}
+    // });
   }
-  
+}
+
+function getRandomInt(max) {
+  var r = Math.floor(Math.random() * max);
+  if (r < 150) {
+    r = 150;
+  }
+  return r;
+}

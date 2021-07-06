@@ -150,8 +150,9 @@ async function getData() {
       "mouseenter",
       function (event) {
         if (!clicked[newRef.getAttribute("id")]) {
-          newRef.style.top = event.clientY - 10 + "px"; //or whatever
-          newRef.style.left = event.clientX - 10 + "px"; // or whatever
+          newRef.style.top = event.pageY - 10 + "px"; //or whatever
+          newRef.style.left = event.pageX - 10 + "px"; // or whatever
+          console.log(event.clientX + "px" + " " + event.clientY + "px");
         } else {
           $("#" + newRef.getAttribute("id")).css({
             transform: "rotate(30deg)",

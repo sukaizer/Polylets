@@ -3,15 +3,12 @@ body {
   color: #333;
   font-weight: 400;
   /* display: flex; */
+  margin: 0 auto;
+  width: 1500px;
 }
 
 button {
   cursor: pointer;
-}
-
-.main {
-  margin: 0 auto;
-  width: 1500px;
 }
 
 .navigationBar {
