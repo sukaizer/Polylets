@@ -4,8 +4,9 @@ const open = require("open");
 const Datastore = require("nedb");
 
 const app = express();
+
+const pool = require("./queries");
 const fs = require("fs");
-const pool = require("./queries.js");
 
 //send back research results
 var searches = []

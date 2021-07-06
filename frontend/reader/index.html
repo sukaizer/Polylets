@@ -16,29 +16,28 @@
 
 
 <body>
-    <div class="navigationBar">
-        <a href="../viewer">Viewer</a>
-        <a href="../editor">Editor</a>
-        <a>Reader</a>
-        <a href="../table">Table</a>
-        <a href="../canvas">Canvas</a>
-        <a href="../searcher">Searcher</a>
+    <div class="main">
+        <div class="navigationBar">
+            <a href="../viewer">Viewer</a>
+            <a href="../editor">Editor</a>
+            <a>Reader</a>
+            <a href="../table">Table</a>
+            <a href="../canvas">Canvas</a>
+            <a href="../searcher">Searcher</a>
+        </div>
+        
+        <div>
+            <input class="button" id="myfiles" type="file" accept=".html">
+        </div>
+        
+        <div id="document" class="document"></div>
+        
+        <div id="referenceObjects"></div>
+        
+        <ul id="snaptarget" class="annotationBar"></ul>
     </div>
 
-    <div style="margin:0px 0px 0px 10px">
-        <h1>Document Reader</h1>
-        <input class="button" id="myfiles" type="file" accept=".html">
-    </div>
-
-    <div id="document" class="document"></div>
-
-    <div id="referenceObjects"></div>
-
-    <ul id="snaptarget" class="annotationBar"></ul>
-    <!-- <div id="snaptarget" class="annotationBar"></div> -->
-
-    <!-- <script src="script.js"></script> -->
-    <script src="script2.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

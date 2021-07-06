@@ -1,91 +1,260 @@
 body {
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    color: #333;
-    font-weight: 400;
-    /* display: flex; */
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  font-weight: 400;
+  /* display: flex; */
 }
 
 .navigationBar {
-padding: 5px;
-text-align: center;
+  padding: 5px;
+  text-align: center;
 }
 
 .navigationBar a {
-    font-weight: bold;
-    color: #2c3e50;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 .searchBar {
-    background-color: rgb(255, 255, 255);
-    width: 280px;
-    height: 850px;
-    margin: 10px 10px;
-    float: left;
-    font-size: 15px;
-    padding: 10px 20px 5px 5px;
-    border: 1px solid #d8d8d8;
-    border-radius: 10px;
-    border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  background-color: rgb(255, 255, 255);
+  width: 20%;
+  height: 1000px;
+  margin: 10px 10px;
+  float: left;
+  font-size: 15px;
+  padding: 10px 20px 5px 5px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: scroll;
 }
 
-
-.docBar{
-   
-    font-size:80%;
-    width: 65%;
-    height: 1000px;
-    margin: 10px 10px;
-    border: 1px solid #d8d8d8;
-    overflow-y: auto;  /* this makes the div scrollable  */
-    padding: 20px;
-    border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-    
-    position: relative;
-      
+.passagesBar {
+  background-color: rgb(255, 255, 255);
+  width: 18%;
+  height: 1000px;
+  margin: 10px 10px;
+  float: right;
+  font-size: 15px;
+  padding: 10px 20px 5px 5px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: scroll;
 }
 
+.docBar {
+  padding: 10px 20px 5px 5px;
+  font-size: 80%;
+  width: 50%;
+  height: 1000px;
+  margin: 10px 10px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid #d8d8d8;
+  overflow-y: auto; /* this makes the div scrollable  */
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 
-.doc {
-    display: inline-block;
+  position: relative;
 }
-
 
 .file {
-    float: left;
-    /* direction: rtl;
-
-    text-align:left; */
-    margin-top: 5px;
-    margin-bottom: 10px;
-    /* background-color: #f8f8f8; */
-    width: 90%;
-    height: 260px;
-    border: 1px solid #d8d8d8;
-    border-radius: 7px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-    background-color: white;
-    overflow-y: auto;
+  float: left;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  /* background-color: #f8f8f8; */
+  width: 90%;
+  height: 260px;
+  border: 1px solid #d8d8d8;
+  border-radius: 7px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  background-color: white;
+  overflow-y: auto;
 }
 
-.scroll-bar{
-    float: left;
-    border: 1px solid black;
-    width: 3%;
-    height: 260px;
-    margin-top: 5px;
-    margin-bottom: 10px;
+.scroll-bar {
+  float: left;
+  border: 1px solid black;
+  width: 3%;
+  height: 260px;
+  margin-top: 5px;
+  margin-bottom: 10px;
 }
 
 .mark {
-    border: 1px solid green;
-    height: 1px;
-    width: 10px;
+  border: 1px solid green;
+  height: 2px;
+  width: 10px;
 }
 
-
 span.highlight {
-    background-color: aqua;
-    color: red;
+  background-color: aqua;
+  color: red;
+  text-shadow: 0 1px 1px red;
+}
+
+button {
+  cursor: pointer;
+}
+
+.button {
+  /* border-radius: 15px;
+            background-color: #e80505;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 20px 20px;
+            cursor: pointer; */
+
+  background-color: rgb();
+  /* color: #ffffff; */
+  padding: 5px 10px;
+  margin: 5px 5px 10px 5px;
+  cursor: pointer;
+  border-radius: 15px;
+  border: 1px solid #999999;
+}
+
+.button:hover {
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+}
+
+.button:active {
+  background-color: rgb(88, 88, 88);
+  color: #ffffff;
+}
+
+.key-object {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  background-color: #f8f8f8;
+  width: 400px;
+  height: 300px;
+  border: 1px solid #d8d8d8;
+  border-radius: 7px;
+  box-shadow: rgb(0 0 0 / 30%) 0 1px 3px;
+  background-color: white;
+}
+
+.key-object textarea {
+  width: 80%;
+  height: 100px;
+  max-height: 40%;
+  max-width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+hr.rounded {
+  border-top: 8px solid #bbb;
+  border-radius: 5px;
+}
+
+.handle {
+  width: 100%;
+  height: 20px;
+  background-color: #d8d8d8;
+  cursor: grab;
+}
+
+.closebutton {
+  background-color: #d8d8d8;
+  float: right;
+  width: 18px;
+  height: 16px;
+  margin: 0 5px;
+  border: 0px;
+}
+
+.closebutton:hover {
+  color: red;
+}
+
+.input {
+  background-color: transparent;
+  border: none;
+}
+
+.input:focus {
+  border: none;
+  outline: none;
+}
+
+.quote {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  padding: 5px;
+  margin: 10px;
+  height: 110px;
+  border-radius: 8px;
+  overflow-y: auto; /* this makes the div scrollable  */
+  border: 1px solid grey;
+}
+
+.hide-button {
+  border: 0px;
+  padding: 3px;
+  background-color: white;
+}
+
+.field-title {
+  padding: 3px;
+}
+
+.edit-area {
+  display: flex;
+  margin: 10px;
+  height: 60px;
+  max-width: 170px;
+  max-height: 58px;
+  border: 1px solid grey;
+  padding: 0 5px 0 5px;
+  border-radius: 8px;
+  overflow-y: auto; /* this makes the div scrollable  */
+}
+.circle {
+  height: 75px;
+  width: 75px;
+  border-radius: 50%;
+}
+
+.passage {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  /* background-color: #f8f8f8; */
+  width: 200px;
+  height: 260px;
+  border: 1px solid #d8d8d8;
+  border-radius: 7px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  background-color: white;
+}
+
+.passage .draghandle {
+  width: 100%;
+  height: 18px;
+  background-color: #d8d8d8;
+  cursor: grab;
+}
+
+.draghandle-button {
+  background-color: #d8d8d8;
+  float: right;
+  width: 18px;
+  height: 16px;
+  margin: 0 5px;
+  border: 0px;
+  /* border-radius: 50%; */
+  /* border: 1px solid #999999; */
 }
