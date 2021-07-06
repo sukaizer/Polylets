@@ -1,5 +1,5 @@
 var files = [];
-getData();
+//getData();
 var i = 0;
 
 var createButton = $("#create");
@@ -102,22 +102,8 @@ function createPassage() {
   quoteA.setAttribute("class", "notes");
   quoteA.appendChild(document.createTextNode(string));
   quote.appendChild(quoteA);
-  $(".execSearch").on("click", () => {
-    var search = $("input")[0].value;
-    findAllMatches(search);
-    // var search2 = $("input")[1].value;
-    // findAllMatches(search2)
-    const keyword = {
-      sQuery: search,
-    };
-    sendToServer(keyword);
-    setTimeout(function () {
-      searchResponse();
-    }, 100);
-    setTimeout(function () {
-      findAllMatches(search);
-    }, 200);
-  });
+  
+  
 
   const annotationArea = document.createElement("div");
   annotationArea.setAttribute("class", "annotationArea");
@@ -151,11 +137,25 @@ function createPassage() {
   return passage;
 }
 
+
+
 $(".execSearch").on("click", () => {
-  const search = $("input")[0].value;
+  var search = $("input")[0].value;
   findAllMatches(search);
-  //sendToServer(search);
+  // var search2 = $("input")[1].value;
+  // findAllMatches(search2)
+  const keyword = {
+    sQuery: search,
+  };
+  sendToServer(keyword);
+  setTimeout(function () {
+    searchResponse();
+  }, 200);
+  setTimeout(function () {
+    findAllMatches(search);
+  }, 400);
 });
+
 
 //send data to server
 async function sendToServer(data) {
