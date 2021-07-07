@@ -4,6 +4,45 @@ var c = 0;
 //getData();
 var i = 0;
 
+var isOverPasButt = false;
+
+var pageX;
+var pageY;
+
+var upX;
+var upY;
+
+var selection = "";
+
+$(document).ready(function() {
+  $(document).trigger("click");
+  $(document).on("mousemove", function(e){
+    pageX = e.pageX;
+    pageY = e.pageY;
+  });
+  $(document).bind("selectionchange", function() {
+    selection = window.getSelection().toString();
+    console.log("selection", selection);
+  })
+  $(document).on("mouseup", function(e){
+    if(isOverPasButt == false) {
+      upX = e.pageX;
+      upY = e.pageY;
+    }
+    if (selection != "") {
+      console.log(upX, upY);
+      $("#createPassage").css({
+        'left': upX + 5,
+        'top' : upY + 10,
+      }).fadeIn(200);
+    } else {
+      $("#createPassage").fadeOut(200);
+    }
+  });
+});
+
+
+//new research
 var createButton = $("#create");
 
 createButton.on("click", () => {
@@ -34,15 +73,18 @@ createButton.on("click", () => {
   };
 
   textArea.placeholder = "enter search terms";
+  textArea.setAttribute("class", "search-area")
+
   keyObject.setAttribute("class", "key-object");
   
   handle.setAttribute("class", "handle");
   handle.style.backgroundColor = colours[c];
-  c += 1;
+  
   
   name.setAttribute("class", "input");
   name.placeholder = "type name";
   button.setAttribute("class", "closebutton");
+  button.style.backgroundColor = colours[c];
   separator.setAttribute("class", "rounded");
   keyObject.appendChild(handle);
   keyObject.appendChild(textArea);
@@ -53,12 +95,23 @@ createButton.on("click", () => {
     keyObject.remove();
   };
   $(".searchBar").append(keyObject);
+  c += 1;
 });
 
+var keywordButton = createButton.clone()
+
+//passage
 var positionButton = $("#createPassage");
 positionButton.on("click", () => {
   $(".passagesBar").append(createPassage());
 });
+positionButton.hover(
+  function() {
+    isOverPasButt = true;
+  }, function() {
+    isOverPasButt = false;
+  }
+)
 
 // create a passage object which will be added to the sidebar and sets the listeners
 function createPassage() {
@@ -150,7 +203,7 @@ $(".execSearch").on("click", () => {
   var matches = [];
   var submatches = [];
 
-  const tArea = document.getElementsByTagName("textarea");
+  const tArea = document.getElementsByClassName("search-area");
   var i = 0
   for (text of tArea) {
     submatches = [];
@@ -160,19 +213,25 @@ $(".execSearch").on("click", () => {
     // var search2 = $("input")[1].value;
     // findAllMatches(search2)
     for (item of search) {
-      const keyword = {
-        sQuery: item,
-      };
-      console.log(item);
-      submatches.push(item)
-      sendToServer(keyword);
+      if (item != "") {
+        const keyword = {
+          sQuery: item,
+        };
+        console.log(item);
+        submatches.push(item)
+        sendToServer(keyword);
+      }
     }
-    matches.push(submatches);
+    if (submatches.length != 0) {
+      matches.push(submatches);
+    }
   }
 
-  setTimeout(function () {
-    searchResponse();
-  }, 200);
+  if (matches.length != 0) {
+    setTimeout(function () {
+      searchResponse();
+    }, 200);
+  }
 
   
   setTimeout(function () {
@@ -183,37 +242,23 @@ $(".execSearch").on("click", () => {
     }
   }, 400);
   
+  setTimeout(function() {
+    $(".mark").hover(
+      function() {
+        $(".indicationMark").css({
+          'left': pageX + 5,
+          'top' : pageY - 20,
+          'background-color' : colours[$(this).data('color')],
+        }).fadeIn(150);
+        $(".indicationMark").text(tArea[$(this).data('color')].value);
+      }, function() {
+        $(".indicationMark").fadeOut(150);
+      }
+    )
+  }, 600);
+
 });
 
-// $(".execSearch").on("click", () => {
-//   $(".doc").remove();
-//   var matches = []
-//   var search = $("textarea")[0].value;
-//   search = search.split(/[\s,]+/);
-//   console.log("search", search);
-//   // var search2 = $("input")[1].value;
-//   // findAllMatches(search2)
-//   for (item of search) {
-//     const keyword = {
-//       sQuery: item,
-//     };
-//     console.log(item);
-//     matches.push(item)
-//     sendToServer(keyword);
-//   }
-
-//   setTimeout(function () {
-//     searchResponse();
-//   }, 200);
-
-//   var i = 0
-//   setTimeout(function () {
-//     for (item of matches) {
-//       findAllMatches(item, i);
-//       i += 1;
-//     }
-//   }, 400);
-// });
 
 
 //send data to server
@@ -230,6 +275,7 @@ async function sendToServer(data) {
   fetch("/srch", options);
 }
 
+//getting responses from database
 async function searchResponse() {
   const rs = await fetch("/srch");
   const sData = await rs.json();
@@ -259,84 +305,6 @@ async function searchResponse() {
   }
 }
 
-async function getData() {
-  //html files
-  const rf = await fetch("/files");
-  const filesData = await rf.json();
-
-  for (let index = 0; index < 4; index++) {
-    var element = document.createElement("div");
-    element.setAttribute("id", "file" + index);
-    element.setAttribute("class", "file");
-    this.buildDOM(element, filesData[index]);
-    files[index] = element;
-  }
-  console.log(files);
-
-  for (let i = 0; i < files.length; i++) {
-    var docu = document.createElement("div");
-    docu.setAttribute("id", "document" + i);
-    docu.setAttribute("class", "doc");
-    var scroll = document.createElement("div");
-    scroll.setAttribute("id", "scroll" + i);
-    scroll.setAttribute("class", "scroll-bar");
-
-    docu.appendChild(files[i]);
-    docu.appendChild(scroll);
-    document.getElementById("docBar").appendChild(docu);
-    files[i].setAttribute(
-      "data-height",
-      files[i].lastElementChild.lastElementChild.offsetHeight
-    );
-  }
-
-
-  for (let index = 0; index < 4; index++) {
-    var element = document.createElement("div");
-    element.setAttribute("id", "file" + index);
-    element.setAttribute("class", "file");
-    this.buildDOM(element, filesData[index]);
-    files[index] = element;
-  }
-
-  for (let i = 0; i < files.length; i++) {
-    var docu = document.createElement("div");
-    docu.setAttribute("id", "document" + i);
-    docu.setAttribute("class", "doc");
-    var scroll = document.createElement("div");
-    scroll.setAttribute("id", "scroll" + i);
-    scroll.setAttribute("class", "scroll-bar");
-    docu.appendChild(files[i]);
-    docu.appendChild(scroll);
-    document.getElementById("docBar").appendChild(docu);
-  }
-}
-
-function buildDOM(element, jsonObject) {
-  // element is the parent element to add the children to
-  if (typeof jsonObject == "string") {
-    jsonObject = JSON.parse(jsonObject);
-  }
-  if (Array.isArray(jsonObject)) {
-    for (var i = 0; i < jsonObject.length; i++) {
-      this.buildDOM(element, jsonObject[i]);
-    }
-  } else {
-    var e = document.createElement(jsonObject.tag);
-    for (var prop in jsonObject) {
-      if (prop != "tag") {
-        if (prop == "children" && Array.isArray(jsonObject[prop])) {
-          this.buildDOM(e, jsonObject[prop]);
-        } else if (prop == "html") {
-          e.innerHTML = jsonObject[prop];
-        } else {
-          e.setAttribute(prop, jsonObject[prop]);
-        }
-      }
-    }
-    element.appendChild(e);
-  }
-}
 
 /////////////
 
@@ -379,6 +347,7 @@ function findAllMatches(searchTerm, left) {
           //once get the y coordinate, we create a div called mark with the corresponding y position
           let mark = document.createElement("div");
           mark.className = "mark";
+          mark.setAttribute("data-color", left)
           mark.style.position = "absolute";
           mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px";
           mark.style.left = scrollbarZone.offsetLeft + 12*left + "px";
@@ -408,3 +377,5 @@ function getRandomInt(max) {
   }
   return r;
 }
+
+
