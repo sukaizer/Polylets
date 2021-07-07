@@ -1,5 +1,6 @@
 var files = [];
 const colours = ["lightblue", "thistle", "lightyellow", "magenta", "salmon", "cyan", "orange", "violet"]
+var c = 0;
 //getData();
 var i = 0;
 
@@ -34,7 +35,11 @@ createButton.on("click", () => {
 
   textArea.placeholder = "enter search terms";
   keyObject.setAttribute("class", "key-object");
+  
   handle.setAttribute("class", "handle");
+  handle.style.backgroundColor = colours[c];
+  c += 1;
+  
   name.setAttribute("class", "input");
   name.placeholder = "type name";
   button.setAttribute("class", "closebutton");
@@ -142,52 +147,72 @@ function createPassage() {
 
 $(".execSearch").on("click", () => {
   $(".doc").remove();
-  var matches = []
-  var search = $("textarea")[0].value;
-  search = search.split(/[\s,]+/);
-  console.log("search", search);
-  // var search2 = $("input")[1].value;
-  // findAllMatches(search2)
-  for (item of search) {
-    const keyword = {
-      sQuery: item,
-    };
-    console.log(item);
-    matches.push(item)
-    sendToServer(keyword);
+  var matches = [];
+  var submatches = [];
+
+  const tArea = document.getElementsByTagName("textarea");
+  var i = 0
+  for (text of tArea) {
+    submatches = [];
+    var search = text.value;
+    search = search.split(/[\s,]+/);
+    console.log("search", search);
+    // var search2 = $("input")[1].value;
+    // findAllMatches(search2)
+    for (item of search) {
+      const keyword = {
+        sQuery: item,
+      };
+      console.log(item);
+      submatches.push(item)
+      sendToServer(keyword);
+    }
+    matches.push(submatches);
   }
 
   setTimeout(function () {
     searchResponse();
   }, 200);
 
-  var i = 0
+  
   setTimeout(function () {
-    for (item of matches) {
-      findAllMatches(item, i);
-      i += 1;
+    for (i = 0 ; i < matches.length ; i++) {
+      for (j = 0 ; j < matches[i].length ; j++) {
+        findAllMatches(matches[i][j], i);
+      }
     }
   }, 400);
+  
 });
 
 // $(".execSearch").on("click", () => {
-//   $("textarea").each(function(index) {
-//     const search = $("textarea")[index].value;
-//     console.log(search);
-//     findAllMatches(search);
-//     // var search2 = $("input")[1].value;
-//     // findAllMatches(search2)
+//   $(".doc").remove();
+//   var matches = []
+//   var search = $("textarea")[0].value;
+//   search = search.split(/[\s,]+/);
+//   console.log("search", search);
+//   // var search2 = $("input")[1].value;
+//   // findAllMatches(search2)
+//   for (item of search) {
 //     const keyword = {
-//       sQuery: search,
+//       sQuery: item,
 //     };
+//     console.log(item);
+//     matches.push(item)
 //     sendToServer(keyword);
-//     setTimeout(function () {
-//       searchResponse();
-//     }, 200);
-//     setTimeout(function () {
-//       findAllMatches(search);
-//     }, 400);
-//   });
+//   }
+
+//   setTimeout(function () {
+//     searchResponse();
+//   }, 200);
+
+//   var i = 0
+//   setTimeout(function () {
+//     for (item of matches) {
+//       findAllMatches(item, i);
+//       i += 1;
+//     }
+//   }, 400);
 // });
 
 
@@ -331,19 +356,14 @@ function findAllMatches(searchTerm, left) {
   if (searchTerm != " ") {
     const reg = new RegExp(searchTerm, "ig");
     console.log(reg);
-    var rgb =
-      "(" +
-      getRandomInt(255) +
-      ", " +
-      getRandomInt(255) +
-      ", " +
-      getRandomInt(255) +
-      ")";
+    
     let scrollbarYCoord;
     var scrollbarZone;
     //loop over every node in the DOM tree
     for (i = 0; i < files.length; i++) {
       scrollbarZone = document.getElementById("scroll" + i);
+
+      scrollbarZone.style.width = (15*(left+1)) + "px";
       const file = document.getElementById("file" + i);
       file.querySelectorAll("*").forEach(function (node) {
         if (reg.test(node.innerText)) {
@@ -357,7 +377,6 @@ function findAllMatches(searchTerm, left) {
           const fileHeight = file.attributes[2].value;
           scrollbarYCoord = getYcoords(node)*262/fileHeight;
           //once get the y coordinate, we create a div called mark with the corresponding y position
-          scrollbarZone.style.width = (15*(left+1)) + "px";
           let mark = document.createElement("div");
           mark.className = "mark";
           mark.style.position = "absolute";
