@@ -286,7 +286,6 @@ async function sendToServer() {
 
 
 
-
 function buildDOM(element, jsonObject) { // element is the parent element to add the children to
     if (typeof jsonObject == "string") {
         jsonObject = JSON.parse(jsonObject);
@@ -339,7 +338,9 @@ function tableCoordinate() {
 function addRow() {
   $("tbody").append(document.createElement("tr"));
   for (i = 0 ; i < col ; i++) {
-    $("tr:last-child").append(document.createElement("td"));
+    const ntd = document.createElement("td");
+    ntd.append(document.createElement("textarea"))
+    $("tr:last-child").append(ntd);
   }
   const butt = document.createElement("button");
   butt.innerHTML = "X"
@@ -354,7 +355,9 @@ function addRow() {
 //add a new column
 function addCol() {
   $("tr").each(function() {
-    $(this).append(document.createElement("td"));
+    const ntd = document.createElement("td");
+    ntd.append(document.createElement("textarea"));
+    $(this).append(ntd);
   })
   const butt = document.createElement("button")
   butt.innerHTML = "X"
@@ -451,8 +454,9 @@ function dragAutoF(x, y) {
     isMouseDown = true;
     console.log("autoFstart");
     startCell = [parseInt(tis.getAttribute("data-col")), parseInt(tis.getAttribute("data-row"))]; //get the startCell 
-    doc = document.getElementById("docFolder" + tis.firstElementChild.getAttribute("data-fileid"));
+    doc = document.getElementById("docFolder" + tis.lastElementChild.getAttribute("data-fileid"));
   }
+  
   tis.style.backgroundColor= "#E8E8E8";
 }
 
@@ -476,7 +480,7 @@ function dropAutoF(x, y) {
 
 //it should also have a fillDirection parameter (up, down, left, right)
 function autoFill(doc, startPosition, offset){
-
+  console.log("doc", doc)
   if (doc.childNodes.length > 1) {
     //get the rest of the passages, starting from the start passage 
     let restOfPassages = []; 
@@ -506,7 +510,6 @@ function autoFill(doc, startPosition, offset){
       console.log("curr")
       console.log(currentCell);
       //replace the text 
-      currentCell.innerHTML = ''; 
       currentCell.append(restOfPassages[j]);
       console.log(restOfPassages[j]);
       
@@ -524,6 +527,11 @@ $(".tbl tr:nth-child(1) td").each(function(index) {
   buttCol.setAttribute("onclick", "deleteCol("+index+")");
   $(".document").prepend(buttCol);
   $(".tbl colgroup").append(document.createElement("col"))
+})
+
+
+$("td").each(function() {
+  $(this).append(document.createElement("textarea"));
 })
 
 

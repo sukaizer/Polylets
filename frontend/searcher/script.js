@@ -13,6 +13,7 @@ var upX;
 var upY;
 
 var selection = "";
+$("#createPassage").fadeOut(0);
 
 $(document).ready(function() {
   $(document).trigger("click");
@@ -76,6 +77,7 @@ createButton.on("click", () => {
   textArea.setAttribute("class", "search-area")
 
   keyObject.setAttribute("class", "key-object");
+  keyObject.setAttribute("data-color", c)
   
   handle.setAttribute("class", "handle");
   handle.style.backgroundColor = colours[c];
@@ -93,6 +95,7 @@ createButton.on("click", () => {
   if (string != "") textArea.value = string;
   button.onclick = () => {
     keyObject.remove();
+    colours.splice(keyObject.attributes[1], 1)
   };
   $(".searchBar").append(keyObject);
   c += 1;
@@ -334,7 +337,7 @@ function findAllMatches(searchTerm, left) {
       scrollbarZone.style.width = (15*(left+1)) + "px";
       const file = document.getElementById("file" + i);
       file.querySelectorAll("*").forEach(function (node) {
-        if (reg.test(node.innerText)) {
+        if (reg.test(node.innerText) && node.name != "strong") {
           console.log("there is a match", i);
           //var search = new RegExp("(\\b" + text + "\\b)", "gim");
 
