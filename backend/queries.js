@@ -1,10 +1,10 @@
-const Pool = require('pg').Pool
+const Pool = require("pg").Pool;
 
 const pool = new Pool({
-  user: "raphael",
+  user: "me",
   host: "localhost",
   database: "search",
-  password: "raphael",
+  password: "password",
   port: 5432,
 });
 
@@ -40,17 +40,20 @@ const addText = (request, response) => {
     };
 };
 
-
 const searchRank = (request, response) => {
   console.log("1");
   const { s } = request.body;
   console.log(s);
-  pool.query("SELECT * FROM files WHERE MATCH (text) AGAINST ($1) ORDER BY RANK desc\G"), [s], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    response.status(200).json(results.rows);
-  };
+  pool.query(
+    "SELECT * FROM files WHERE MATCH (text) AGAINST ($1) ORDER BY RANK descG"
+  ),
+    [s],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    };
 };
 
 // const updateUser = (request, response) => {

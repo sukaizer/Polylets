@@ -152,7 +152,12 @@ button {
   padding: 10px 30px;
 }
 
+.switch {
+  float: right;
+}
+
 .button-bar {
+  float: left;
   border: 1px solid #0066cc;
   background-color: #0099cc;
   color: #ffffff;
