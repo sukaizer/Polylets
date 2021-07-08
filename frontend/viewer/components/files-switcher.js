@@ -35,8 +35,8 @@ app.component("files-switcher", {
         setTimeout(() => {
           this.filesArray.push(document.getElementById("content").innerHTML);
           this.names.push(file.name);
-          this.sendToServer(document.getElementById("content").innerHTML);
           this.fileId = this.nbFiles;
+          this.sendToServer(document.getElementById("content").innerHTML);
           this.$emit("current-file", this.fileId);
           this.nbFiles++;
         }, 100);
@@ -48,17 +48,18 @@ app.component("files-switcher", {
     },
 
     onAction(index) {
-      console.log(this.fileId);
-      console.log(this.nbFiles);
       document.getElementById("content").innerHTML = this.filesArray[index];
       this.fileId = index;
       this.$emit("current-file", index);
+      console.log("current file : " + this.fileId);
+      console.log("number of files : " + this.nbFiles);
     },
 
     async sendToServer() {
       let fileObj = {
         file: this.toJSON(document.getElementById("content")),
         fileName: this.names[this.fileId],
+        index: this.fileId,
       };
       const delay = (ms) => new Promise((res) => setTimeout(res, ms));
       const options = {

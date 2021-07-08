@@ -142,6 +142,8 @@ const app = Vue.createApp({
         yPosition: selecObj.yPosition,
       };
 
+      console.log(note);
+
       if (string != "") {
         this.notes.push(note);
         this.index++;

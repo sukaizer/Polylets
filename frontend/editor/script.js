@@ -547,21 +547,17 @@ function iterId() {
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
+  console.log(filesData);
+  filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
+  console.log(filesData);
   for (let index = 0; index < filesData.length; index++) {
+    console.log(index + " " + filesData[index].fileName);
+    console.log(filesData[index]);
     var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
   }
 
-  // for (let i = 0; i < nbFile; i++) {
-  //     const container = document.createElement('div');
-  //     document.getElementById("annotations").append(container);
-  //     const doc = document.createElement('p');
-  //     doc.appendChild(document.createTextNode("Document " + (i + 1)));
-  //     doc.setAttribute("class", "docName");
-  //     container.append(doc);
-  //     passagesDiv[i] = container;
-  // }
   const res = await fetch("/notes");
   const data = await res.json();
   var i = 100;
@@ -576,7 +572,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   var myWindow = window.open("", "", "");
   var element = document.createElement("div");
   element.setAttribute("id", "document");
-  element.appendChild(files[id - 1]);
+  element.appendChild(files[id]);
   myWindow.document.write(element.innerHTML);
 
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
