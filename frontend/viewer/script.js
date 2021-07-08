@@ -1,5 +1,22 @@
 const mountedApp = app.mount("#app");
 
+// var recupererFichiers = function () {
+//   file = document.getElementById("myfiles").files[0];
+//   if (file) {
+//     var reader = new FileReader();
+//     reader.readAsText(file, "UTF-8");
+//     reader.onload = function (evt) {
+//       document.getElementById("content").innerHTML = evt.target.result;
+//       getData();
+//     };
+//     reader.onerror = function (evt) {
+//       document.getElementById("content").innerHTML = "error reading file";
+//     };
+//   }
+// };
+
+// document.querySelector("#myfiles").onchange = recupererFichiers;
+
 let windowId = "demo";
 
 function getNumber() {

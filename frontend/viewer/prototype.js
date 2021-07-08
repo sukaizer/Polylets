@@ -207,17 +207,22 @@ const app = Vue.createApp({
       let doc = document.getElementById("content");
       let selectionPosition = doc.scrollTop;
 
-      return {
+      let selec = {
         startIndex: startIndex,
         endIndex: endIndex,
         startOffset: range.startOffset,
         endOffset: range.endOffset,
         yPosition: selectionPosition,
       };
+      console.log(" selection : " );
+      console.log(selec);
+
+      return selec;
     },
 
     //reselect the passage
     reselect(note) {
+      console.log(note);
       //scroll to the position
       document.getElementById("content").scrollTo(0, note.yPosition);
 

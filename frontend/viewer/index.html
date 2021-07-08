@@ -27,12 +27,12 @@
             <div id="app">
                 <!-- basic buttons for switching documents -->
                 <div>
-                    <files-switcher class="button-bar" ref="files" @current-file="setFile"></files-switcher>
+                    <files-switcher ref="files" @current-file="setFile"></files-switcher>
                 </div>
                 <div class="big-container">
                     <div id="content" class="document" @mouseover="setDisable"></div>
                     <div id="container" class="annotationBar">
-                        <button class="button" :disabled="isDisabled" @click="addAnnotation() ; $refs.files.updateFile()">NOTE</button>
+                        <button class="button" :disabled="isDisabled" @click="addAnnotation()">NOTE</button>
                         <template v-if="this.notes.length > 0">
                             <button class="button" @click="sendToServer">SAVE</button>
                         </template>

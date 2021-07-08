@@ -1,111 +1,184 @@
-app.component('files-switcher', {
+app.component("files-switcher", {
+  emits: ["current-file"],
 
-    emits: ["current-file"],
-    
-    data() {
-        return {
-            file1: Element,
-            file2: Element,
-            file3: Element,
-            file4: Element,
-            fileId: 0
-        }
+  data() {
+    return {
+      filesArray: [],
+      names: [],
+      fileId: 0,
+      nbFiles: 0,
+    };
+  },
+
+  /*html*/
+  template: `
+         <div>
+              <input class="button switch" id="myfiles" type="file" accept=".html" @change="uploadFile">
+            <div v-for="(n, i) in nbFiles">
+                <button class="button-bar" @click="onAction(i)"> {{names[i]}} </button>
+            </div>
+        </div>
+
+                `,
+  methods: {
+    async uploadFile() {
+      file = document.getElementById("myfiles").files[0];
+      for (const i of this.names) {
+        if (file.name == i) break;
+      }
+      if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (evt) {
+          document.getElementById("content").innerHTML = evt.target.result;
+        };
+        setTimeout(() => {
+          this.filesArray.push(document.getElementById("content").innerHTML);
+          this.names.push(file.name);
+          this.sendToServer(document.getElementById("content").innerHTML);
+          this.fileId = this.nbFiles;
+          this.$emit("current-file", this.fileId);
+          this.nbFiles++;
+        }, 100);
+
+        reader.onerror = function (evt) {
+          document.getElementById("content").innerHTML = "error reading file";
+        };
+      }
     },
 
-    mounted() {
-        this.getData(0);
-        this.getData(1);
-        this.getData(2);
-        this.getData(3);
+    onAction(index) {
+      console.log(this.fileId);
+      console.log(this.nbFiles);
+      document.getElementById("content").innerHTML = this.filesArray[index];
+      this.fileId = index;
+      this.$emit("current-file", index);
     },
 
-
-    /*html*/
-    template: `
-        <button class="button-bar" id="b1" @click="onAction(1)" @click="emitter(1)"> FILE 1 </button>
-        <button class="button-bar" id="b2" @click="onAction(2)" @click="emitter(2)"> FILE 2 </button>
-        <button class="button-bar" id="b3" @click="onAction(3)" @click="emitter(3)"> FILE 3 </button>
-        <button class="button-bar" id="b4" @click="onAction(4)" @click="emitter(4)"> FILE 4 </button>
-    `,
-    methods: {
-        onAction(index) {
-            switch (index) {
-                case 1: document.getElementById("content").innerHTML = file1;
-                    fileId = 1;
-                    break;
-                case 2: document.getElementById("content").innerHTML = file2;
-                    fileId = 2;
-                    break;
-                case 3: document.getElementById("content").innerHTML = file3;
-                    fileId = 3;
-                    break;
-                case 4: document.getElementById("content").innerHTML = file4;
-                    fileId = 4;
-                    break;
-            }
+    async sendToServer() {
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(this.toJSON(document.getElementById("content"))),
+      };
 
-        async getData(index) {
-            const rs = await fetch('/files');
-            const data = await rs.json();
-            const element = document.createElement("div");
-            this.buildDOM(element, data[index]);
-            switch (index) {
-                case 0: file1 = element.innerHTML;
-                    break;
-                case 1: file2 = element.innerHTML;
-                    break;
-                case 2: file3 = element.innerHTML;
-                    break;
-                case 3: file4 = element.innerHTML;
-                    break;
-            }
-        },
+      fetch("/files", options);
+    },
 
-        emitter(index) {
-            this.$emit('current-file', index);
-        },
-
-        buildDOM(element, jsonObject) { // element is the parent element to add the children to
-            if (typeof jsonObject == "string") {
-                jsonObject = JSON.parse(jsonObject);
-            }
-            if (Array.isArray(jsonObject)) {
-                for (var i = 0; i < jsonObject.length; i++) {
-                    this.buildDOM(element, jsonObject[i]);
-                }
-            }
-            else {
-                var e = document.createElement(jsonObject.tag);
-                for (var prop in jsonObject) {
-                    if (prop != "tag") {
-                        if (prop == "children" && Array.isArray(jsonObject[prop])) {
-                            this.buildDOM(e, jsonObject[prop]);
-                        }
-                        else if (prop == "html") {
-                            e.innerHTML = jsonObject[prop];
-                        }
-                        else {
-                            e.setAttribute(prop, jsonObject[prop]);
-                        }
-                    }
-                }
-                element.appendChild(e);
-            }
-        },
-
-        updateFile() {
-            switch (fileId) {
-                case 1: file1 = document.getElementById("content").innerHTML;
-                    break;
-                case 2: file2 = document.getElementById("content").innerHTML;
-                    break;
-                case 3: file3 = document.getElementById("content").innerHTML;
-                    break;
-                case 4: file4 = document.getElementById("content").innerHTML;
-                    break;
-            }
+    toJSON(node) {
+      let propFix = { for: "htmlFor", class: "className" };
+      let specialGetters = {
+        style: (node) => node.style.cssText,
+      };
+      let attrDefaultValues = { style: "" };
+      let obj = {
+        nodeType: node.nodeType,
+      };
+      if (node.tagName) {
+        obj.tagName = node.tagName.toLowerCase();
+      } else if (node.nodeName) {
+        obj.nodeName = node.nodeName;
+      }
+      if (node.nodeValue) {
+        obj.nodeValue = node.nodeValue;
+      }
+      let attrs = node.attributes;
+      if (attrs) {
+        let defaultValues = new Map();
+        for (let i = 0; i < attrs.length; i++) {
+          let name = attrs[i].nodeName;
+          defaultValues.set(name, attrDefaultValues[name]);
         }
-    }
+        // Add some special cases that might not be included by enumerating
+        // attributes above. Note: this list is probably not exhaustive.
+        switch (obj.tagName) {
+          case "input": {
+            if (node.type === "checkbox" || node.type === "radio") {
+              defaultValues.set("checked", false);
+            } else if (node.type !== "file") {
+              // Don't store the value for a file input.
+              defaultValues.set("value", "");
+            }
+            break;
+          }
+          case "option": {
+            defaultValues.set("selected", false);
+            break;
+          }
+          case "textarea": {
+            defaultValues.set("value", "");
+            break;
+          }
+        }
+        let arr = [];
+        for (let [name, defaultValue] of defaultValues) {
+          let propName = propFix[name] || name;
+          let specialGetter = specialGetters[propName];
+          let value = specialGetter ? specialGetter(node) : node[propName];
+          if (value !== defaultValue) {
+            arr.push([name, value]);
+          }
+        }
+        if (arr.length) {
+          obj.attributes = arr;
+        }
+      }
+      let childNodes = node.childNodes;
+      // Don't process children for a textarea since we used `value` above.
+      if (obj.tagName !== "textarea" && childNodes && childNodes.length) {
+        let arr = (obj.childNodes = []);
+        for (let i = 0; i < childNodes.length; i++) {
+          arr[i] = this.toJSON(childNodes[i]);
+        }
+      }
+      return obj;
+    },
 
-})
+    toDOM(input) {
+      let obj = typeof input === "string" ? JSON.parse(input) : input;
+      let propFix = { for: "htmlFor", class: "className" };
+      let node;
+      let nodeType = obj.nodeType;
+      switch (nodeType) {
+        // ELEMENT_NODE
+        case 1: {
+          node = document.createElement(obj.tagName);
+          if (obj.attributes) {
+            for (let [attrName, value] of obj.attributes) {
+              let propName = propFix[attrName] || attrName;
+              // Note: this will throw if setting the value of an input[type=file]
+              node[propName] = value;
+            }
+          }
+          break;
+        }
+        // TEXT_NODE
+        case 3: {
+          return document.createTextNode(obj.nodeValue);
+        }
+        // COMMENT_NODE
+        case 8: {
+          return document.createComment(obj.nodeValue);
+        }
+        // DOCUMENT_FRAGMENT_NODE
+        case 11: {
+          node = document.createDocumentFragment();
+          break;
+        }
+        default: {
+          // Default to an empty fragment node.
+          return document.createDocumentFragment();
+        }
+      }
+      if (obj.childNodes && obj.childNodes.length) {
+        for (let childNode of obj.childNodes) {
+          node.appendChild(this.toDOM(childNode));
+        }
+      }
+      return node;
+    },
+  },
+});
