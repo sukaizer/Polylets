@@ -56,13 +56,17 @@ app.component("files-switcher", {
     },
 
     async sendToServer() {
+      let fileObj = {
+        file: this.toJSON(document.getElementById("content")),
+        fileName: this.names[this.fileId],
+      };
       const delay = (ms) => new Promise((res) => setTimeout(res, ms));
       const options = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.toJSON(document.getElementById("content"))),
+        body: JSON.stringify(fileObj),
       };
 
       fetch("/files", options);

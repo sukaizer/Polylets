@@ -202,7 +202,7 @@ async function getData() {
   const filesData = await rf.json();
 
   for (let index = 0; index < filesData.length; index++) {
-    var element = toDOM(filesData[index]);
+    var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
   }

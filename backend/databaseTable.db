@@ -1,9 +1,2 @@
-<<<<<<< Updated upstream
-{"id":"tableId1","docId":"1","fileId":"321","startOffset":"0","endOffset":"9","startIndex":"14","endIndex":"element draggable","row":"1","col":"1","_id":"5faz16RKB91KkyNQ"}
-=======
-{"id":"tableId3","docId":"2","fileId":"81","startOffset":"103","endOffset":"17","startIndex":"17","endIndex":"element draggable","row":"1","col":"2","_id":"LNYArP6Mt2b0UJZG"}
-{"id":"tableId5","docId":"5","fileId":"68","startOffset":"73","endOffset":"5","startIndex":"5","endIndex":"element draggable","row":"2","col":"3","_id":"Mvju3SFM10oMzH1g"}
-{"id":"tableId4","docId":"0","fileId":"37","startOffset":"201","endOffset":"11","startIndex":"11","endIndex":"element draggable","row":"3","col":"2","_id":"N7omJQHIjS1hpyAB"}
-{"id":"tableId2","docId":"1","fileId":"78","startOffset":"85","endOffset":"12","startIndex":"12","endIndex":"element draggable","row":"2","col":"1","_id":"hbZH8x1aOVjqKta7"}
-{"id":"tableId1","docId":"3","fileId":"0","startOffset":"71","endOffset":"14","startIndex":"14","endIndex":"element draggable","row":"1","col":"1","_id":"wvGKK4VcEmxwUBkv"}
->>>>>>> Stashed changes
+{"id":"tableId2","docId":"1","fileId":"491","startOffset":"85","endOffset":"11","startIndex":"13","endIndex":"element draggable","row":"1","col":"2","_id":"fY7KdNEmLtIjy0Jb"}
+{"id":"tableId1","docId":"0","fileId":"505","startOffset":"12","endOffset":"8","startIndex":"10","endIndex":"element draggable","row":"1","col":"1","_id":"p5tGceQlshKCmQfb"}

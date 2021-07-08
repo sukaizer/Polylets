@@ -421,7 +421,7 @@ async function zipFile() {
   for (item of dataNotes) {
     const id = `${item.fileId}`;
 
-    const element = toDOM(datahtml[id - 1]);
+    const element = toDOM(datahtml[id].file);
 
     console.log("fileId");
     console.log(element);
@@ -548,7 +548,7 @@ async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
   for (let index = 0; index < filesData.length; index++) {
-    var element = toDOM(filesData[index]);
+    var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
   }
