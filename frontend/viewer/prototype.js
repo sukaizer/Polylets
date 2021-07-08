@@ -4,7 +4,6 @@ const app = Vue.createApp({
       // this is an array of all note js objects
       notes: [],
       index: 0,
-      isDisabled: true,
       currentFile: 0,
       savedProperty: "",
       lastDragged: 0,
@@ -214,7 +213,7 @@ const app = Vue.createApp({
         endOffset: range.endOffset,
         yPosition: selectionPosition,
       };
-      console.log(" selection : " );
+      console.log(" selection : ");
       console.log(selec);
 
       return selec;
@@ -287,13 +286,6 @@ const app = Vue.createApp({
       this.savedProperty = "Saved !";
       await delay(1000);
       this.savedProperty = "";
-    },
-
-    // disable or activate the save button
-    setDisable() {
-      const selection = window.getSelection();
-      const string = selection.toString();
-      this.isDisabled = string == "";
     },
 
     //edits the annotation in the array
