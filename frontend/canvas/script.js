@@ -153,40 +153,57 @@ $("#save-button").click(function () {
   zipFile();
 });
 
-function buildDOM(element, jsonObject) {
-  // element is the parent element to add the children to
-  if (typeof jsonObject == "string") {
-    jsonObject = JSON.parse(jsonObject);
-  }
-  if (Array.isArray(jsonObject)) {
-    for (var i = 0; i < jsonObject.length; i++) {
-      this.buildDOM(element, jsonObject[i]);
-    }
-  } else {
-    var e = document.createElement(jsonObject.tag);
-    for (var prop in jsonObject) {
-      if (prop != "tag") {
-        if (prop == "children" && Array.isArray(jsonObject[prop])) {
-          this.buildDOM(e, jsonObject[prop]);
-        } else if (prop == "html") {
-          e.innerHTML = jsonObject[prop];
-        } else {
-          e.setAttribute(prop, jsonObject[prop]);
+function toDOM(input) {
+  let obj = typeof input === "string" ? JSON.parse(input) : input;
+  let propFix = { for: "htmlFor", class: "className" };
+  let node;
+  let nodeType = obj.nodeType;
+  switch (nodeType) {
+    // ELEMENT_NODE
+    case 1: {
+      node = document.createElement(obj.tagName);
+      if (obj.attributes) {
+        for (let [attrName, value] of obj.attributes) {
+          let propName = propFix[attrName] || attrName;
+          // Note: this will throw if setting the value of an input[type=file]
+          node[propName] = value;
         }
       }
+      break;
     }
-    element.appendChild(e);
+    // TEXT_NODE
+    case 3: {
+      return document.createTextNode(obj.nodeValue);
+    }
+    // COMMENT_NODE
+    case 8: {
+      return document.createComment(obj.nodeValue);
+    }
+    // DOCUMENT_FRAGMENT_NODE
+    case 11: {
+      node = document.createDocumentFragment();
+      break;
+    }
+    default: {
+      // Default to an empty fragment node.
+      return document.createDocumentFragment();
+    }
   }
+  if (obj.childNodes && obj.childNodes.length) {
+    for (let childNode of obj.childNodes) {
+      node.appendChild(this.toDOM(childNode));
+    }
+  }
+  return node;
 }
 
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
 
-  for (let index = 0; index < 4; index++) {
-    var element = document.createElement("div");
+  for (let index = 0; index < filesData.length; index++) {
+    var element = toDOM(filesData[index]);
     element.setAttribute("id", "document");
-    this.buildDOM(element, filesData[index]);
     files[index] = element;
   }
 
@@ -213,7 +230,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   var myWindow = window.open("", "", "");
   var element = document.createElement("div");
   element.setAttribute("id", "document");
-  element.appendChild(files[id - 1]);
+  element.appendChild(files[id]);
   myWindow.document.write(element.innerHTML);
 
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);

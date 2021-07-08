@@ -32,7 +32,7 @@
                 <div class="big-container">
                     <div id="content" class="document" @mouseover="setDisable"></div>
                     <div id="container" class="annotationBar">
-                        <button class="button" :disabled="isDisabled" @click="addAnnotation()">NOTE</button>
+                        <button id="createPassage" class="button" @click="addAnnotation()">Pass-It</button>
                         <template v-if="this.notes.length > 0">
                             <button class="button" @click="sendToServer">SAVE</button>
                         </template>

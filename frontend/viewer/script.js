@@ -1,21 +1,51 @@
 const mountedApp = app.mount("#app");
 
-// var recupererFichiers = function () {
-//   file = document.getElementById("myfiles").files[0];
-//   if (file) {
-//     var reader = new FileReader();
-//     reader.readAsText(file, "UTF-8");
-//     reader.onload = function (evt) {
-//       document.getElementById("content").innerHTML = evt.target.result;
-//       getData();
-//     };
-//     reader.onerror = function (evt) {
-//       document.getElementById("content").innerHTML = "error reading file";
-//     };
-//   }
-// };
+var isOverPasButt = false;
 
-// document.querySelector("#myfiles").onchange = recupererFichiers;
+var pageX;
+var pageY;
+
+var selection = "";
+$("#createPassage").fadeOut(0);
+$("#createPassage").css("position", "absolute");
+
+$(document).ready(function () {
+  $("#content").trigger("click");
+  $(document).on("mousemove", function (e) {
+    pageX = e.pageX;
+    pageY = e.pageY;
+  });
+  $(document).bind("selectionchange", function () {
+    selection = window.getSelection().toString();
+    console.log("selection", selection);
+  });
+  $(document).on("mouseup", function (e) {
+    if (isOverPasButt == false) {
+      upX = e.pageX;
+      upY = e.pageY;
+    }
+    if (selection != "") {
+      console.log(upX, upY);
+      $("#createPassage")
+        .css({
+          left: upX + 5,
+          top: upY + 10,
+        })
+        .fadeIn(200);
+    } else {
+      $("#createPassage").fadeOut(200);
+    }
+  });
+});
+
+$("#createPassage").hover(
+  function () {
+    isOverPasButt = true;
+  },
+  function () {
+    isOverPasButt = false;
+  }
+);
 
 let windowId = "demo";
 
