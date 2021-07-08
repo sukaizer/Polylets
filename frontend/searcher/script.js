@@ -14,6 +14,7 @@ var upY;
 
 var selection = "";
 $("#createPassage").fadeOut(0);
+$(".indicationMark").fadeOut(0);
 
 $(document).ready(function() {
   $(document).trigger("click");
@@ -101,7 +102,6 @@ createButton.on("click", () => {
   c += 1;
 });
 
-var keywordButton = createButton.clone()
 
 //passage
 var positionButton = $("#createPassage");
