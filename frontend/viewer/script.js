@@ -2,19 +2,12 @@ const mountedApp = app.mount("#app");
 
 var isOverPasButt = false;
 
-var pageX;
-var pageY;
-
 var selection = "";
 $("#createPassage").fadeOut(0);
 $("#createPassage").css("position", "absolute");
 
 $(document).ready(function () {
   $("#content").trigger("click");
-  $(document).on("mousemove", function (e) {
-    pageX = e.pageX;
-    pageY = e.pageY;
-  });
   $(document).bind("selectionchange", function () {
     selection = window.getSelection().toString();
     console.log("selection", selection);

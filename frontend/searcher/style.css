@@ -259,11 +259,10 @@ hr.rounded {
   /* border: 1px solid #999999; */
 }
 
-
 .indicationMark {
   position: absolute;
   font-size: small;
-  box-shadow: 0px 0px 4px rgba(0,0,0,.5);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
   border: solid 1px #000;
   border-radius: 5px;
   padding: 3px;
@@ -271,4 +270,17 @@ hr.rounded {
 
 .createPassage {
   position: absolute;
+}
+
+.button-bar {
+  border: 1px solid #0066cc;
+  background-color: #0099cc;
+  color: #ffffff;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 5px 10px 5px;
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 16px;
 }
