@@ -123,7 +123,18 @@ const app = Vue.createApp({
       return node;
     },
 
-    addAnnotation() {
+    async addAnnotation() {
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+      const scroll = async () => {
+        await delay(20);
+        $("#container").scrollTop($("#container")[0].scrollHeight);
+        $("#pass" + this.index).css({ transform: "scale(1.5)" });
+        $("#pass" + this.index).css({ transition: "transform .8s" });
+        await delay(200);
+        $("#pass" + this.index).css({ transform: "scale(1)" });
+        $("#pass" + this.index).css({ transition: "transform .8s" });
+        this.index++;
+      };
       const selection = window.getSelection();
       const string = selection.toString();
 
@@ -146,7 +157,7 @@ const app = Vue.createApp({
 
       if (string != "") {
         this.notes.push(note);
-        this.index++;
+        scroll();
       }
 
       for (let i = 0; i < this.notes.length; i++) {
