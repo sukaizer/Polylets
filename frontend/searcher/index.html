@@ -13,7 +13,7 @@
 
 <body>
 
-    <div class="navigationBar">
+    <div class="navigationBar" style="user-select: none;">
         <a href="../viewer">Viewer</a>
         <a href="../editor">Editor</a>
         <a href="../reader">Reader</a>
@@ -22,13 +22,16 @@
         <a>Searcher</a>
     </div>
     <div id="container">
-        <div id="passagesContainer" class="passagesBar dropzone">
+        <div id="passagesContainer" class="passagesBar dropzone" style="user-select: none;">
         </div>
         
-        <div class="searchBar">
-            <button class="execSearch button">Search</button>
+        <div class="searchBar" style="user-select: none;">
+            <button class="execSearch button-bar">Global Search</button>
+            <button class="execSearch button-bar">ACM</button>
+            <button class="execSearch button-bar">IEEE</button>
             <br>
-            <button id="create" class="button">create</button>
+            <br>
+            <button id="create" class="button">Create</button>
             
 
         </div>
@@ -37,7 +40,7 @@
         </div>
         <div class="indicationMark"></div>
 
-        <button id="createPassage" class="button createPassage">passage</button>
+        <button id="createPassage" class="button createPassage" style="user-select: none;">passage</button>
     </div>
 
     <script src="script.js"></script>

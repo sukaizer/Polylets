@@ -151,8 +151,8 @@ function createPassage(data) {
       green.style.visibility = "visible";
       blue.style.visibility = "visible";
       red.style.visibility = "visible";
-      cont.style.top = event.clientY - 40 + "px";
-      cont.style.left = event.clientX - 40 + "px";
+      cont.style.top = event.pageY + 30 + "px";
+      cont.style.left = event.pageX - 30 + "px";
     }
     event.stopPropagation();
   };
@@ -183,8 +183,8 @@ function createPassage(data) {
   const green = document.createElement("button");
   green.setAttribute("class", "tag-green");
   green.style.position = "absolute";
-  green.style.left = cont.offsetLeft + 19 + "px";
-  green.style.top = cont.offsetTop - 75 + "px";
+  green.style.left = cont.style.left + 19 + "px";
+  green.style.top = cont.style.top - 75 + "px";
   green.style.width = 22 + "px";
   green.style.height = 22 + "px";
   green.onclick = () => {
@@ -202,8 +202,8 @@ function createPassage(data) {
   const blue = document.createElement("button");
   blue.setAttribute("class", "tag-blue");
   blue.style.position = "absolute";
-  blue.style.left = cont.offsetLeft - 5 + "px";
-  blue.style.top = cont.offsetTop - 38 + "px";
+  blue.style.left = cont.style.left - 5 + "px";
+  blue.style.top = cont.style.left - 38 + "px";
   blue.style.width = 22 + "px";
   blue.style.height = 22 + "px";
   blue.onclick = () => {
@@ -221,8 +221,8 @@ function createPassage(data) {
   const red = document.createElement("button");
   red.setAttribute("class", "tag-red");
   red.style.position = "absolute";
-  red.style.left = cont.offsetLeft + 45 + "px";
-  red.style.top = cont.offsetTop - 38 + "px";
+  red.style.left = cont.style.left + 45 + "px";
+  red.style.top = cont.style.top - 38 + "px";
   red.style.width = 22 + "px";
   red.style.height = 22 + "px";
   red.onclick = () => {
@@ -426,7 +426,7 @@ async function zipFile() {
   for (item of dataNotes) {
     const id = `${item.fileId}`;
 
-    const element = toDOM(datahtml[id - 1]);
+    const element = toDOM(datahtml[id].file);
 
     console.log("fileId");
     console.log(element);
@@ -553,21 +553,17 @@ function iterId() {
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
+  console.log(filesData);
+  filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
+  console.log(filesData);
   for (let index = 0; index < filesData.length; index++) {
-    var element = toDOM(filesData[index]);
+    console.log(index + " " + filesData[index].fileName);
+    console.log(filesData[index]);
+    var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
   }
 
-  // for (let i = 0; i < nbFile; i++) {
-  //     const container = document.createElement('div');
-  //     document.getElementById("annotations").append(container);
-  //     const doc = document.createElement('p');
-  //     doc.appendChild(document.createTextNode("Document " + (i + 1)));
-  //     doc.setAttribute("class", "docName");
-  //     container.append(doc);
-  //     passagesDiv[i] = container;
-  // }
   const res = await fetch("/notes");
   const data = await res.json();
   var i = 100;
@@ -582,7 +578,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   var myWindow = window.open("", "", "");
   var element = document.createElement("div");
   element.setAttribute("id", "document");
-  element.appendChild(files[id - 1]);
+  element.appendChild(files[id]);
   myWindow.document.write(element.innerHTML);
 
   reselect(myWindow, startOffset, endOffset, startIndex, endIndex);

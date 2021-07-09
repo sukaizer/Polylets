@@ -45,6 +45,7 @@ body {
   padding: 20px 0px 20px 0px;
   border-radius: 6px;
   overflow-y: auto; /* this makes the div scrollable  */
+  scroll-behavior: smooth;
 }
 
 .saved {

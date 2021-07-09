@@ -1,5 +1,6 @@
 var data = [];
 var files = [];
+var fileNames = [];
 var row = 2;
 var col = 3;
 
@@ -47,11 +48,13 @@ async function getData() {
   //html files
   const rf = await fetch("/files");
   const filesData = await rf.json();
+  filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
 
   for (let index = 0; index < filesData.length; index++) {
-    var element = toDOM(filesData[index]);
+    var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
+    fileNames[index] = filesData[index].fileName;
   }
 
   //passages
@@ -77,7 +80,7 @@ async function getData() {
       h3.setAttribute("id", "Document" + i);
       h3.setAttribute("draggable", "true");
       const h3FDecoy = document.createElement("span");
-      h3FDecoy.innerText = "Document " + i;
+      h3FDecoy.innerText = fileNames[i];
       h3.appendChild(h3FDecoy);
       const h3SDecoy = document.createElement("span");
 

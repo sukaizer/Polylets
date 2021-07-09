@@ -200,9 +200,10 @@ function toDOM(input) {
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
+  filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
 
   for (let index = 0; index < filesData.length; index++) {
-    var element = toDOM(filesData[index]);
+    var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
   }

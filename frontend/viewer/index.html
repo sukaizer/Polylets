@@ -15,7 +15,7 @@
 <body>
         <!-- div containing the main document -->
         <div class="main">
-            <div class="navigationBar">
+            <div class="navigationBar" style="user-select: none;">
                 <a>Viewer</a>
                 <a href="../editor/">Editor</a>
                 <a href="../reader">Reader</a>
@@ -27,11 +27,11 @@
             <div id="app">
                 <!-- basic buttons for switching documents -->
                 <div>
-                    <files-switcher ref="files" @current-file="setFile"></files-switcher>
+                    <files-switcher ref="files" @current-file="setFile" style="user-select: none;"></files-switcher>
                 </div>
                 <div class="big-container">
                     <div id="content" class="document" @mouseover="setDisable"></div>
-                    <div id="container" class="annotationBar">
+                    <div id="container" class="annotationBar" style="user-select: none;">
                         <button id="createPassage" class="button" @click="addAnnotation()">Pass-It</button>
                         <template v-if="this.notes.length > 0">
                             <button class="button" @click="sendToServer">SAVE</button>
