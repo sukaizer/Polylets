@@ -45,10 +45,15 @@ async function fillQuill() {
   quill.setSelection(0, 0);
   for (item of data) {
     for (elem of item) {
+      scrollPositions.push({
+        passageId: elem.docId,
+        id: iter,
+        scrollPos: document.getElementById(iter).offsetTop-148,
+      });
       const cursor = getCursorPosition();
+      
+      
       var id = elem.docId;
-      console.log("id");
-      console.log(id);
       console.log(document.getElementById(id));
       var highlength = 0;
 
@@ -485,6 +490,7 @@ function toDOM(input) {
 //when hovering over the note in editor, sidebar is scrolled and the right passage is shown
 function highlight(id) {
   if (displayIsAll) {
+
     scrollPositions.forEach((sp) => {
       if (sp.passageId == id) {
         document.getElementById("sidebar").scrollTo(0, sp.scrollPos);
@@ -538,9 +544,9 @@ function iterId() {
     console.log("hey");
   }
 
-  console.log("iteration");
-  console.log(iter);
-  console.log("i = " + i);
+  // console.log("iteration");
+  // console.log(iter);
+  // console.log("i = " + i);
   iter = i;
 }
 
@@ -635,7 +641,7 @@ function getCursorPosition() {
   var range = quill.getSelection();
   if (range) {
     if (range.length == 0) {
-      console.log("User cursor is at index", range.index);
+      //console.log("User cursor is at index", range.index);
       return range.index;
     } else {
       var text = quill.getText(range.index, range.length);

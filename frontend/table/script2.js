@@ -254,7 +254,7 @@ function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
 //send data to server
 async function sendToServer() {
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
+  console.log("data", data);
   const options = {
     method: "POST",
     headers: {
@@ -375,6 +375,7 @@ async function exportToEditor() {
   for (i = 1; i <= col; i++) {
     $(".tbl tr td:nth-child(" + i + ") .element").each(function (index) {
       const tis = $(this).get(0);
+      console.log("tis",tis)
       const note = {
         id: "tableId" + inc,
         docId: tis.id,
@@ -638,8 +639,8 @@ $(document).mouseup(function () {
 //export button
 $(".exporter").on("click", function (event) {
   exportToEditor();
-  // var href = $("a[href='../editor']").attr('href');
-  // window.location.href = href;
+  var href = $("a[href='../editor']").attr('href');
+  window.location.href = href;
 });
 
 // This name will be passed to the destination window during drag-and-drop

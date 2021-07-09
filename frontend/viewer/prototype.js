@@ -155,10 +155,11 @@ const app = Vue.createApp({
     //get all the related information when the user makes the selection
     getSelectionInfo() {
       const range = window.getSelection().getRangeAt(0);
-
+      console.log("rane", range);
       let startNode;
       let endNode;
 
+      console.log("nodename", range.startContainer.nodeName)
       if (range.startContainer.nodeName == "P") {
         startNode = range.startContainer;
       } else {
@@ -171,27 +172,28 @@ const app = Vue.createApp({
         endNode = range.endContainer.parentNode;
       }
 
-      if (startNode.nodeName == "STRONG") {
-        console.log("start strong");
-        startNode = startNode.parentNode;
-      }
-      if (endNode.nodeName == "STRONG") {
-        console.log("end strong");
-        endNode = endNode.parentNode;
-      }
+      // if (startNode.nodeName == "STRONG") {
+      //   console.log("start strong");
+      //   startNode = startNode.parentNode;
+      //   console.log(startNode)
+      // }
+      // if (endNode.nodeName == "STRONG") {
+      //   console.log("end strong");
+      //   endNode = endNode.parentNode;
+      // }
 
       //find the startIndex and endIndex
       const parentNode = document.getElementById("content");
       let startIndex = 0;
       let endIndex = 0;
       let i = 0;
-      console.log(startNode);
-      console.log(endNode);
+      console.log("startNode-info", startNode);
+      console.log("endNode-info", endNode);
 
+      console.log("chidlren", parentNode.children);
       for (let i = 0; i < parentNode.childElementCount; i++) {
         // Do stuff
         // console.log(parentNode.children[i]);
-
         if (parentNode.children[i] == startNode) {
           startIndex = i;
         }
@@ -200,8 +202,8 @@ const app = Vue.createApp({
         }
       }
 
-      console.log(startIndex);
-      console.log(endIndex);
+      console.log("sindex",startIndex);
+      console.log("eindex",endIndex);
 
       let doc = document.getElementById("content");
       let selectionPosition = doc.scrollTop;
@@ -221,13 +223,13 @@ const app = Vue.createApp({
 
     //reselect the passage
     reselect(note) {
-      console.log(note);
+      console.log("note", note);
       //scroll to the position
       document.getElementById("content").scrollTo(0, note.yPosition);
 
       //reselect the selection using startIndex and endIndex
       let documentNode = document.getElementById("content");
-      console.log(documentNode);
+      console.log("documentNide", documentNode);
       let node = documentNode.firstElementChild;
       let i = 0;
       let startNode;
@@ -243,8 +245,8 @@ const app = Vue.createApp({
         i++;
         node = node.nextElementSibling || node.nextSibling;
       }
-      console.log(startNode);
-      console.log(endNode);
+      console.log("startNode-select", startNode);
+      console.log("endnode-select", endNode);
 
       //re-create the selection using offset
       const newRange = new Range();
