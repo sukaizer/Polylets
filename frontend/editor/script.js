@@ -146,8 +146,8 @@ function createPassage(data) {
       green.style.visibility = "visible";
       blue.style.visibility = "visible";
       red.style.visibility = "visible";
-      cont.style.top = event.clientY - 40 + "px";
-      cont.style.left = event.clientX - 40 + "px";
+      cont.style.top = event.pageY + 30 + "px";
+      cont.style.left = event.pageX - 30 + "px";
     }
     event.stopPropagation();
   };
@@ -178,8 +178,8 @@ function createPassage(data) {
   const green = document.createElement("button");
   green.setAttribute("class", "tag-green");
   green.style.position = "absolute";
-  green.style.left = cont.offsetLeft + 19 + "px";
-  green.style.top = cont.offsetTop - 75 + "px";
+  green.style.left = cont.style.left + 19 + "px";
+  green.style.top = cont.style.top - 75 + "px";
   green.style.width = 22 + "px";
   green.style.height = 22 + "px";
   green.onclick = () => {
@@ -197,8 +197,8 @@ function createPassage(data) {
   const blue = document.createElement("button");
   blue.setAttribute("class", "tag-blue");
   blue.style.position = "absolute";
-  blue.style.left = cont.offsetLeft - 5 + "px";
-  blue.style.top = cont.offsetTop - 38 + "px";
+  blue.style.left = cont.style.left - 5 + "px";
+  blue.style.top = cont.style.left - 38 + "px";
   blue.style.width = 22 + "px";
   blue.style.height = 22 + "px";
   blue.onclick = () => {
@@ -216,8 +216,8 @@ function createPassage(data) {
   const red = document.createElement("button");
   red.setAttribute("class", "tag-red");
   red.style.position = "absolute";
-  red.style.left = cont.offsetLeft + 45 + "px";
-  red.style.top = cont.offsetTop - 38 + "px";
+  red.style.left = cont.style.left + 45 + "px";
+  red.style.top = cont.style.top - 38 + "px";
   red.style.width = 22 + "px";
   red.style.height = 22 + "px";
   red.onclick = () => {
