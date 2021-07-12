@@ -3,8 +3,8 @@ body {
   color: #333;
   font-weight: 400;
   /* display: flex; */
-  width: 1500px;
   margin: 0 auto;
+  overflow-x: auto;
 }
 
 .navigationBar {
@@ -26,6 +26,7 @@ button {
   height: 1000px;
   margin: 40px 0px;
   border: 1px solid #d8d8d8;
+  overflow-x: scroll;
   overflow-y: auto; /* this makes the div scrollable  */
   padding: 20px;
   border-radius: 6px;
@@ -204,30 +205,32 @@ button {
 }
 
 .table-line {
-  height: 8%;
+  min-width : 100%;
+  min-height: 30%;
+  overflow-y: inherit;
+  margin-left: 4%;
+  margin-top: 1%;
 }
 
 .table-form {
   float: left;
-  width: 80%;
 }
 
 .new-column {
-  height: 100%;
-  width: 20%;
-  display: inline-block;
+  float: left;
+  width: 2%;
+  border-radius: 10px;
   text-align: center;
 }
 
 .new-row {
-  width: 80%;
-  height: 80%;
+  height: 2%;
+  width: 2%;
+  border-radius: 10px;
+  text-align: center;
 }
 
 .tbl {
-  width: 100%;
-  table-layout: fixed;
-  margin-left: 7%;
   empty-cells: show;
 }
 
@@ -236,6 +239,16 @@ button {
 }
 .tbl tr:nth-child(odd) {
   background-color: #fff;
+}
+
+th {
+  background: rgb(194, 186, 186);
+  height: 50px;
+  min-width: 100px;
+  border: 3px solid #000000;
+  padding: 0px 0px 0px 0px;
+  border-radius: 2px;
+  text-align: center;
 }
 
 td {
@@ -252,7 +265,8 @@ table td.highlighted {
 }
 
 textarea {
-  width : 98%;
+  width : 97%;
+  max-height: 70%;
   background-color: white;
   border :1px solid rgb(88, 88, 88);
 }

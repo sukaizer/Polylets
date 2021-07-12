@@ -27,7 +27,8 @@
     
     <div class="container">
     
-      <button class="exporter button">Export to Editor</button>
+      <button class="exportColumn button">Export by Columns</button>
+      <button class="exportRows button">Export by Rows</button>
     
       <div id="annotations" class="annotation"></div>
     
@@ -45,11 +46,19 @@
               <colgroup>
               </colgroup>
               <tr>
+                <th scope="col" contenteditable="true"></th>
+                <th scope="col" contenteditable="true"></th>
+                <th scope="col" contenteditable="true"></th>
+                <th scope="col" contenteditable="true"></th>
+              </tr>
+              <tr>
+                <th scope="row" contenteditable="true"></th>
                 <td></td>
                 <td></td>
                 <td></td>
               </tr>
               <tr>
+                <th scope="row" contenteditable="true"></th>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -60,15 +69,12 @@
           </div>
     
     
-          <div class="new-column">
-            <p></p>
-          </div>
+          <button class="new-column">+</button>
+          
     
         </div>
     
-        <div class="new-row">
-          <p></p>
-        </div>
+        <button class="new-row">+</button>
     
     
       </div>

@@ -14,18 +14,21 @@ setTimeout(function () {
 //fill quill with database
 async function fillQuill() {
   //wait database
-  console.log("hello");
   const rs = await fetch("/tbl");
-  console.log("fetched)");
   const tbl = await rs.json();
-  console.log(tbl);
+  console.log("tbl", tbl);
   //split into arrays
   var data = [];
   var tmp = [];
-  for (i = 1; i <= tbl.length; i++) {
+  for (i = 1 ; i <= tbl.length; i++) {
     tmp = [];
     for (item of tbl) {
-      if (`${item.col}` == i) {
+      if (`${item.group}` == i && `${item.nth}` == 0) {
+        var tmp2 = [];
+        tmp2.push(item);
+        data.push(tmp2);
+        tmp2 = [];
+      } else if (`${item.group}` == i) {
         tmp.push(item);
       }
     }
@@ -37,53 +40,62 @@ async function fillQuill() {
   //sort
   for (item of data) {
     item.sort(function (a, b) {
-      return a.row - b.row;
+      return a.nth - b.nth;
     });
   }
+
+  console.log("sorted", data)
 
   //any item in /tbl
   quill.setSelection(0, 0);
   for (item of data) {
     for (elem of item) {
-      scrollPositions.push({
-        passageId: elem.docId,
-        id: iter,
-        scrollPos: document.getElementById(iter).offsetTop-148,
-      });
+
       const cursor = getCursorPosition();
-      
-      
-      var id = elem.docId;
-      console.log(document.getElementById(id));
-      var highlength = 0;
 
-      quill.insertText(getCursorPosition(), " [");
-      quill.insertText(
-        getCursorPosition(),
-        document.getElementById(id).lastElementChild.lastElementChild
-          .lastElementChild.innerText,
-        true
-      );
-      quill.insertText(getCursorPosition(), "] ");
-      highlength = 4;
+      if (elem.nth == 0) {
+        quill.insertText(getCursorPosition(), "\n");
+        quill.insertText(getCursorPosition(), elem.txt);
+      } else {
+        
+        scrollPositions.push({
+          passageId: elem.docId,
+          id: iter,
+          scrollPos: document.getElementById(iter).offsetTop-148,
+        });
 
-      quill.insertText(
-        getCursorPosition(),
-        document.getElementById(id).firstElementChild.nextElementSibling
-          .firstElementChild.innerText
-      );
-      quill.insertText(getCursorPosition(), " ");
-      quill.formatText(
-        cursor +
+        var id = elem.docId;
+        console.log(document.getElementById(id));
+        var highlength = 0;
+
+        quill.insertText(getCursorPosition(), " [");
+        quill.insertText(
+          getCursorPosition(),
           document.getElementById(id).lastElementChild.lastElementChild
-            .lastElementChild.innerText.length +
-          highlength,
-        document.getElementById(id).firstElementChild.nextElementSibling
-          .firstElementChild.innerText.length,
-        "highlight",
-        id
-      );
-      iter += 1;
+            .lastElementChild.innerText,
+          true
+        );
+        quill.insertText(getCursorPosition(), "] ");
+        highlength = 4;
+
+        quill.insertText(
+          getCursorPosition(),
+          document.getElementById(id).firstElementChild.nextElementSibling
+            .firstElementChild.innerText
+        );
+        quill.insertText(getCursorPosition(), " ");
+        quill.formatText(
+          cursor +
+            document.getElementById(id).lastElementChild.lastElementChild
+              .lastElementChild.innerText.length +
+            highlength,
+          document.getElementById(id).firstElementChild.nextElementSibling
+            .firstElementChild.innerText.length,
+          "highlight",
+          id
+        );
+        iter += 1;
+      }
     }
     quill.insertText(getCursorPosition(), "\n\n");
   }
@@ -455,7 +467,7 @@ function toDOM(input) {
       if (obj.attributes) {
         for (let [attrName, value] of obj.attributes) {
           let propName = propFix[attrName] || attrName;
-          // Note: this will throw if setting the value of an input[type=file]
+          // Note: this will thnth if setting the value of an input[type=file]
           node[propName] = value;
         }
       }

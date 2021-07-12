@@ -1,15 +1,13 @@
 var data = [];
 var files = [];
 var fileNames = [];
-var row = 2;
-var col = 3;
+var row = 3;
+var col = 4;
 
 //drop single element
 function moveNote(dragElem, dropZone, dropevent, tis) {
   // const note = document.getElementById(dropevent.dataTransfer.getData("text"));
-  console.log("note");
-  console.log(dragElem);
-  if (dragElem.className == "element draggable") {
+ if (dragElem.className == "element draggable") {
     dropZone.appendChild(dragElem);
   } else if (dropZone.tagName == "TD") {
     console.log("title");
@@ -28,6 +26,7 @@ function p(dropevent) {
 function autofill(note, trow, tcol) {
   elem = note.parentNode.childNodes;
   trow = parseInt(trow, 10);
+  tcol = parseInt(tcol, 10);
   while (elem.length > 1) {
     if (trow > row) {
       addRow();
@@ -315,22 +314,19 @@ function toDOM(input) {
 }
 
 function tableCoordinate() {
-  for (i = 1; i <= row; i++) {
+  for (i = 1; i <=  row; i++) {
     for (j = 1; j <= col; j++) {
       $(".tbl tr:nth-child(" + i + ") td:nth-child(" + j + ")").each(
         function () {
           $(this).attr("class", "dropzone");
-          $(this).attr("data-row", i);
-          $(this).attr("data-col", j);
-          //add mousedown and up event
-          // $(this).attr("onmousedown", "dragAutoF("+j+","+i+")");
-          // $(this).attr("onmouseup", "dropAutoF("+j+","+i+")");
+          $(this).attr("data-row", i-1);
+          $(this).attr("data-col", j-1);
         }
       );
       $(".tbl tr:nth-child(" + i + ") td:nth-child(" + j + ") div").each(
         function () {
-          $(this).attr("data-row", i);
-          $(this).attr("data-col", j);
+          $(this).attr("data-row", i-1);
+          $(this).attr("data-col", j-1);
         }
       );
     }
@@ -340,7 +336,11 @@ function tableCoordinate() {
 //add a new row
 function addRow() {
   $("tbody").append(document.createElement("tr"));
-  for (i = 0; i < col; i++) {
+  for (i = 0; i < col-1; i++) {
+    if (i == 0) {
+      const nth = document.createElement("th");
+      $("tr:last-child").append(nth);
+    } 
     const ntd = document.createElement("td");
     ntd.append(document.createElement("textarea"));
     $("tr:last-child").append(ntd);
@@ -351,15 +351,23 @@ function addRow() {
   butt.setAttribute("onclick", "deleteRow(" + row + ")");
   row += 1;
   $(".document").append(butt);
+
+  var a = document.getElementsByClassName("table-line")[0]
+  a.style.height = a.offsetHeight + document.getElementsByTagName("td")[0].offsetHeight + "px";
   $(document).trigger("changetext");
 }
 
 //add a new column
 function addCol() {
-  $("tr").each(function () {
-    const ntd = document.createElement("td");
-    ntd.append(document.createElement("textarea"));
-    $(this).append(ntd);
+  $("tr").each(function (index) {
+    if (index == 0) {
+      const nth = document.createElement("th");
+      $(this).append(nth);
+    } else {
+      const ntd = document.createElement("td");
+      ntd.append(document.createElement("textarea"));
+      $(this).append(ntd);
+    }
   });
   const butt = document.createElement("button");
   butt.innerHTML = "X";
@@ -368,14 +376,25 @@ function addCol() {
   $(".document").prepend(butt);
   col += 1;
   $(".tbl colgroup").append(document.createElement("col"));
+  var a = document.getElementsByClassName("table-line")[0]
+  a.style.width = a.offsetWidth + document.getElementsByTagName("td")[0].offsetWidth + "px";
   $(document).trigger("changetext");
 }
 
 //export into editor
-async function exportToEditor() {
+async function exportColumn() {
   //create data
   var inc = 1;
   for (i = 1; i <= col; i++) {
+    const htxt = $(".tbl tr:nth-child(1) th:nth-child(" + i + ")").text();
+    if (htxt != "") {
+      const header = {
+        nth : 0,
+        group : i-1,
+        txt : htxt,
+      }
+      data.push(header);
+    }
     $(".tbl tr td:nth-child(" + i + ") .element").each(function (index) {
       const tis = $(this).get(0);
       console.log("tis",tis)
@@ -387,9 +406,9 @@ async function exportToEditor() {
         endOffset: tis.attributes[5].value,
         startIndex: tis.attributes[6].value,
         endIndex: tis.attributes[7].value,
-        row: tis.attributes[8].value,
-        col: tis.attributes[9].value,
-      };
+        nth: tis.attributes[8].value,
+        group: tis.attributes[9].value,
+      };    
       data.push(note);
       inc += 1;
     });
@@ -398,12 +417,49 @@ async function exportToEditor() {
   data = [];
 }
 
+
+async function exportRows() {
+  var inc = 1;
+  for (i = 1; i <= col; i++) {
+    const htxt = $(".tbl tr:nth-child(" + i + ") th").text();
+    if (htxt != "") {
+      const header = {
+        nth : 0,
+        group : i-1,
+        txt : htxt,
+      }
+      data.push(header);
+    }
+    $(".tbl tr td:nth-child(" + i + ") .element").each(function (index) {
+      const tis = $(this).get(0);
+      console.log("tis",tis)
+      const note = {
+        id: "tableId" + inc,
+        docId: tis.id,
+        fileId: tis.attributes[3].value,
+        startOffset: tis.attributes[4].value,
+        endOffset: tis.attributes[5].value,
+        startIndex: tis.attributes[6].value,
+        endIndex: tis.attributes[7].value,
+        group: tis.attributes[8].value,
+        nth: tis.attributes[9].value,
+      };    
+      data.push(note);
+      inc += 1;
+    });
+  }
+  sendToServer();
+  data = [];
+}
+
+
 //getting a cell of the table with its coordinates
 function getCell(x, y) {
   tr = document.getElementsByTagName("tr");
-  yaxis = tr[y - 1];
+  console.log("y", y)
+  yaxis = tr[y];
   first = yaxis.firstElementChild;
-  for (i = 1; i < x; i++) {
+  for (i = 1; i <= x; i++) {
     first = first.nextElementSibling;
   }
   return first;
@@ -425,7 +481,7 @@ function deleteCol(c) {
 
   //delete button
   const butt = document.getElementsByClassName("del-col");
-  butt[c].remove();
+  butt[c-1].remove();
 
   $(document).trigger("changetext");
   col -= 1;
@@ -437,7 +493,7 @@ function deleteRow(r) {
   tr[r].remove();
   //delete button
   const butt = document.getElementsByClassName("del-row");
-  butt[r].remove();
+  butt[r-1].remove();
   $(document).trigger("changetext");
   row -= 1;
 }
@@ -458,13 +514,16 @@ function dragAutoF(x, y) {
       "docFolder" + tis.lastElementChild.getAttribute("data-fileid")
     );
   }
-
   tis.style.backgroundColor = "#E8E8E8";
 }
 
 //end autofill
 function dropAutoF(x, y) {
+  console.log("cell")
+  console.log("x", x)
+  console.log("y", y)
   var tos = getCell(x, y);
+  console.log("tos",tos)
   if (isMouseDown == true) {
     isMouseDown = false;
     console.log("autoFend");
@@ -472,7 +531,7 @@ function dropAutoF(x, y) {
     endCell = parseInt(tos.getAttribute("data-row")); //get the end cell
     //call the auto-fill function
     offset = endCell - startCell[1];
-    console.log(offset);
+    console.log("offset",offset);
     autoFill(doc, startCell, offset);
   }
 }
@@ -514,29 +573,32 @@ function autoFill(doc, startPosition, offset) {
   }
 }
 
-//add delete column
-$(".tbl tr:nth-child(1) td").each(function (index) {
-  //columns
-  const buttCol = document.createElement("button");
-  buttCol.innerHTML = "X";
-  buttCol.setAttribute("class", "del-col");
-  buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
-  $(".document").prepend(buttCol);
-  $(".tbl colgroup").append(document.createElement("col"));
-});
-
 $("td").each(function () {
   $(this).append(document.createElement("textarea"));
+});
+
+//add delete column
+$(".tbl tr:nth-child(2) td").each(function (index) {
+  //columns
+    const buttCol = document.createElement("button");
+    buttCol.innerHTML = "X";
+    buttCol.setAttribute("class", "del-col");
+    buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
+    $(".document").prepend(buttCol);
+    $(".tbl colgroup").append(document.createElement("col"));
+  
 });
 
 //add delete rows
 $("tr").each(function (id) {
   //rows
-  const buttRow = document.createElement("button");
-  buttRow.innerHTML = "X";
-  buttRow.setAttribute("class", "del-row");
-  buttRow.setAttribute("onclick", "deleteRow(" + id + ")");
-  $(".document").append(buttRow);
+  if (id > 0) {
+    const buttRow = document.createElement("button");
+    buttRow.innerHTML = "X";
+    buttRow.setAttribute("class", "del-row");
+    buttRow.setAttribute("onclick", "deleteRow(" + id + ")");
+    $(".document").append(buttRow);
+  }
 });
 
 //drag to add row
@@ -564,21 +626,21 @@ $(document).on("changetext", function () {
   tableCoordinate();
 
   $(".dropzone").mousedown(function () {
-    const i = $(this).attr("data-col");
-    const j = $(this).attr("data-row");
+    var i = $(this).attr("data-col");
+    var j = $(this).attr("data-row");
     dragAutoF(i, j);
   });
-
+  
   $(".dropzone").mouseup(function () {
-    const i = $(this).attr("data-col");
-    const j = $(this).attr("data-row");
+    var i = $(this).attr("data-col");
+    var j = $(this).attr("data-row");
     dropAutoF(i, j);
   });
 
   //prevent autofill when dragging
   $(".dropzone div").on("dragstart", function () {
-    const i = $(this).attr("data-col");
-    const j = $(this).attr("data-row");
+    var i = $(this).attr("data-col");
+    var j = $(this).attr("data-row");
     dropAutoF(i, j);
   });
 
@@ -598,22 +660,28 @@ $(document).on("changetext", function () {
 
   //update col
   $(".del-col").each(function (id) {
-    $(this).attr("onclick", "deleteCol(" + id + ")");
-    const i = id + 1;
-    const pos = $(".tbl tr:nth-child(1) td:nth-child(" + i + ")").position()
-      .left;
-    $(this).css({
-      top: 5 + "px",
-      left: pos + 100 + "px",
-      position: "absolute",
-    });
+      $(this).attr("onclick", "deleteCol(" + (id+1) + ")");
+      const i = id + 2 ;
+      const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position().left;
+      const cstLeft = document.getElementsByClassName("table-line")[0].offsetWidth*6/100;
+      const cstTop = document.getElementById("tbl").offsetTop;
+      const docTop = document.getElementsByClassName("document")[0].offsetTop;
+      $(this).css({
+        top: 0  + "px",
+        left: pos + cstLeft + "px",
+        position: "absolute",
+      });
+    
   });
   //update rows
   $(".del-row").each(function (id) {
-    const tds = document.getElementsByTagName("tr");
-    const h = tds[id].getBoundingClientRect().top;
-    $(this).attr("onclick", "deleteRow(" + id + ")");
-    $(this).css({ top: h - 140 + "px", left: "5px", position: "absolute" });
+      const tds = document.getElementsByTagName("tr");
+      const h = tds[id+1].getBoundingClientRect().top;
+      const cst = document.getElementsByTagName("td")[0].offsetHeight;
+      const cheight = $(this).outerHeight();
+      $(this).attr("onclick", "deleteRow(" + (id+1) + ")");
+      $(this).css({ top: (h - cst + cheight) + "px", left: "3%", position: "absolute" });
+    
   });
 
   //highlight on autofill
@@ -632,6 +700,11 @@ $(document).on("changetext", function () {
   $("td").on("dragend dragleave", function (event) {
     $(this).css({ backgroundColor: "white" });
   });
+
+  $("td").on("dragenter", function (event) {
+    $(this).css({ backgroundColor: "#ADD8E6" });
+  });
+  
 });
 
 //disable highlight
@@ -640,8 +713,15 @@ $(document).mouseup(function () {
 });
 
 //export button
-$(".exporter").on("click", function (event) {
-  exportToEditor();
+$(".exportColumn").on("click", function (event) {
+  exportColumn();
+  var href = $("a[href='../editor']").attr('href');
+  window.location.href = href;
+});
+
+//export button
+$(".exportRows").on("click", function (event) {
+  exportRows();
   var href = $("a[href='../editor']").attr('href');
   window.location.href = href;
 });
@@ -932,6 +1012,7 @@ class DragAndDropInteraction {
     this.crt.remove();
     this.crt = null;
     ev.preventDefault();
+    $(document).trigger("changetext");
   }
 }
 
