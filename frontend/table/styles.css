@@ -232,9 +232,10 @@ button {
   border: white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
   top : 6%;
-  left : 0%;
+  left : -3%;
   border-radius: 10px;
   text-align: center;
+  transform: rotate(90deg);
 }
 
 .tbl {
