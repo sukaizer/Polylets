@@ -376,7 +376,7 @@ function addCol() {
   $(".document").prepend(butt);
   col += 1;
   $(".tbl colgroup").append(document.createElement("col"));
-  var a = document.getElementsByClassName("table-line")[0]
+  var a = document.getElementsByClassName("table-line")[0];
   a.style.width = a.offsetWidth + document.getElementsByTagName("td")[0].offsetWidth + "px";
   $(document).trigger("changetext");
 }
@@ -581,7 +581,7 @@ $("td").each(function () {
 $(".tbl tr:nth-child(2) td").each(function (index) {
   //columns
     const buttCol = document.createElement("button");
-    buttCol.innerHTML = "X";
+    buttCol.innerHTML = "✕";
     buttCol.setAttribute("class", "del-col");
     buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
     $(".document").prepend(buttCol);
@@ -594,7 +594,7 @@ $("tr").each(function (id) {
   //rows
   if (id > 0) {
     const buttRow = document.createElement("button");
-    buttRow.innerHTML = "X";
+    buttRow.innerHTML = "✕";
     buttRow.setAttribute("class", "del-row");
     buttRow.setAttribute("onclick", "deleteRow(" + id + ")");
     $(".document").append(buttRow);
@@ -663,11 +663,12 @@ $(document).on("changetext", function () {
       $(this).attr("onclick", "deleteCol(" + (id+1) + ")");
       const i = id + 2 ;
       const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position().left;
-      const cstLeft = document.getElementsByClassName("table-line")[0].offsetWidth*6/100;
+      const cstLeft = document.getElementsByTagName("td")[0].offsetWidth*0.75;
+      console.log("cstmleft",cstLeft)
       const cstTop = document.getElementById("tbl").offsetTop;
       const docTop = document.getElementsByClassName("document")[0].offsetTop;
       $(this).css({
-        top: 0  + "px",
+        top: 2.5  + "%",
         left: pos + cstLeft + "px",
         position: "absolute",
       });
@@ -678,9 +679,8 @@ $(document).on("changetext", function () {
       const tds = document.getElementsByTagName("tr");
       const h = tds[id+1].getBoundingClientRect().top;
       const cst = document.getElementsByTagName("td")[0].offsetHeight;
-      const cheight = $(this).outerHeight();
       $(this).attr("onclick", "deleteRow(" + (id+1) + ")");
-      $(this).css({ top: (h - cst + cheight) + "px", left: "3%", position: "absolute" });
+      $(this).css({ top: (h - cst/2) + "px", left: "3%", position: "absolute" });
     
   });
 
