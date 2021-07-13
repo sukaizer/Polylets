@@ -693,7 +693,7 @@ $(document).on("changetext", function () {
       $(this).attr("onclick", "deleteCol(" + (id+1) + ")");
       const i = id + 2 ;
       const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position().left;
-      const cstLeft = document.getElementsByTagName("td")[0].offsetWidth*0.75;
+      const cstLeft = document.getElementsByTagName("td")[id].offsetWidth*0.75;
       $(this).css({
         top: 2.5  + "%",
         left: pos + cstLeft + "px",
@@ -713,15 +713,7 @@ $(document).on("changetext", function () {
             cell.style.backgroundColor = "white";
             cell.firstElementChild.style.backgroundColor = "white";
           }
-        }
-      },
-      function () {
-        for (j = 1; j < row; j++) {
-          var cell = getCell(id + 1, j);
-          cell.style.backgroundColor = "white";
-          cell.firstElementChild.style.backgroundColor = "white";
-        }
-      }
+        },
     );
   });
 
@@ -730,9 +722,9 @@ $(document).on("changetext", function () {
       $(this).off()
       const tds = document.getElementsByTagName("tr");
       const h = tds[id+1].getBoundingClientRect().top;
-      const cst = document.getElementsByTagName("td")[0].offsetHeight;
+      const cst = document.getElementsByTagName("tr")[id+1].offsetHeight;
       $(this).attr("onclick", "deleteRow(" + (id+1) + ")");
-      $(this).css({ top: (h - cst/2) + "px", left: "3%", position: "absolute" });
+      $(this).css({ top: (h - cst/4) + "px", left: "3%", position: "absolute" });
       //highlight deleted cells on hover
       $(this).hover(
         function() {
@@ -748,7 +740,6 @@ $(document).on("changetext", function () {
             cell.firstElementChild.style.backgroundColor = "white";
           }
         }
-      }
     );
   });
 
@@ -1167,6 +1158,8 @@ class DropInteraction {
         console.log("unknown/unsupported movement ");
     }
     dnd = null;
+
+    $(document).trigger("changetext");
   }
 }
 

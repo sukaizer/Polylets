@@ -205,16 +205,13 @@ button {
 }
 
 .table-line {
+  float : left;
   min-width : 100%;
   min-height: 30%;
-  overflow-y: inherit;
   margin-left: 4%;
   margin-top: 1%;
 }
 
-.table-form {
-  float: left;
-}
 
 .new-column {
   position :relative;
@@ -257,6 +254,7 @@ th {
 
 td {
   background: #fff;
+  max-width: 300px;
   height: 100px;
   border: 3px solid #000000;
   padding: 0px 0px 0px 0px;
@@ -271,6 +269,7 @@ table td.highlighted {
 textarea {
   width : 97%;
   max-height: 70%;
+  max-width: 300px;
   background-color: white;
   border :1px solid rgb(88, 88, 88);
 }
