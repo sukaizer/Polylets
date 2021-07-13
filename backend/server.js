@@ -73,6 +73,10 @@ databaseHtmlFiles.remove({}, { multi: true }, function (err, numRemoved) {
   databaseHtmlFiles.loadDatabase(function (err) {});
 });
 
+databasePassages.remove({}, { multi: true }, function (err, numRemoved) {
+  databasePassages.loadDatabase(function (err) {});
+});
+
 const databaseTable = new Datastore("databaseTable.db");
 databaseTable.loadDatabase();
 
