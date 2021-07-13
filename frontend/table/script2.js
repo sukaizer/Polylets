@@ -7,7 +7,7 @@ var col = 4;
 //drop single element
 function moveNote(dragElem, dropZone, dropevent, tis) {
   // const note = document.getElementById(dropevent.dataTransfer.getData("text"));
- if (dragElem.className == "element draggable") {
+  if (dragElem.className == "element draggable") {
     dropZone.appendChild(dragElem);
   } else if (dropZone.tagName == "TD") {
     console.log("title");
@@ -201,54 +201,84 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
   element.appendChild(files[id]);
   myWindow.document.write(element.innerHTML);
 
-  reselect(myWindow, startOffset, endOffset, startIndex, endIndex);
+  //parse the indexes
+  var startIndex = startIndex.split(",").map(function (item) {
+    return parseInt(item, 10);
+  });
+
+  var endIndex = endIndex.split(",").map(function (item) {
+    return parseInt(item, 10);
+  });
+
+  console.log(startIndex);
+  console.log(endIndex);
+
+  let object = {
+    startOffset: startOffset,
+    endOffset: endOffset,
+    startIndex: startIndex,
+    endIndex: endIndex,
+  };
+  reselect(myWindow, object);
 }
 
-//select passage in new window
-function reselect(myWindow, startOffset, endOffset, startIndex, endIndex) {
-  //scroll to the position
-  //myWindow.document.getElementById("document").scrollTo(0, yPosition);
+//input a reference
+//ouput the node using that reference in the dom tree
+function getElement(window, ref) {
+  console.log(ref);
+  var positions = ref;
+  //var positions = ref.split(/,/),
+  var elem = window.document.getElementById("document");
 
-  //reselect the selection using startIndex and endIndex
-  let documentNode = myWindow.document.getElementById("document");
-  let node = documentNode.firstElementChild;
-  let i = 0;
-  let startNode;
-  let endNode;
-
-  while (node) {
-    if (i == startIndex) {
-      startNode = node;
+  while (elem && positions.length) {
+    if (positions.length == 1) {
+      elem = elem.childNodes[positions.shift()];
+    } else {
+      elem = elem.children[positions.shift()];
     }
-    if (i == endIndex) {
-      endNode = node;
-    }
-    i++;
-    node = node.nextElementSibling || node.nextSibling;
+    console.log(positions[0]);
+    console.log(elem);
   }
+  console.log(positions);
+  return elem;
+}
+
+function reselect(window, selectionObject) {
+  console.log(selectionObject.startOffset);
+  console.log(selectionObject.endOffset);
+
+  //scroll to the position
+  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
+
+  console.log(selectionObject);
+
+  console.log(selectionObject.startIndex);
+  let startNode = this.getElement(window, selectionObject.startIndex);
+  let endNode = this.getElement(window, selectionObject.endIndex);
+
+  console.log("start");
   console.log(startNode);
+  console.log("end");
   console.log(endNode);
 
-  //re-create the selection using offset
+  console.log("start node");
+  console.log(startNode);
+  console.log("end node");
+  console.log(endNode);
+  console.log("sibling");
+
   const newRange = new Range();
-  console.log(startNode.firstChild.firstChild);
 
-  if (startNode.firstChild.nodeName == "STRONG") {
-    console.log("start strong");
-    newRange.setStart(startNode.firstChild.firstChild, startOffset);
-  } else {
-    newRange.setStart(startNode.firstChild, startOffset);
-  }
+  console.log(selectionObject.startOffset);
+  console.log(selectionObject.endOffset);
 
-  if (endNode.firstChild.nodeName == "STRONG") {
-    console.log("end strong");
-    newRange.setEnd(endNode.firstChild.firstChild, endOffset);
-  } else {
-    console.log(endNode.firstChild);
-    newRange.setEnd(endNode.firstChild, endOffset);
-  }
+  //console.log(endNode.length);
 
-  let selection = myWindow.window.getSelection();
+  newRange.setStart(startNode, selectionObject.startOffset);
+  newRange.setEnd(endNode, selectionObject.endOffset);
+
+  console.log(newRange);
+  let selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(newRange);
 }
@@ -314,19 +344,19 @@ function toDOM(input) {
 }
 
 function tableCoordinate() {
-  for (i = 1; i <=  row; i++) {
+  for (i = 1; i <= row; i++) {
     for (j = 1; j <= col; j++) {
       $(".tbl tr:nth-child(" + i + ") td:nth-child(" + j + ")").each(
         function () {
           $(this).attr("class", "dropzone");
-          $(this).attr("data-row", i-1);
-          $(this).attr("data-col", j-1);
+          $(this).attr("data-row", i - 1);
+          $(this).attr("data-col", j - 1);
         }
       );
       $(".tbl tr:nth-child(" + i + ") td:nth-child(" + j + ") div").each(
         function () {
-          $(this).attr("data-row", i-1);
-          $(this).attr("data-col", j-1);
+          $(this).attr("data-row", i - 1);
+          $(this).attr("data-col", j - 1);
         }
       );
     }
@@ -336,11 +366,11 @@ function tableCoordinate() {
 //add a new row
 function addRow() {
   $("tbody").append(document.createElement("tr"));
-  for (i = 0; i < col-1; i++) {
+  for (i = 0; i < col - 1; i++) {
     if (i == 0) {
       const nth = document.createElement("th");
       $("tr:last-child").append(nth);
-    } 
+    }
     const ntd = document.createElement("td");
     ntd.append(document.createElement("textarea"));
     $("tr:last-child").append(ntd);
@@ -352,8 +382,9 @@ function addRow() {
   row += 1;
   $(".document").append(butt);
 
-  var a = document.getElementsByClassName("table-line")[0]
-  a.style.height = a.offsetHeight + document.getElementsByTagName("td")[0].offsetHeight + "px";
+  var a = document.getElementsByClassName("table-line")[0];
+  a.style.height =
+    a.offsetHeight + document.getElementsByTagName("td")[0].offsetHeight + "px";
   $(document).trigger("changetext");
 }
 
@@ -377,7 +408,8 @@ function addCol() {
   col += 1;
   $(".tbl colgroup").append(document.createElement("col"));
   var a = document.getElementsByClassName("table-line")[0];
-  a.style.width = a.offsetWidth + document.getElementsByTagName("td")[0].offsetWidth + "px";
+  a.style.width =
+    a.offsetWidth + document.getElementsByTagName("td")[0].offsetWidth + "px";
   $(document).trigger("changetext");
 }
 
@@ -389,15 +421,15 @@ async function exportColumn() {
     const htxt = $(".tbl tr:nth-child(1) th:nth-child(" + i + ")").text();
     if (htxt != "") {
       const header = {
-        nth : 0,
-        group : i-1,
-        txt : htxt,
-      }
+        nth: 0,
+        group: i - 1,
+        txt: htxt,
+      };
       data.push(header);
     }
     $(".tbl tr td:nth-child(" + i + ") .element").each(function (index) {
       const tis = $(this).get(0);
-      console.log("tis",tis)
+      console.log("tis", tis);
       const note = {
         id: "tableId" + inc,
         docId: tis.id,
@@ -408,7 +440,7 @@ async function exportColumn() {
         endIndex: tis.attributes[7].value,
         nth: tis.attributes[8].value,
         group: tis.attributes[9].value,
-      };    
+      };
       data.push(note);
       inc += 1;
     });
@@ -417,22 +449,21 @@ async function exportColumn() {
   data = [];
 }
 
-
 async function exportRows() {
   var inc = 1;
   for (i = 1; i <= col; i++) {
     const htxt = $(".tbl tr:nth-child(" + i + ") th").text();
     if (htxt != "") {
       const header = {
-        nth : 0,
-        group : i-1,
-        txt : htxt,
-      }
+        nth: 0,
+        group: i - 1,
+        txt: htxt,
+      };
       data.push(header);
     }
     $(".tbl tr td:nth-child(" + i + ") .element").each(function (index) {
       const tis = $(this).get(0);
-      console.log("tis",tis)
+      console.log("tis", tis);
       const note = {
         id: "tableId" + inc,
         docId: tis.id,
@@ -443,7 +474,7 @@ async function exportRows() {
         endIndex: tis.attributes[7].value,
         group: tis.attributes[8].value,
         nth: tis.attributes[9].value,
-      };    
+      };
       data.push(note);
       inc += 1;
     });
@@ -451,7 +482,6 @@ async function exportRows() {
   sendToServer();
   data = [];
 }
-
 
 //getting a cell of the table with its coordinates
 function getCell(x, y) {
@@ -480,7 +510,7 @@ function deleteCol(c) {
 
   //delete button
   const butt = document.getElementsByClassName("del-col");
-  butt[c-1].remove();
+  butt[c - 1].remove();
 
   $(document).trigger("changetext");
   col -= 1;
@@ -492,7 +522,7 @@ function deleteRow(r) {
   tr[r].remove();
   //delete button
   const butt = document.getElementsByClassName("del-row");
-  butt[r-1].remove();
+  butt[r - 1].remove();
   $(document).trigger("changetext");
   row -= 1;
 }
@@ -518,11 +548,11 @@ function dragAutoF(x, y) {
 
 //end autofill
 function dropAutoF(x, y) {
-  console.log("cell")
-  console.log("x", x)
-  console.log("y", y)
+  console.log("cell");
+  console.log("x", x);
+  console.log("y", y);
   var tos = getCell(x, y);
-  console.log("tos",tos)
+  console.log("tos", tos);
   if (isMouseDown == true) {
     isMouseDown = false;
     console.log("autoFend");
@@ -530,7 +560,7 @@ function dropAutoF(x, y) {
     endCell = parseInt(tos.getAttribute("data-row")); //get the end cell
     //call the auto-fill function
     offset = endCell - startCell[1];
-    console.log("offset",offset);
+    console.log("offset", offset);
     autoFill(doc, startCell, offset);
   }
 }
@@ -629,7 +659,7 @@ $(document).on("changetext", function () {
     var j = $(this).attr("data-row");
     dragAutoF(i, j);
   });
-  
+
   $(".dropzone").mouseup(function () {
     var i = $(this).attr("data-col");
     var j = $(this).attr("data-row");
@@ -684,7 +714,15 @@ $(document).on("changetext", function () {
             cell.firstElementChild.style.backgroundColor = "white";
           }
         }
-      )
+      },
+      function () {
+        for (j = 1; j < row; j++) {
+          var cell = getCell(id + 1, j);
+          cell.style.backgroundColor = "white";
+          cell.firstElementChild.style.backgroundColor = "white";
+        }
+      }
+    );
   });
 
   //update rows
@@ -710,7 +748,8 @@ $(document).on("changetext", function () {
             cell.firstElementChild.style.backgroundColor = "white";
           }
         }
-      )
+      }
+    );
   });
 
   //highlight on autofill
@@ -733,7 +772,6 @@ $(document).on("changetext", function () {
   $("td").on("dragenter", function (event) {
     $(this).css({ backgroundColor: "#ADD8E6" });
   });
-  
 });
 
 //disable highlight
@@ -744,14 +782,14 @@ $(document).mouseup(function () {
 //export button
 $(".exportColumn").on("click", function (event) {
   exportColumn();
-  var href = $("a[href='../editor']").attr('href');
+  var href = $("a[href='../editor']").attr("href");
   window.location.href = href;
 });
 
 //export button
 $(".exportRows").on("click", function (event) {
   exportRows();
-  var href = $("a[href='../editor']").attr('href');
+  var href = $("a[href='../editor']").attr("href");
   window.location.href = href;
 });
 

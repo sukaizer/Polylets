@@ -198,15 +198,17 @@ function createPassage(data) {
   green.style.width = 22 + "px";
   green.style.height = 22 + "px";
   green.onclick = () => {
-    passage.setAttribute("green", "green");
-    // greenEff.style.visibility = "visible";
-    const greenEff = document.createElement("button");
-    greenEff.setAttribute("class", "tag-green-eff");
-    greenEff.onclick = () => {
-      passage.setAttribute("green", "none");
-      greenEff.remove();
-    };
-    draghandle.appendChild(greenEff);
+    if (passage.getAttribute("green") != "green") {
+      passage.setAttribute("green", "green");
+      // greenEff.style.visibility = "visible";
+      const greenEff = document.createElement("button");
+      greenEff.setAttribute("class", "tag-green-eff");
+      greenEff.onclick = () => {
+        passage.setAttribute("green", "none");
+        greenEff.remove();
+      };
+      draghandle.appendChild(greenEff);
+    }
   };
 
   const blue = document.createElement("button");
@@ -217,15 +219,17 @@ function createPassage(data) {
   blue.style.width = 22 + "px";
   blue.style.height = 22 + "px";
   blue.onclick = () => {
-    passage.setAttribute("blue", "blue");
-    // blueEff.style.visibility = "visible";
-    const blueEff = document.createElement("button");
-    blueEff.setAttribute("class", "tag-blue-eff");
-    blueEff.onclick = () => {
-      passage.setAttribute("blue", "none");
-      blueEff.remove();
-    };
-    draghandle.appendChild(blueEff);
+    if (passage.getAttribute("blue") != "blue") {
+      passage.setAttribute("blue", "blue");
+      // blueEff.style.visibility = "visible";
+      const blueEff = document.createElement("button");
+      blueEff.setAttribute("class", "tag-blue-eff");
+      blueEff.onclick = () => {
+        passage.setAttribute("blue", "none");
+        blueEff.remove();
+      };
+      draghandle.appendChild(blueEff);
+    }
   };
 
   const red = document.createElement("button");
@@ -236,15 +240,17 @@ function createPassage(data) {
   red.style.width = 22 + "px";
   red.style.height = 22 + "px";
   red.onclick = () => {
-    passage.setAttribute("red", "red");
-    //redEff.style.visibility = "visible";
-    const redEff = document.createElement("button");
-    redEff.setAttribute("class", "tag-red-eff");
-    redEff.onclick = () => {
-      passage.setAttribute("red", "none");
-      redEff.remove();
-    };
-    draghandle.appendChild(redEff);
+    if (passage.getAttribute("red") != "red") {
+      passage.setAttribute("red", "red");
+      //redEff.style.visibility = "visible";
+      const redEff = document.createElement("button");
+      redEff.setAttribute("class", "tag-red-eff");
+      redEff.onclick = () => {
+        passage.setAttribute("red", "none");
+        redEff.remove();
+      };
+      draghandle.appendChild(redEff);
+    }
   };
 
   draghandle.appendChild(draghandlebutton);
