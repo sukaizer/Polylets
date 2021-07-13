@@ -672,8 +672,26 @@ $(document).on("changetext", function () {
         left: pos + cstLeft + "px",
         position: "absolute",
       });
-    
+      //highlight deleted cells on hover
+      $(this).hover(
+        function() {
+          for (j = 1 ; j < row ; j++) {
+            console.log("j", j)
+            var cell = getCell(id+1, j)
+            console.log("cell", cell)
+            cell.style.backgroundColor = "lightblue";
+            cell.firstElementChild.style.backgroundColor = "lightblue"
+          }
+        }, function() {
+          for (j = 1 ; j < row ; j++) {
+            var cell = getCell(id+1, j)
+            cell.style.backgroundColor = "white";
+            cell.firstElementChild.style.backgroundColor = "white"
+          }
+        }
+      )
   });
+
   //update rows
   $(".del-row").each(function (id) {
       const tds = document.getElementsByTagName("tr");
@@ -681,7 +699,22 @@ $(document).on("changetext", function () {
       const cst = document.getElementsByTagName("td")[0].offsetHeight;
       $(this).attr("onclick", "deleteRow(" + (id+1) + ")");
       $(this).css({ top: (h - cst/2) + "px", left: "3%", position: "absolute" });
-    
+      //highlight deleted cells on hover
+      $(this).hover(
+        function() {
+          for (j = 1 ; j < col ; j++) {
+            console.log("j", j)
+            var cell = getCell(j, id+1)
+            console.log("cell", cell)
+            cell.style.backgroundColor = "lightblue";
+          }
+        }, function() {
+          for (j = 1 ; j < col ; j++) {
+            var cell = getCell(j, id+1)
+            cell.style.backgroundColor = "white";
+          }
+        }
+      )
   });
 
   //highlight on autofill

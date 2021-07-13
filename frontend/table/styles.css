@@ -244,12 +244,6 @@ button {
   empty-cells: show;
 }
 
-.tbl tr:nth-child(even) {
-  background-color: #eee;
-}
-.tbl tr:nth-child(odd) {
-  background-color: #fff;
-}
 
 th {
   background: rgb(194, 186, 186);
