@@ -369,6 +369,7 @@ function addRow() {
   for (i = 0; i < col - 1; i++) {
     if (i == 0) {
       const nth = document.createElement("th");
+      nth.setAttribute("contenteditable", "true");
       $("tr:last-child").append(nth);
     }
     const ntd = document.createElement("td");
@@ -393,6 +394,7 @@ function addCol() {
   $("tr").each(function (index) {
     if (index == 0) {
       const nth = document.createElement("th");
+      nth.setAttribute("contenteditable", "true");
       $(this).append(nth);
     } else {
       const ntd = document.createElement("td");
