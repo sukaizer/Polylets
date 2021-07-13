@@ -680,13 +680,13 @@ $(document).on("changetext", function () {
             var cell = getCell(id+1, j)
             console.log("cell", cell)
             cell.style.backgroundColor = "lightblue";
-            cell.firstElementChild.style.backgroundColor = "lightblue"
+            cell.firstElementChild.style.backgroundColor = "lightblue";
           }
         }, function() {
           for (j = 1 ; j < row ; j++) {
             var cell = getCell(id+1, j)
             cell.style.backgroundColor = "white";
-            cell.firstElementChild.style.backgroundColor = "white"
+            cell.firstElementChild.style.backgroundColor = "white";
           }
         }
       )
@@ -707,11 +707,13 @@ $(document).on("changetext", function () {
             var cell = getCell(j, id+1)
             console.log("cell", cell)
             cell.style.backgroundColor = "lightblue";
+            cell.firstElementChild.style.backgroundColor = "lightblue";
           }
         }, function() {
           for (j = 1 ; j < col ; j++) {
             var cell = getCell(j, id+1)
             cell.style.backgroundColor = "white";
+            cell.firstElementChild.style.backgroundColor = "white";
           }
         }
       )
