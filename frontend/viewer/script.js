@@ -10,7 +10,6 @@ $(document).ready(function () {
   $("#content").trigger("click");
   $(document).bind("selectionchange", function () {
     selection = window.getSelection().toString();
-    console.log("selection", selection);
   });
   $(document).on("mouseup", function (e) {
     if (isOverPasButt == false) {
