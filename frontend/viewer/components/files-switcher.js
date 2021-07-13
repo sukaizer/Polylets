@@ -9,6 +9,9 @@ app.component("files-switcher", {
       nbFiles: 0,
     };
   },
+  mounted() {
+    this.getData();
+  },
 
   /*html*/
   template: `
@@ -18,15 +21,15 @@ app.component("files-switcher", {
                 <button class="button-bar" @click="onAction(i)"> {{names[i]}} </button>
             </div>
         </div>
-
                 `,
   methods: {
     async uploadFile() {
       file = document.getElementById("myfiles").files[0];
-      for (const i of this.names) {
-        if (file.name == i) break;
-      }
       if (file) {
+        console.log(file.name);
+        for (const i of this.names) {
+          if (file.name == i) return;
+        }
         var reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function (evt) {
@@ -48,6 +51,7 @@ app.component("files-switcher", {
     },
 
     onAction(index) {
+      console.log(this.names);
       document.getElementById("content").innerHTML = this.filesArray[index];
       this.fileId = index;
       this.$emit("current-file", index);
@@ -71,6 +75,29 @@ app.component("files-switcher", {
       };
 
       fetch("/files", options);
+    },
+
+    async getData() {
+      const rf = await fetch("/files");
+      const filesData = await rf.json();
+      if (filesData.length != 0) {
+        console.log(filesData);
+        filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
+        console.log(filesData);
+        for (let index = 0; index < filesData.length; index++) {
+          document.getElementById("content").innerHTML = this.toDOM(
+            filesData[index].file
+          ).innerHTML;
+          setTimeout(() => {
+            this.filesArray.push(this.toDOM(filesData[index].file).innerHTML);
+            this.names.push(filesData[index].fileName);
+            this.fileId = this.nbFiles;
+            this.$emit("current-file", this.fileId);
+            this.nbFiles++;
+          }, 100);
+        }
+        console.log(this.names);
+      }
     },
 
     toJSON(node) {

@@ -9,6 +9,11 @@ const app = Vue.createApp({
       lastDragged: 0,
     };
   },
+
+  mounted() {
+    this.getData();
+  },
+
   methods: {
     toJSON(node) {
       let propFix = { for: "htmlFor", class: "className" };
@@ -294,6 +299,27 @@ const app = Vue.createApp({
       this.savedProperty = "Saved !";
       await delay(1000);
       this.savedProperty = "";
+    },
+
+    async getData() {
+      const res = await fetch("/notes");
+      const data = await res.json();
+      for (item of data) {
+        const note = {
+          id: item.id,
+          locId: item.locId,
+          passage: item.passage,
+          annotation: item.annotation,
+          fileId: item.fileId,
+          startIndex: item.startIndex,
+          endIndex: item.endIndex,
+          startOffset: item.startOffset,
+          endOffset: item.endOffset,
+          yPosition: item.yPosition,
+        };
+        this.notes.push(note);
+        this.index++;
+      }
     },
 
     //edits the annotation in the array
