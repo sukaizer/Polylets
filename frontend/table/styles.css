@@ -217,15 +217,25 @@ button {
 }
 
 .new-column {
-  float: left;
-  width: 2%;
+  position :relative;
+  background-color: yellowgreen;
+  color: white;
+  border: white ;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  top: 0.5%;
+  left: 7%;
   border-radius: 10px;
   text-align: center;
 }
 
 .new-row {
-  height: 2%;
-  width: 2%;
+  position: relative;
+  background-color: yellowgreen;
+  color: white;
+  border: white;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  top : 6%;
+  left : 0%;
   border-radius: 10px;
   text-align: center;
 }
@@ -269,4 +279,20 @@ textarea {
   max-height: 70%;
   background-color: white;
   border :1px solid rgb(88, 88, 88);
+}
+
+.del-col {
+  border-radius: 10px;
+  color: white;
+  background-color: red;
+  border :1px solid white;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+}
+
+.del-row {
+  border-radius: 10px;
+  color: white;
+  background-color: red;
+  border :1px solid white;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
