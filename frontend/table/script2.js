@@ -346,7 +346,7 @@ function addRow() {
     $("tr:last-child").append(ntd);
   }
   const butt = document.createElement("button");
-  butt.innerHTML = "X";
+  butt.innerHTML = "✕";
   butt.setAttribute("class", "del-row");
   butt.setAttribute("onclick", "deleteRow(" + row + ")");
   row += 1;
@@ -370,10 +370,10 @@ function addCol() {
     }
   });
   const butt = document.createElement("button");
-  butt.innerHTML = "X";
+  butt.innerHTML = "✕";
   butt.setAttribute("class", "del-col");
   butt.setAttribute("onclick", "deleteCol(" + col + ")");
-  $(".document").prepend(butt);
+  $(".document").append(butt);
   col += 1;
   $(".tbl colgroup").append(document.createElement("col"));
   var a = document.getElementsByClassName("table-line")[0];
@@ -456,7 +456,6 @@ async function exportRows() {
 //getting a cell of the table with its coordinates
 function getCell(x, y) {
   tr = document.getElementsByTagName("tr");
-  console.log("y", y)
   yaxis = tr[y];
   first = yaxis.firstElementChild;
   for (i = 1; i <= x; i++) {
@@ -584,7 +583,7 @@ $(".tbl tr:nth-child(2) td").each(function (index) {
     buttCol.innerHTML = "✕";
     buttCol.setAttribute("class", "del-col");
     buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
-    $(".document").prepend(buttCol);
+    $(".document").append(buttCol);
     $(".tbl colgroup").append(document.createElement("col"));
   
 });
@@ -660,13 +659,11 @@ $(document).on("changetext", function () {
 
   //update col
   $(".del-col").each(function (id) {
+      $(this).off()
       $(this).attr("onclick", "deleteCol(" + (id+1) + ")");
       const i = id + 2 ;
       const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position().left;
       const cstLeft = document.getElementsByTagName("td")[0].offsetWidth*0.75;
-      console.log("cstmleft",cstLeft)
-      const cstTop = document.getElementById("tbl").offsetTop;
-      const docTop = document.getElementsByClassName("document")[0].offsetTop;
       $(this).css({
         top: 2.5  + "%",
         left: pos + cstLeft + "px",
@@ -676,9 +673,7 @@ $(document).on("changetext", function () {
       $(this).hover(
         function() {
           for (j = 1 ; j < row ; j++) {
-            console.log("j", j)
-            var cell = getCell(id+1, j)
-            console.log("cell", cell)
+            var cell = getCell(id+1, j);
             cell.style.backgroundColor = "lightblue";
             cell.firstElementChild.style.backgroundColor = "lightblue";
           }
@@ -694,6 +689,7 @@ $(document).on("changetext", function () {
 
   //update rows
   $(".del-row").each(function (id) {
+      $(this).off()
       const tds = document.getElementsByTagName("tr");
       const h = tds[id+1].getBoundingClientRect().top;
       const cst = document.getElementsByTagName("td")[0].offsetHeight;
@@ -703,9 +699,7 @@ $(document).on("changetext", function () {
       $(this).hover(
         function() {
           for (j = 1 ; j < col ; j++) {
-            console.log("j", j)
             var cell = getCell(j, id+1)
-            console.log("cell", cell)
             cell.style.backgroundColor = "lightblue";
             cell.firstElementChild.style.backgroundColor = "lightblue";
           }
