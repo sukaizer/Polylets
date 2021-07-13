@@ -49,16 +49,6 @@ function save(i) {
   }
 }
 
-function openWindow(i) {
-  var myWindow = window.open("", "", "");
-  var element = document.createElement("div");
-  element.setAttribute("id", "document");
-  element.appendChild(files[passages[i].fileId]);
-  myWindow.document.write(element.innerHTML);
-  console.log(passages[i]);
-  reselect(myWindow, passages[i]);
-}
-
 //function to unpin and resets note position
 function unpin(i) {
   $(function () {
@@ -137,7 +127,13 @@ async function getData() {
     passageContent.setAttribute("class", "passage-content");
     passageContent.innerHTML = el.textContent;
     passageContent.ondblclick = () => {
-      openWindow(newRef.getAttribute("id"));
+      openWindow(
+        passages[newRef.getAttribute("id")].fileId,
+        passages[newRef.getAttribute("id")].startOffset,
+        passages[newRef.getAttribute("id")].endOffset,
+        passages[newRef.getAttribute("id")].startIndex,
+        passages[newRef.getAttribute("id")].endIndex
+      );
     };
     newRef.style.overflow = scroll;
     newRef.appendChild(passageContent);
@@ -239,54 +235,91 @@ function toDOM(input) {
   return node;
 }
 
-//reselects passage in second window where original file is opened
-function reselect(myWindow, selectionObject) {
-  //scroll to the position
-  //myWindow.document.getElementById("document").scrollTo(0, selectionObject.yPosition);
+function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
+  var myWindow = window.open("", "", "");
+  var element = document.createElement("div");
+  element.setAttribute("id", "document");
+  element.appendChild(files[id]);
+  myWindow.document.write(element.innerHTML);
 
-  //reselect the selection using startIndex and endIndex
-  let documentNode = myWindow.document.getElementById("document");
-  let node = documentNode.firstElementChild;
-  let i = 0;
-  let startNode;
-  let endNode;
+  //parse the indexes
+  var startIndex = startIndex.split(",").map(function (item) {
+    return parseInt(item, 10);
+  });
 
-  while (node) {
-    if (i == selectionObject.startIndex) {
-      startNode = node;
+  var endIndex = endIndex.split(",").map(function (item) {
+    return parseInt(item, 10);
+  });
+
+  console.log(startIndex);
+  console.log(endIndex);
+
+  let object = {
+    startOffset: startOffset,
+    endOffset: endOffset,
+    startIndex: startIndex,
+    endIndex: endIndex,
+  };
+  reselect(myWindow, object);
+}
+
+//input a reference
+//ouput the node using that reference in the dom tree
+function getElement(window, ref) {
+  console.log(ref);
+  var positions = ref;
+  //var positions = ref.split(/,/),
+  var elem = window.document.getElementById("document");
+
+  while (elem && positions.length) {
+    if (positions.length == 1) {
+      elem = elem.childNodes[positions.shift()];
+    } else {
+      elem = elem.children[positions.shift()];
     }
-    if (i == selectionObject.endIndex) {
-      endNode = node;
-    }
-    i++;
-    node = node.nextElementSibling || node.nextSibling;
+    console.log(positions[0]);
+    console.log(elem);
   }
+  console.log(positions);
+  return elem;
+}
+
+function reselect(window, selectionObject) {
+  console.log(selectionObject.startOffset);
+  console.log(selectionObject.endOffset);
+
+  //scroll to the position
+  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
+
+  console.log(selectionObject);
+
+  console.log(selectionObject.startIndex);
+  let startNode = this.getElement(window, selectionObject.startIndex);
+  let endNode = this.getElement(window, selectionObject.endIndex);
+
+  console.log("start");
   console.log(startNode);
+  console.log("end");
   console.log(endNode);
 
-  //re-create the selection using offset
+  console.log("start node");
+  console.log(startNode);
+  console.log("end node");
+  console.log(endNode);
+  console.log("sibling");
+
   const newRange = new Range();
-  console.log(startNode.firstChild.firstChild);
 
-  if (startNode.firstChild.nodeName == "STRONG") {
-    console.log("start strong");
-    newRange.setStart(
-      startNode.firstChild.firstChild,
-      selectionObject.startOffset
-    );
-  } else {
-    newRange.setStart(startNode.firstChild, selectionObject.startOffset);
-  }
+  console.log(selectionObject.startOffset);
+  console.log(selectionObject.endOffset);
 
-  if (endNode.firstChild.nodeName == "STRONG") {
-    console.log("end strong");
-    newRange.setEnd(endNode.firstChild.firstChild, selectionObject.endOffset);
-  } else {
-    console.log(endNode.firstChild);
-    newRange.setEnd(endNode.firstChild, selectionObject.endOffset);
-  }
+  //console.log(endNode.length);
 
-  let selection = myWindow.window.getSelection();
+  newRange.setStart(startNode, selectionObject.startOffset);
+  newRange.setEnd(endNode, selectionObject.endOffset);
+
+  console.log(newRange);
+  let selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(newRange);
 }
