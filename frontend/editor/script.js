@@ -9,6 +9,7 @@ getData();
 
 setTimeout(function () {
   fillQuill();
+  getSavedQuill();
 }, 500);
 
 //fill quill with database
@@ -16,7 +17,6 @@ async function fillQuill() {
   //wait database
   const rs = await fetch("/tbl");
   const tbl = await rs.json();
-  console.log("tbl", tbl);
   //split into arrays
   var data = [];
   var tmp = [];
@@ -97,6 +97,37 @@ async function fillQuill() {
     }
     quill.insertText(getCursorPosition(), "\n\n");
   }
+}
+
+async function getSavedQuill() {
+  const rs = await fetch("/save-quill");
+  const savedData = await rs.json();
+
+  console.log("saved", savedData)
+  quill.setSelection(0, 0);
+  for (item of savedData) {
+    quill.insertText(getCursorPosition(), `${item.txt}`)
+  }
+}
+
+async function saveQuill() {
+  const text = quill.getText();
+  const save = {
+    txt : text,
+  }
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  console.log("data", save);
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(save),
+  };
+  console.log("option", options);
+  fetch("/save-quill", options);
+  await delay(1000);
 }
 
 // create a passage object which will be added to the sidebar and sets the listeners
@@ -425,6 +456,17 @@ $("#save-button").click(function () {
   downloadInnerHtml(fileName, "editor", "text/html");
   zipFile();
 });
+
+setTimeout(() => {
+  $("a").hover(
+    function() {
+      saveQuill();
+    }, function() {
+      console.log("saved");
+    }
+  )
+}, 600);
+
 
 const saver = document.querySelector(".save-button");
 

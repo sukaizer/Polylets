@@ -77,8 +77,23 @@ databasePassages.remove({}, { multi: true }, function (err, numRemoved) {
   databasePassages.loadDatabase(function (err) {});
 });
 
+const databaseQuill = new Datastore("databaseQuill.db");
+databaseQuill.loadDatabase();
+
+
 const databaseTable = new Datastore("databaseTable.db");
 databaseTable.loadDatabase();
+
+databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
+  databaseTable.loadDatabase(function (err) {});
+});
+
+const databaseTableSave = new Datastore("databaseTableSave.db");
+databaseTableSave.loadDatabase();
+
+databaseTableSave.remove({}, { multi: true }, function (err, numRemoved) {
+  databaseTableSave.loadDatabase(function (err) {});
+});
 
 const databaseSearches = new Datastore("databaseSearches.db");
 databaseSearches.loadDatabase();
@@ -104,8 +119,29 @@ app.get("/notes", (rq, rs) => {
   });
 });
 
+app.get("/save-quill", (rq, rs) => {
+  databaseQuill.find({}, (err, data) => {
+    if (err) {
+      rs.end();
+      return;
+    }
+    rs.json(data);
+  });
+});
+
+
 app.get("/tbl", (rq, rs) => {
   databaseTable.find({}, (err, data) => {
+    if (err) {
+      rs.end();
+      return;
+    }
+    rs.json(data);
+  });
+});
+
+app.get("/save-tbl", (rq, rs) => {
+  databaseTableSave.find({}, (err, data) => {
     if (err) {
       rs.end();
       return;
@@ -148,6 +184,19 @@ app.post("/files", (rq, rs) => {
   rs.json(data);
 });
 
+app.post("/save-quill", (rq, rs) => {
+  databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseQuill.loadDatabase(function (err) {});
+  });
+  databaseTableSave.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseTableSave.loadDatabase(function (err) {});
+  });
+  const data = rq.body;
+  databaseQuill.insert(data);
+  rs.json(data);
+});
+
+
 app.post("/tbl", (rq, rs) => {
   databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
     databaseTable.loadDatabase(function (err) {});
@@ -156,6 +205,18 @@ app.post("/tbl", (rq, rs) => {
   databaseTable.insert(data);
   rs.json(data);
 });
+
+app.post("/save-tbl", (rq, rs) => {
+  databaseTableSave.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseTableSave.loadDatabase(function (err) {});
+  });
+  databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseQuill.loadDatabase(function (err) {});
+  });
+  const data = rq.body;
+  databaseTableSave.insert(data);
+  rs.json(data);
+})
 
 app.post("/srch", (rq, rs) => {
   databaseSearches.remove({}, { multi: true }, function (err, numRemoved) {

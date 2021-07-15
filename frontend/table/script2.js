@@ -42,6 +42,9 @@ function iterId() {
   iter += 1;
 }
 
+
+
+
 getData();
 async function getData() {
   //html files
@@ -192,6 +195,49 @@ async function getData() {
   //initialize table
   $(document).trigger("changetext");
 }
+
+getSavedTable();
+async function getSavedTable() {
+  const rs = await fetch("/save-tbl");
+  const tbl = await rs.json();
+
+  if (tbl.length != 0) {
+    document.getElementById("tbl").remove();
+    for (item of tbl) {
+      const doc = document.createElement("div")
+      doc.innerHTML = `${item.table}`
+      document.getElementById("table-line").append(doc);
+    }
+  }
+}
+
+
+async function saveTable() {
+  const tbl = document.getElementById("tbl").outerHTML;
+  const save = {
+    table : tbl,
+  }
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  console.log("data", save);
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(save),
+  };
+  console.log("option", options);
+  fetch("/save-tbl", options);
+  await delay(1000);
+}
+
+// getSavedTable();
+// async function getSavedTable() {
+//   const rs = await fetch("/save-tbl");
+//   const tbl = await rs.json();
+// }
+
 
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
@@ -426,6 +472,7 @@ async function exportColumn() {
         nth: 0,
         group: i - 1,
         txt: htxt,
+        // export: "col",
       };
       data.push(header);
     }
@@ -442,6 +489,7 @@ async function exportColumn() {
         endIndex: tis.attributes[7].value,
         nth: tis.attributes[8].value,
         group: tis.attributes[9].value,
+        // export: "col",
       };
       data.push(note);
       inc += 1;
@@ -460,6 +508,7 @@ async function exportRows() {
         nth: 0,
         group: i - 1,
         txt: htxt,
+        // export: "row",
       };
       data.push(header);
     }
@@ -476,6 +525,7 @@ async function exportRows() {
         endIndex: tis.attributes[7].value,
         group: tis.attributes[8].value,
         nth: tis.attributes[9].value,
+        // export: "row",
       };
       data.push(note);
       inc += 1;
@@ -603,6 +653,15 @@ function autoFill(doc, startPosition, offset) {
     }
   }
 }
+
+
+
+$("a").hover( function() {
+  saveTable();
+}, function() {
+  console.log("saved")
+});
+
 
 $("td").each(function () {
   $(this).append(document.createElement("textarea"));
@@ -911,6 +970,8 @@ function copyNoteToElement(xferData, dropZone, ev, tis) {
   dropZone.append(createPassage(xferData));
 }
 
+
+
 // Global holding the current drag-and-drop interaction, if any
 let dnd = null;
 
@@ -958,7 +1019,7 @@ class DragAndDropInteraction {
 
     this.crt = null;
     this.crt =
-      this.draggedElem.firstElementChild.nextElementSibling.cloneNode(true);
+    this.draggedElem.firstElementChild.nextElementSibling.cloneNode(true);
     this.crt.style.height = "80px";
     this.crt.style.width = "80px";
     document.body.appendChild(this.crt);
