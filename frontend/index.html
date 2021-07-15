@@ -5,17 +5,51 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" />
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+        
+            .icon {
+                width: 100px;
+                font-family: Helvetica;
+                text-align: center;
+                cursor: default;
+            }
+        
+            .icon img {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 64px;
+                margin-bottom: 2px;
+            }
+        
+        </style>
     <title>Home</title>
 </head>
 <body>
-    <div class="navigationBar">
-        <a href="../viewer">Viewer</a>
-        <a href="../editor">Editor</a>
-        <a href="../reader">Reader</a>
-        <a href="../table">Table</a>
-        <a href="../canvas">Canvas</a>
-        <a href="../searcher">Searcher</a>
-    </div>
-</body>
+
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../viewer','',1200,600)" src="/icons/viewer.png"><span>Viewer</span></div>
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../editor','',1200,600)" src="/icons/edit.png"><span>Editor</span></div>
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../reader','',1200,600)" src="/icons/reader.png"><span>Reader</span></div>
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../table','',1200,600)" src="/icons/table.png"><span>Table</span></div>
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../canvas','',1200,600)" src="/icons/canvas.png"><span>Canvas</span></div>
+        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../searcher','',1200,600)" src="/icons/searcher.png"><span>Searcher</span></div>
+
+    </body>
+
+<script>
+    function createPopupWin(pageURL, pageTitle,
+        popupWinWidth, popupWinHeight) {
+        var left = (screen.width - popupWinWidth) / 2;
+        var top = (screen.height - popupWinHeight) / 4;
+
+        var myWindow = window.open(pageURL, pageTitle,
+            'resizable=yes, width=' + popupWinWidth
+            + ', height=' + popupWinHeight + ', top='
+            + top + ', left=' + left);
+        }
+</script>
 
 </html>
