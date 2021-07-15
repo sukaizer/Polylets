@@ -2,6 +2,7 @@
 const express = require("express");
 const open = require("open");
 const Datastore = require("nedb");
+const { spawn } = require("child_process");
 
 const app = express();
 
@@ -11,6 +12,7 @@ const { log } = require("util");
 
 //send back research results
 var searches = [];
+var numCitations;
 
 // setup of different routes
 app.use("/viewer", express.static("../frontend/viewer"));
@@ -30,6 +32,53 @@ app.get("/text", (request, response) => {
     }
     response.status(200).json(results.rows);
   });
+});
+
+app.post("/citate", (req, res) => {
+  const data = req.body;
+  numCitations = data.number;
+});
+
+app.get("/result", (req, res) => {
+  var noAnnot;
+  var tot;
+  var numberDoc;
+  var names = [];
+  var str = "";
+  databaseHtmlFiles.find({}, function (err, docs) {
+    numberDoc = docs.length;
+    for (let i = 0; i < docs.length; i++) {
+      names[i] = docs[i].fileName;
+    }
+    for (let i = 0; i < numberDoc; i++) {
+      databasePassages.find({ fileId: i }, function (err, docs) {
+        str +=
+          "Number of passage objects created in the document " +
+          names[i] +
+          " : " +
+          docs.length +
+          " ";
+      });
+    }
+  });
+  databasePassages.find({ annotation: "" }, function (err, docs) {
+    noAnnot = docs.length;
+  });
+  databasePassages.find({}, function (err, docs) {
+    tot = docs.length;
+  });
+
+  setTimeout(function () {
+    res.send(
+      "Number of passage objects used in the editor : " +
+        numCitations.toString() +
+        " Number of passage objects created : " +
+        tot +
+        " Number of passage objects created without annotation : " +
+        noAnnot +
+        str
+    );
+  }, 300);
 });
 
 // automatically opens the link
