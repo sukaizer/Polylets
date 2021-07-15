@@ -12,6 +12,22 @@ setTimeout(function () {
   getSavedQuill();
 }, 500);
 
+document.getElementById("save-button").onclick = () => {
+  var num = document.getElementById("editor").querySelectorAll("a").length - 3;
+  let object = {
+    number: num,
+  };
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(object),
+  };
+
+  fetch("/citate", options);
+};
+
 //fill quill with database
 async function fillQuill() {
   //wait database
