@@ -28,7 +28,7 @@ function autofill(note, trow, tcol) {
   trow = parseInt(trow, 10);
   tcol = parseInt(tcol, 10);
   while (elem.length > 1) {
-    if (trow > row) {
+    if (trow >= row) {
       addRow();
     }
     cell = getCell(tcol, trow);
@@ -652,6 +652,7 @@ function autoFill(doc, startPosition, offset) {
       console.log(restOfPassages[j]);
     }
   }
+  $(document).trigger("changetext");
 }
 
 
