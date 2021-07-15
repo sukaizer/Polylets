@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>US20150330429A1</title>
+  <style type="text/css">
+    code {
+      white-space: pre-wrap;
+    }
+
+    span.smallcaps {
+      font-variant: small-caps;
+    }
+
+    span.underline {
+      text-decoration: underline;
+    }
+
+    div.column {
+      display: inline-block;
+      vertical-align: top;
+      width: 50%;
+    }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <p><strong>Object Pointing: A Complement to Bitmap Pointing in GUIs</strong></p>
+  <p><strong>ABSTRACT</strong></p>
+  <p>Pointing has been conceptualized and implemented so far as the act of selecting pixels in bitmap displays. We show
+    that the current technique, which we call bitmap pointing (BMP), is often sub-optimal as it requires continuous
+    information from the mouse while the system often just needs the discrete specification of objects. The paper
+    introduces object pointing (OP), a novel interaction technique based on a special screen cursor that skips empty
+    spaces, thus drastically reducing the waste of input information. We report data from 1D and 2D Fitts’ law
+    experiments showing that OP outperforms BMP and that the performance facilitation increases with the task’s index of
+    difficulty. We discuss the implementation of OP in current interfaces. Key words: Input and Interaction
+    Technologies, Pointing, Fitts’ law.</p>
+  <p align=CENTER><img src=../assets/OP1.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p align=CENTER><img src=../assets/OP2.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p align=CENTER><img src=../assets/OP3.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p align=CENTER><img src=../assets/OP4.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p align=CENTER><img src=../assets/OP5.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p align=CENTER><img src=../assets/OP6.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p style="background-color: yellow;">The pointing paradigm was serial, but no longer reciprocal in the sense of a back
+    and forth (stationary) movement. To track the green target, which every successful click made to jump to another
+    unpredictably determined object, the participant had to produce a series of clicks to follow the path dictated by
+    the program across graphical objects. This task was designed to mimic a rather common situation in GUIs (e.g.,
+    reaching and clicking the FILE menu, then the OPEN item, then browsing a tree, etc.). This also show that OP can
+    apply to many types of widgets such as menus, buttons and icons. Within each display, 11 successive clicks had to be
+    made, yielding blocks of 10 measurements of MT. If a target object was missed by the click, it remained the target,
+    waiting for a correct click, and so a 0% error rate was imposed on all participants.</p>
+  <p align=CENTER><img src=../assets/OP7.png width=358 height=326 x-sas-useimagewidth x-sas-useimageheightalign=bottom>
+  </p>
+  <p style="background-color: yellow;">Rather than an alternative to BMP, OP should be viewed as an optional mode made
+    available to users beside the usual BMP mode. One should be allowed to switch opportunistically from BMP to OP, via
+    some simple mouse command, to occasionally cope with pixels (e.g., in a drawing task). So the interface should
+    provide the user with some convenient means to switch back and forth between OP and BMP.</p>
+  <p style="background-color: yellow;">Obviously, OP does not yield any benefit for selection within display regions
+    that are tiled with graphical objects, because such regions offer no voids. For example, following a horizontal path
+    to reach the next hierarchical level in a cascading menu costs time [2], but for little or no gain: the probability
+    that the cursor aims at the next (previous) level of the hierarchy when it starts moving to the right (left) is
+    about 1. One solution is to make the menu highlight jump by discrete steps depending on the initial direction of
+    cursor motion [13]. Facilitating pointing across tiled spaces with such a technique might nicely complement OP.</p>
+  <p><strong>Future Work</strong></p>
+  <p style="background-color: yellow;">One problem that remains to be addressed is the design of an appropriate command
+    to switch back and forth between OP and BMP. Among the possibilities, we may think of a combination of mouse-button
+    presses or a brief oscillation of the cursor. The latter option seems particularly worth examining. Quick, small
+    amplitude oscillations of the hand, very easy to produce [9], might usefully enrich the vocabulary of input
+    commands.</p>
+</body>
+
+</html>
