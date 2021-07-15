@@ -6,6 +6,10 @@ var selection = "";
 $("#createPassage").fadeOut(0);
 $("#createPassage").css("position", "absolute");
 
+function send() {
+  mountedApp.sendToServer();
+}
+
 $(document).ready(function () {
   $("#content").trigger("click");
   $(document).bind("selectionchange", function () {

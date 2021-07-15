@@ -1,5 +1,14 @@
 var files = [];
-const colours = ["lightblue", "thistle", "lightyellow", "magenta", "salmon", "cyan", "orange", "violet"]
+const colours = [
+  "lightblue",
+  "thistle",
+  "lightyellow",
+  "magenta",
+  "salmon",
+  "cyan",
+  "orange",
+  "violet",
+];
 var c = 0;
 //getData();
 var i = 0;
@@ -16,33 +25,34 @@ var selection = "";
 $("#createPassage").fadeOut(0);
 $(".indicationMark").fadeOut(0);
 
-$(document).ready(function() {
+$(document).ready(function () {
   $(document).trigger("click");
-  $(document).on("mousemove", function(e){
+  $(document).on("mousemove", function (e) {
     pageX = e.pageX;
     pageY = e.pageY;
   });
-  $(document).bind("selectionchange", function() {
+  $(document).bind("selectionchange", function () {
     selection = window.getSelection().toString();
     console.log("selection", selection);
-  })
-  $(document).on("mouseup", function(e){
-    if(isOverPasButt == false) {
+  });
+  $(document).on("mouseup", function (e) {
+    if (isOverPasButt == false) {
       upX = e.pageX;
       upY = e.pageY;
     }
     if (selection != "") {
       console.log(upX, upY);
-      $("#createPassage").css({
-        'left': upX + 5,
-        'top' : upY + 10,
-      }).fadeIn(200);
+      $("#createPassage")
+        .css({
+          left: upX + 5,
+          top: upY + 10,
+        })
+        .fadeIn(200);
     } else {
       $("#createPassage").fadeOut(200);
     }
   });
 });
-
 
 //new research
 var createButton = $("#create");
@@ -69,21 +79,18 @@ createButton.on("click", () => {
 
   keyObject.ondrop = (ev) => {
     const note = document.getElementById(ev.dataTransfer.getData("text"));
-    //const note = ev.dataTransfer.getData("note");
-
     passageContainer.appendChild(note);
   };
 
   textArea.placeholder = "enter search terms";
-  textArea.setAttribute("class", "search-area")
+  textArea.setAttribute("class", "search-area");
 
   keyObject.setAttribute("class", "key-object");
-  keyObject.setAttribute("data-color", c)
-  
+  keyObject.setAttribute("data-color", c);
+
   handle.setAttribute("class", "handle");
   handle.style.backgroundColor = colours[c];
-  
-  
+
   name.setAttribute("class", "input");
   name.placeholder = "type name";
   button.setAttribute("class", "closebutton");
@@ -96,12 +103,11 @@ createButton.on("click", () => {
   if (string != "") textArea.value = string;
   button.onclick = () => {
     keyObject.remove();
-    colours.splice(keyObject.attributes[1], 1)
+    colours.splice(keyObject.attributes[1], 1);
   };
   $(".searchBar").append(keyObject);
   c += 1;
 });
-
 
 //passage
 var positionButton = $("#createPassage");
@@ -109,12 +115,13 @@ positionButton.on("click", () => {
   $(".passagesBar").append(createPassage());
 });
 positionButton.hover(
-  function() {
+  function () {
     isOverPasButt = true;
-  }, function() {
+  },
+  function () {
     isOverPasButt = false;
   }
-)
+);
 
 // create a passage object which will be added to the sidebar and sets the listeners
 function createPassage() {
@@ -122,9 +129,6 @@ function createPassage() {
   const string = selection.toString();
   const passage = document.createElement("div");
   passage.setAttribute("id", i);
-  passage.setAttribute("green", "none");
-  passage.setAttribute("blue", "none");
-  passage.setAttribute("red", "none");
   passage.setAttribute("class", "passage");
   passage.setAttribute("draggable", "true");
   passage.ondragstart = (ev) => {
@@ -164,8 +168,6 @@ function createPassage() {
   quoteA.setAttribute("class", "notes");
   quoteA.appendChild(document.createTextNode(string));
   quote.appendChild(quoteA);
-  
-  
 
   const annotationArea = document.createElement("div");
   annotationArea.setAttribute("class", "annotationArea");
@@ -199,15 +201,13 @@ function createPassage() {
   return passage;
 }
 
-
-
 $(".execSearch").on("click", () => {
   $(".doc").remove();
   var matches = [];
   var submatches = [];
 
   const tArea = document.getElementsByClassName("search-area");
-  var i = 0
+  var i = 0;
   for (text of tArea) {
     submatches = [];
     var search = text.value;
@@ -221,7 +221,7 @@ $(".execSearch").on("click", () => {
           sQuery: item,
         };
         console.log(item);
-        submatches.push(item)
+        submatches.push(item);
         sendToServer(keyword);
       }
     }
@@ -236,33 +236,32 @@ $(".execSearch").on("click", () => {
     }, 200);
   }
 
-  
   setTimeout(function () {
-    for (i = 0 ; i < matches.length ; i++) {
-      for (j = 0 ; j < matches[i].length ; j++) {
+    for (i = 0; i < matches.length; i++) {
+      for (j = 0; j < matches[i].length; j++) {
         findAllMatches(matches[i][j], i);
       }
     }
   }, 400);
-  
-  setTimeout(function() {
+
+  setTimeout(function () {
     $(".mark").hover(
-      function() {
-        $(".indicationMark").css({
-          'left': pageX + 5,
-          'top' : pageY - 20,
-          'background-color' : colours[$(this).data('color')],
-        }).fadeIn(150);
-        $(".indicationMark").text(tArea[$(this).data('color')].value);
-      }, function() {
+      function () {
+        $(".indicationMark")
+          .css({
+            left: pageX + 5,
+            top: pageY - 20,
+            "background-color": colours[$(this).data("color")],
+          })
+          .fadeIn(150);
+        $(".indicationMark").text(tArea[$(this).data("color")].value);
+      },
+      function () {
         $(".indicationMark").fadeOut(150);
       }
-    )
+    );
   }, 600);
-
 });
-
-
 
 //send data to server
 async function sendToServer(data) {
@@ -303,11 +302,10 @@ async function searchResponse() {
     docu.appendChild(scroll);
     document.getElementById("docBar").appendChild(docu);
     const height = docu.firstElementChild.scrollHeight;
-    console.log("h", height)
+    console.log("h", height);
     files[i].setAttribute("data-height", height);
   }
 }
-
 
 /////////////
 
@@ -327,14 +325,14 @@ function findAllMatches(searchTerm, left) {
   if (searchTerm != " ") {
     const reg = new RegExp(searchTerm, "ig");
     console.log(reg);
-    
+
     let scrollbarYCoord;
     var scrollbarZone;
     //loop over every node in the DOM tree
     for (i = 0; i < files.length; i++) {
       scrollbarZone = document.getElementById("scroll" + i);
 
-      scrollbarZone.style.width = (15*(left+1)) + "px";
+      scrollbarZone.style.width = 15 * (left + 1) + "px";
       const file = document.getElementById("file" + i);
       file.querySelectorAll("*").forEach(function (node) {
         if (reg.test(node.innerText) && node.name != "strong") {
@@ -346,14 +344,15 @@ function findAllMatches(searchTerm, left) {
           //according to stack overflow and documentations, the coordiante is quite tricky
 
           const fileHeight = file.attributes[2].value;
-          scrollbarYCoord = getYcoords(node)*262/fileHeight;
+          scrollbarYCoord = (getYcoords(node) * 262) / fileHeight;
           //once get the y coordinate, we create a div called mark with the corresponding y position
           let mark = document.createElement("div");
           mark.className = "mark";
-          mark.setAttribute("data-color", left)
+          mark.setAttribute("data-color", left);
           mark.style.position = "absolute";
-          mark.style.top = (scrollbarZone.offsetTop-10*(i+1)) + scrollbarYCoord + "px";
-          mark.style.left = scrollbarZone.offsetLeft + 12*left + "px";
+          mark.style.top =
+            scrollbarZone.offsetTop - 10 * (i + 1) + scrollbarYCoord + "px";
+          mark.style.left = scrollbarZone.offsetLeft + 12 * left + "px";
           mark.style.backgroundColor = colours[left];
           scrollbarZone.appendChild(mark);
 
@@ -380,5 +379,3 @@ function getRandomInt(max) {
   }
   return r;
 }
-
-

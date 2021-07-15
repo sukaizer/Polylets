@@ -57,7 +57,7 @@ app.get("/result", (req, res) => {
           names[i] +
           " : " +
           docs.length +
-          " ";
+          "  ";
       });
     }
   });
@@ -72,8 +72,10 @@ app.get("/result", (req, res) => {
     res.send(
       "Number of passage objects used in the editor : " +
         numCitations.toString() +
+        "<br/>" +
         " Number of passage objects created : " +
         tot +
+        "<br/>" +
         " Number of passage objects created without annotation : " +
         noAnnot +
         str
