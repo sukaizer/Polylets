@@ -6,9 +6,13 @@ var displayIsAll = true; //true if all notes are displayed currently
 var el = undefined;
 
 getData();
+getSavedQuillData();
 
 setTimeout(function () {
   fillQuill();
+}, 300);
+
+setTimeout(() => {
   getSavedQuill();
 }, 500);
 
@@ -115,6 +119,21 @@ async function fillQuill() {
   }
 }
 
+async function getSavedQuillData() {
+  const rs = await fetch("/save-quill-data");
+  const savedData = await rs.json();
+
+  for (item of savedData) {
+    console.log("item", ``)
+    const obj = {
+      passageId : `${item.passageId}`,
+      id : `${item.id}`,
+      scrollPos : `${item.scrollPos}`
+    }
+    scrollPositions.push(obj)
+  }
+}
+
 async function getSavedQuill() {
   const rs = await fetch("/save-quill");
   const savedData = await rs.json();
@@ -122,12 +141,13 @@ async function getSavedQuill() {
   console.log("saved", savedData)
   quill.setSelection(0, 0);
   for (item of savedData) {
-    quill.insertText(getCursorPosition(), `${item.txt}`)
+    document.getElementsByClassName("ql-editor")[0].innerHTML = `${item.txt}`
+    console.log("savedDATASS", `${item.saveData}`)
   }
 }
 
 async function saveQuill() {
-  const text = quill.getText();
+  const text = document.getElementsByClassName("ql-editor")[0].innerHTML;
   const save = {
     txt : text,
   }
@@ -143,7 +163,27 @@ async function saveQuill() {
   };
   console.log("option", options);
   fetch("/save-quill", options);
-  await delay(1000);
+
+  //saveData
+  const saveData = []
+  for(i = 0 ; i < scrollPositions.length ; i++) {
+    const elemData = {
+      passageId : scrollPositions[i].passageId,
+      id : scrollPositions[i].id,
+      scrollPos : scrollPositions[i].scrollPos
+    }
+    saveData.push(elemData); 
+  }
+  const options2 = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(saveData),
+  };
+  console.log("option2", options2);
+  fetch("/save-quill-data", options2);
+
 }
 
 // create a passage object which will be added to the sidebar and sets the listeners
@@ -420,13 +460,17 @@ class HighlightBlot extends Inline {
       document.getElementById(id).attributes[10].value
     );
 
-    node.addEventListener("mouseenter", function (event) {
-      highlight(id);
-    });
+    node.setAttribute("onmouseenter", "highlight("+ id + ")");
 
-    node.addEventListener("mouseleave", function (event) {
-      unhighlight(id);
-    });
+    node.setAttribute("onmouseout", "unhighlight(" + id + ")")
+
+    // node.addEventListener("mouseenter", function (event) {
+    //   highlight(id);
+    // });
+
+    // node.addEventListener("mouseleave", function (event) {
+    //   unhighlight(id);
+    // });
 
     return node;
   }
@@ -474,7 +518,7 @@ $("#save-button").click(function () {
 });
 
 setTimeout(() => {
-  $("a").hover(
+  $(".navigationBar a").hover(
     function() {
       saveQuill();
     }, function() {
@@ -563,8 +607,10 @@ function toDOM(input) {
 
 //when hovering over the note in editor, sidebar is scrolled and the right passage is shown
 function highlight(id) {
+  console.log("highlighting")
   if (displayIsAll) {
     scrollPositions.forEach((sp) => {
+      console.log("sp", sp)
       if (sp.passageId == id) {
         document.getElementById("sidebar").scrollTo(0, sp.scrollPos);
         $("#" + id).css({ transform: "scale(1.2)" });

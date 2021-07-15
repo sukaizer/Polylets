@@ -128,8 +128,22 @@ databasePassages.remove({}, { multi: true }, function (err, numRemoved) {
   databasePassages.loadDatabase(function (err) {});
 });
 
+
+
 const databaseQuill = new Datastore("databaseQuill.db");
 databaseQuill.loadDatabase();
+
+databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
+  databaseQuill.loadDatabase(function (err) {});
+});
+
+const databaseQuillData = new Datastore("databaseQuillData.db");
+databaseQuillData.loadDatabase();
+
+databaseQuillData.remove({}, { multi: true }, function (err, numRemoved) {
+  databaseQuillData.loadDatabase(function (err) {});
+});
+
 
 
 const databaseTable = new Datastore("databaseTable.db");
@@ -172,6 +186,17 @@ app.get("/notes", (rq, rs) => {
 
 app.get("/save-quill", (rq, rs) => {
   databaseQuill.find({}, (err, data) => {
+    if (err) {
+      rs.end();
+      return;
+    }
+    rs.json(data);
+  });
+});
+
+
+app.get("/save-quill-data", (rq, rs) => {
+  databaseQuillData.find({}, (err, data) => {
     if (err) {
       rs.end();
       return;
@@ -235,17 +260,28 @@ app.post("/files", (rq, rs) => {
   rs.json(data);
 });
 
+
+
 app.post("/save-quill", (rq, rs) => {
   databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
     databaseQuill.loadDatabase(function (err) {});
   });
-  databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
-    databaseTable.loadDatabase(function (err) {});
-  });
+  
   const data = rq.body;
   databaseQuill.insert(data);
   rs.json(data);
 });
+
+app.post("/save-quill-data", (rq, rs) => {
+  databaseQuillData.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseQuillData.loadDatabase(function (err) {});
+  });
+  
+  const data = rq.body;
+  databaseQuillData.insert(data);
+  rs.json(data);
+});
+
 
 
 app.post("/tbl", (rq, rs) => {
