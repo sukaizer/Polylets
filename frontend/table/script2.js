@@ -50,6 +50,8 @@ async function getData() {
   //html files
   const rf = await fetch("/files");
   const filesData = await rf.json();
+
+  
   filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
 
   for (let index = 0; index < filesData.length; index++) {
