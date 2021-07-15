@@ -1,10 +1,10 @@
 const Pool = require("pg").Pool;
 
 const pool = new Pool({
-  user: "me",
+  user: "raphael",
   host: "localhost",
   database: "search",
-  password: "password",
+  password: "raphael",
   port: 5432,
 });
 
@@ -41,7 +41,6 @@ const addText = (request, response) => {
 };
 
 const searchRank = (request, response) => {
-  console.log("1");
   const { s } = request.body;
   console.log(s);
   pool.query(

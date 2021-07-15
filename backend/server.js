@@ -239,8 +239,8 @@ app.post("/save-quill", (rq, rs) => {
   databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
     databaseQuill.loadDatabase(function (err) {});
   });
-  databaseTableSave.remove({}, { multi: true }, function (err, numRemoved) {
-    databaseTableSave.loadDatabase(function (err) {});
+  databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseTable.loadDatabase(function (err) {});
   });
   const data = rq.body;
   databaseQuill.insert(data);
@@ -249,6 +249,9 @@ app.post("/save-quill", (rq, rs) => {
 
 
 app.post("/tbl", (rq, rs) => {
+  databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseQuill.loadDatabase(function (err) {});
+  });
   databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
     databaseTable.loadDatabase(function (err) {});
   });
@@ -261,9 +264,7 @@ app.post("/save-tbl", (rq, rs) => {
   databaseTableSave.remove({}, { multi: true }, function (err, numRemoved) {
     databaseTableSave.loadDatabase(function (err) {});
   });
-  databaseQuill.remove({}, { multi: true }, function (err, numRemoved) {
-    databaseQuill.loadDatabase(function (err) {});
-  });
+  
   const data = rq.body;
   databaseTableSave.insert(data);
   rs.json(data);
