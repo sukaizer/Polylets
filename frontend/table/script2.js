@@ -23,7 +23,6 @@ function moveNote(dragElem, dropZone, dropevent, tis) {
   if (dragElem.className == "element draggable") {
     dropZone.appendChild(dragElem);
   } else if (dropZone.tagName == "TD") {
-    console.log("title");
     const targetAttr = dropZone.attributes;
     autofill(dragElem, targetAttr[1].value, targetAttr[2].value);
   }
@@ -48,7 +47,6 @@ function autofill(note, trow, tcol) {
     cell.append(elem[1]);
     trow += 1;
   }
-  elem[0].remove();
 }
 
 function iterId() {
@@ -657,6 +655,7 @@ var isMouseDown = false;
 //begin autofill
 function dragAutoF(x, y) {
   var tis = getCell(x, y);
+  console.log("tis", tis)
   if (tis.childNodes.length > 0) {
     isMouseDown = true;
     console.log("autoFstart");
@@ -664,6 +663,7 @@ function dragAutoF(x, y) {
       parseInt(tis.getAttribute("data-col")),
       parseInt(tis.getAttribute("data-row")),
     ]; //get the startCell
+    console.log("tis.lastElementChild.getAttribute()", tis.lastElementChild.getAttribute("data-fileid"))
     doc = document.getElementById(
       "docFolder" + tis.lastElementChild.getAttribute("data-fileid")
     );
@@ -728,14 +728,7 @@ function autoFill(doc, startPosition, offset) {
   $(document).trigger("changetext");
 }
 
-$("a").hover(
-  function () {
-    saveTable();
-  },
-  function () {
-    console.log("saved");
-  }
-);
+
 
 $("td").each(function () {
   $(this).append(document.createElement("textarea"));
@@ -953,7 +946,7 @@ function createPassage(data) {
 
   newAnnot.setAttribute("id", data.id);
   newAnnot.setAttribute("draggable", "true");
-  newAnnot.setAttribute("fileId", data.fileId);
+  newAnnot.setAttribute("data-fileId", data.fileId);
   newAnnot.setAttribute("id", data.id);
   newAnnot.setAttribute("data-startoffset", data.startOffset);
   newAnnot.setAttribute("data-endoffset", data.endOffset);
@@ -971,7 +964,7 @@ function createPassage(data) {
   );
 
   draghandlebutton.onclick = () => {
-    passage.remove();
+    newAnnot.remove();
     for (let i = 0; i < allPassages.length; i++) {
       if (allPassages[i] == passage) {
         allPassages.splice(i, 1);
@@ -1173,15 +1166,6 @@ class DragAndDropInteraction {
         );
         break;
 
-      // case "content->container": // move note from content pane to sidebar
-      //   // remove note from content and append it to sidebar
-      //   moveNoteToSidebar(this.draggedElem, this.dropZone, ev, this);
-      //   break;
-
-      // case "container->content": // move note from sidebar to content pane
-      //   // remove note from sidebar and append it to panel
-      //   moveNoteToContent(this.draggedElem, this.dropZone, ev, this);
-      //   break;
 
       case "container->tbl": // move note from sidebar to content pane
         // remove note from sidebar and append it to panel

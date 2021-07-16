@@ -74,17 +74,18 @@ async function fillQuill() {
   }
 
   console.log("sorted", data);
-
+  iter = 0;
   //any item in /tbl
   quill.setSelection(0, 0);
   for (item of data) {
     for (elem of item) {
       const cursor = getCursorPosition();
-
+      console.log("elem", elem)
       if (elem.nth == 0) {
         quill.insertText(getCursorPosition(), "\n");
         quill.insertText(getCursorPosition(), elem.txt);
       } else {
+        console.log("iter", iter)
         scrollPositions.push({
           passageId: elem.docId,
           id: iter,
@@ -92,7 +93,6 @@ async function fillQuill() {
         });
 
         var id = elem.docId;
-        console.log(document.getElementById(id));
         var highlength = 0;
 
         quill.insertText(getCursorPosition(), " [");
@@ -148,6 +148,7 @@ async function getSavedQuill() {
   const savedData = await rs.json();
 
   console.log("saved", savedData);
+  console.log("patchoulol")
   quill.setSelection(0, 0);
   for (item of savedData) {
     document.getElementsByClassName("ql-editor")[0].innerHTML = `${item.txt}`;
@@ -546,10 +547,14 @@ const quill = new Quill("#editor", {
   theme: "snow",
 });
 
-quill.on('text-change', function(delta, oldDelta, source) {
+$(document).on('keyup', function() {
   saveQuill()
 })
 
+
+function eraseQuill() {
+  document.getElementsByClassName("ql-editor")[0].innerHTML = "";
+}
 
 
 function downloadInnerHtml(filename, elId, mimeType) {
@@ -575,21 +580,23 @@ $("#save-button").click(function () {
 
 
 $("#refresh-button").click(function() {
-  console.log("hello")
-  getNewdata();
+  getNewData();
+  updateQuill();
 })
 
 
-setTimeout(() => {
-  $(".navigationBar a").hover(
-    function () {
-      saveQuill();
-    },
-    function () {
-      console.log("saved");
-    }
-  );
-}, 600);
+async function updateQuill()  {
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  eraseQuill();
+  getSavedQuillData();
+
+  await delay(300);
+  fillQuill();
+  
+  await delay(400);
+  getSavedQuill();
+}
+
 
 const saver = document.querySelector(".save-button");
 
@@ -787,7 +794,7 @@ async function getData() {
 
 
 //refresh only for the new data
-async function getNewdata() {
+async function getNewData() {
   const res = await fetch("/notes");
   const data = await res.json();
 
