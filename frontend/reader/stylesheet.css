@@ -4,7 +4,10 @@ body {
   font-weight: 300;
   /* display: flex; */
   margin: 0 auto;
-  width: 1500px;
+}
+
+a {
+  cursor: pointer;
 }
 
 .navigationBar {
@@ -64,7 +67,7 @@ body {
 
 .document {
   width: 60%;
-  height: 1000px;
+  height: 500px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
   float: left;
@@ -75,8 +78,8 @@ body {
 .annotationBar {
   margin: 0;
   background-color: #f8f8f8;
-  width: 370px;
-  height: 1000px;
+  width: 20%;
+  height: 500px;
   float: left;
   padding: 20px 0px 20px 40px;
   border-radius: 6px;

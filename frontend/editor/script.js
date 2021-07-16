@@ -18,7 +18,6 @@ setTimeout(() => {
   getSavedQuill();
 }, 500);
 
-
 document.getElementById("save-button").onclick = () => {
   var num = document.getElementById("editor").querySelectorAll("a").length - 3;
   let object = {
@@ -35,11 +34,9 @@ document.getElementById("save-button").onclick = () => {
   fetch("/citate", options);
 };
 
-
 function refresh() {
   document.location.reload();
 }
-
 
 //fill quill with database
 async function fillQuill() {
@@ -157,7 +154,7 @@ async function getSavedQuill() {
 }
 
 async function saveQuill() {
-  console.log("Save Quill content")
+  console.log("Save Quill content");
   const text = document.getElementsByClassName("ql-editor")[0].innerHTML;
   const save = {
     txt: text,
@@ -210,6 +207,7 @@ function createPassage(data) {
   passage.setAttribute("data-endOffset", data.endOffset);
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
+  passage.setAttribute("data-yPosition", data.yPosition);
 
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
@@ -369,7 +367,8 @@ function createPassage(data) {
       passage.getAttribute("data-startOffset"),
       passage.getAttribute("data-endOffset"),
       passage.getAttribute("data-startIndex"),
-      passage.getAttribute("data-endIndex")
+      passage.getAttribute("data-endIndex"),
+      passage.getAttribute("data-yPosition")
     );
   };
 
@@ -509,6 +508,10 @@ class HighlightBlot extends Inline {
     node.setAttribute(
       "data-endIndex",
       document.getElementById(id).attributes[10].value
+    );
+    node.setAttribute(
+      "data-yPosition",
+      document.getElementById(id).attributes[11].value
     );
 
     node.setAttribute("onmouseenter", "highlight(" + id + ")");
@@ -792,26 +795,24 @@ async function getData() {
   }
 }
 
-
 //refresh only for the new data
 async function getNewData() {
   const res = await fetch("/notes");
   const data = await res.json();
 
-  console.log("data", data)
+  console.log("data", data);
 
   //getAllIds
-  const newIds = []
+  const newIds = [];
   for (item of data) {
-    const id = parseInt(`${item.id}`, 10)
+    const id = parseInt(`${item.id}`, 10);
     newIds.push(id);
-    
   }
 
-  const existingIds = []
+  const existingIds = [];
   //delete unwanted passages
   for (item of allPassages) {
-    const id2 = parseInt(item.id, 10)
+    const id2 = parseInt(item.id, 10);
     if (!newIds.includes(id2)) {
       item.remove();
     }
@@ -822,11 +823,11 @@ async function getNewData() {
 
   //adding new passages
   for (item of data) {
-    console.log("newIds",item);
+    console.log("newIds", item);
     console.log("existingIds", existingIds);
-    console.log("exist", existingIds.includes(parseInt(`${item.id}`,10)));
-    if(!existingIds.includes(parseInt(`${item.id}`,10))) {
-      if(document.getElementById("docFolder" + `${item.fileId}`) == null) {
+    console.log("exist", existingIds.includes(parseInt(`${item.id}`, 10)));
+    if (!existingIds.includes(parseInt(`${item.id}`, 10))) {
+      if (document.getElementById("docFolder" + `${item.fileId}`) == null) {
         const newDoc = document.createElement("div");
         newDoc.setAttribute("id", "docFolder" + `${item.fileId}`);
         const h3 = document.createElement("h3");
@@ -847,16 +848,33 @@ async function getNewData() {
         .append(createPassage(item));
       i += 10;
     }
-    
   }
-
 }
 
-
-
 //open window when double click
-function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
-  var myWindow = window.open("", "", "");
+function openWindow(
+  id,
+  startOffset,
+  endOffset,
+  startIndex,
+  endIndex,
+  yPosition
+) {
+  var left = (screen.width - 700) / 2;
+  var top = (screen.height - 1000) / 4;
+
+  var myWindow = window.open(
+    "",
+    "",
+    "resizable=yes, width=" +
+      700 +
+      ", height=" +
+      1000 +
+      ", top=" +
+      top +
+      ", left=" +
+      left
+  );
   var element = document.createElement("div");
   element.setAttribute("id", "document");
   element.appendChild(files[id]);
@@ -879,6 +897,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
     endOffset: endOffset,
     startIndex: startIndex,
     endIndex: endIndex,
+    yPosition: yPosition,
   };
   reselect(myWindow, object);
 }
@@ -909,7 +928,10 @@ function reselect(window, selectionObject) {
   console.log(selectionObject.endOffset);
 
   //scroll to the position
-  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
+  setTimeout(() => {
+    window.document.documentElement.style = "scroll-behavior: smooth";
+    window.window.scroll(0, selectionObject.yPosition);
+  }, 200);
 
   console.log(selectionObject);
 
@@ -1164,7 +1186,6 @@ class DragAndDropInteraction {
     }
     saveQuill();
   }
-
 }
 
 // Singleton class holding the state for a drag-and-drop interaction

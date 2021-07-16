@@ -70,8 +70,9 @@ createButton.on("click", () => {
   handle.appendChild(name);
   handle.appendChild(button);
   const textArea = document.createElement("textarea");
-  const separator = document.createElement("hr");
   const passageContainer = document.createElement("div");
+  passageContainer.appendChild(document.createTextNode("Related Field"));
+  passageContainer.setAttribute("class", "passage-container");
 
   keyObject.ondragover = (ev) => {
     ev.preventDefault();
@@ -95,10 +96,8 @@ createButton.on("click", () => {
   name.placeholder = "type name";
   button.setAttribute("class", "closebutton");
   button.style.backgroundColor = colours[c];
-  separator.setAttribute("class", "rounded");
   keyObject.appendChild(handle);
   keyObject.appendChild(textArea);
-  keyObject.appendChild(separator);
   keyObject.appendChild(passageContainer);
   if (string != "") textArea.value = string;
   button.onclick = () => {
