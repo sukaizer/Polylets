@@ -276,7 +276,9 @@ app.post("/save-quill-data", (rq, rs) => {
   databaseQuillData.remove({}, { multi: true }, function (err, numRemoved) {
     databaseQuillData.loadDatabase(function (err) {});
   });
-  
+  databaseTable.remove({}, { multi: true }, function (err, numRemoved) {
+    databaseTable.loadDatabase(function (err) {});
+  });
   const data = rq.body;
   databaseQuillData.insert(data);
   rs.json(data);
