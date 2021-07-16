@@ -4,7 +4,6 @@ body {
   font-weight: 400;
   /* display: flex; */
   margin: 0 auto;
-  width: 1500px;
 }
 
 button {
@@ -22,11 +21,11 @@ button {
 }
 
 .document {
-  width: 1000px;
+  width: 60%;
   height: 1025px;
   border: 1px solid #d8d8d8;
   /* this makes the div scrollable  */
-  float: left;
+  float: right;
   padding: 20px;
   border-radius: 6px;
 }
@@ -37,7 +36,7 @@ button {
 
 #sidebar {
   background-color: #f8f8f8;
-  width: 220px;
+  width: 90%;
   height: 93%;
   margin: 10px 10px;
   float: left;
@@ -51,9 +50,9 @@ button {
 .sidepannel {
   background-color: #f8f8f8;
   color: #333;
-  width: 250px;
+  width: 25%;
   height: 1050px;
-  float: left;
+  float: right;
   font-size: 15px;
   padding: 10px 20px 5px 20px;
   border-radius: 10px;
@@ -96,7 +95,7 @@ button {
   margin-top: 20px;
   margin-bottom: 30px;
   /* background-color: #f8f8f8; */
-  width: 200px;
+  width: 90%;
   height: 260px;
   border: 1px solid #d8d8d8;
   border-radius: 7px;

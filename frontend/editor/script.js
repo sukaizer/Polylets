@@ -18,7 +18,6 @@ setTimeout(() => {
   getSavedQuill();
 }, 500);
 
-
 document.getElementById("save-button").onclick = () => {
   var num = document.getElementById("editor").querySelectorAll("a").length - 3;
   let object = {
@@ -35,11 +34,9 @@ document.getElementById("save-button").onclick = () => {
   fetch("/citate", options);
 };
 
-
 function refresh() {
   document.location.reload();
 }
-
 
 //fill quill with database
 async function fillQuill() {
@@ -156,7 +153,7 @@ async function getSavedQuill() {
 }
 
 async function saveQuill() {
-  console.log("Save Quill content")
+  console.log("Save Quill content");
   const text = document.getElementsByClassName("ql-editor")[0].innerHTML;
   const save = {
     txt: text,
@@ -209,6 +206,7 @@ function createPassage(data) {
   passage.setAttribute("data-endOffset", data.endOffset);
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
+  passage.setAttribute("data-yPosition", data.yPosition);
 
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
@@ -509,6 +507,10 @@ class HighlightBlot extends Inline {
       "data-endIndex",
       document.getElementById(id).attributes[10].value
     );
+    node.setAttribute(
+      "data-yPosition",
+      document.getElementById(id).attributes[11].value
+    );
 
     node.setAttribute("onmouseenter", "highlight(" + id + ")");
 
@@ -546,11 +548,9 @@ const quill = new Quill("#editor", {
   theme: "snow",
 });
 
-quill.on('text-change', function(delta, oldDelta, source) {
-  saveQuill()
-})
-
-
+quill.on("text-change", function (delta, oldDelta, source) {
+  saveQuill();
+});
 
 function downloadInnerHtml(filename, elId, mimeType) {
   var elHtml = document.getElementById(elId).firstElementChild.innerHTML;
@@ -573,12 +573,10 @@ $("#save-button").click(function () {
   zipFile();
 });
 
-
-$("#refresh-button").click(function() {
-  console.log("hello")
+$("#refresh-button").click(function () {
+  console.log("hello");
   refresh();
-})
-
+});
 
 setTimeout(() => {
   $(".navigationBar a").hover(
@@ -787,7 +785,21 @@ async function getData() {
 
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
-  var myWindow = window.open("", "", "");
+  var left = (screen.width - 700) / 2;
+  var top = (screen.height - 1000) / 4;
+
+  var myWindow = window.open(
+    "",
+    "",
+    "resizable=yes, width=" +
+      700 +
+      ", height=" +
+      1000 +
+      ", top=" +
+      top +
+      ", left=" +
+      left
+  );
   var element = document.createElement("div");
   element.setAttribute("id", "document");
   element.appendChild(files[id]);
@@ -1095,7 +1107,6 @@ class DragAndDropInteraction {
     }
     saveQuill();
   }
-
 }
 
 // Singleton class holding the state for a drag-and-drop interaction

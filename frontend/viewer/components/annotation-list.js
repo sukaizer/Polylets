@@ -1,7 +1,7 @@
 app.component("annotation-list", {
   /*html*/
   emits: ["update", "del", "selection", "drag"],
-  props: ["note", "current"],
+  props: ["note", "current", "dragged"],
 
   data() {
     return {
@@ -14,7 +14,10 @@ app.component("annotation-list", {
   template: `
         <template v-if="note.fileId === current">
           <div class="passage draggable" :id="'pass'+note.id" draggable="true">
-            <div class="draghandle" @click="dragObject(note.locId)">
+            <div v-if="dragged == note.locId" class="draghandle" @click="dragObject(note.locId)" style="background-color: #f5a7a7">
+              <button class="draghandle-button" @click="del(note.locId)" ref="button" @mouseover="mouseover" @mouseleave="mouseleave" style="background-color: #f5a7a7">✕</button>
+            </div>
+            <div v-else class="draghandle" @click="dragObject(note.locId)">
               <button class="draghandle-button" @click="del(note.locId)" ref="button" @mouseover="mouseover" @mouseleave="mouseleave">✕</button>
             </div>
             <div class="quote">

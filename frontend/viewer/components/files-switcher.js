@@ -17,10 +17,17 @@ app.component("files-switcher", {
   template: `
          <div>
             <input class="button switch" id="myfiles" type="file" accept=".html" @change="uploadFile">
+            <br/>
+            <br/>
+            <br/>
             <div v-for="(n, i) in nbFiles">
                 <button v-if="fileId == i" class="button-bar-selected" @click="onAction(i)"> {{names[i]}} </button>
                 <button v-else class="button-bar" @click="onAction(i)"> {{names[i]}} </button>
             </div>
+            <br>
+                        <br/>
+            <br/>
+            <br/>
         </div>
                 `,
   methods: {

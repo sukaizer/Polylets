@@ -228,7 +228,21 @@ async function getData() {
 
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
-  var myWindow = window.open("", "", "");
+  var left = (screen.width - 700) / 2;
+  var top = (screen.height - 1000) / 4;
+
+  var myWindow = window.open(
+    "",
+    "",
+    "resizable=yes, width=" +
+      700 +
+      ", height=" +
+      1000 +
+      ", top=" +
+      top +
+      ", left=" +
+      left
+  );
   var element = document.createElement("div");
   element.setAttribute("id", "document");
   element.appendChild(files[id]);

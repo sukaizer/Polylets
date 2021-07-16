@@ -7,6 +7,8 @@ var files = [];
 
 var file;
 var NOTEWIDTH;
+var isShowing = false;
+var showedRef;
 
 $(function () {
   $("#snaptarget").sortable();
@@ -65,6 +67,7 @@ function unpin(i) {
     document.getElementById("buttonUnpin" + i).style.visibility = "hidden";
     div.style.height = 210 + "px";
     div.style.width = 300 + "px";
+    div.hidden = true;
   });
 }
 
@@ -90,6 +93,7 @@ async function getData() {
       endOffset: el.getAttribute("data-endoffset"),
       startIndex: el.getAttribute("data-startindex"),
       endIndex: el.getAttribute("data-endindex"),
+      yPosition: el.getAttribute("data-yPosition"),
     };
 
     const newRef = document.createElement("li");
@@ -110,6 +114,7 @@ async function getData() {
     refBut1.appendChild(document.createTextNode("SAVE"));
     refBut1.onclick = () => {
       save(newRef.getAttribute("id"));
+      isShowing = false;
     };
     newRef.appendChild(refBut1);
 
@@ -132,7 +137,8 @@ async function getData() {
         passages[newRef.getAttribute("id")].startOffset,
         passages[newRef.getAttribute("id")].endOffset,
         passages[newRef.getAttribute("id")].startIndex,
-        passages[newRef.getAttribute("id")].endIndex
+        passages[newRef.getAttribute("id")].endIndex,
+        passages[newRef.getAttribute("id")].yPosition
       );
     };
     newRef.style.overflow = scroll;
@@ -146,9 +152,6 @@ async function getData() {
       "mouseenter",
       function (event) {
         if (!clicked[newRef.getAttribute("id")]) {
-          newRef.style.top = event.pageY - 10 + "px"; //or whatever
-          newRef.style.left = event.pageX - 10 + "px"; // or whatever
-          console.log(event.clientX + "px" + " " + event.clientY + "px");
         } else {
           $("#" + newRef.getAttribute("id")).css({
             transform: "rotate(30deg)",
@@ -157,11 +160,24 @@ async function getData() {
             transition: "transform .2s",
           });
         }
-        newRef.hidden = false;
         event.target.style.color = "orange";
       },
       false
     );
+
+    el.onclick = (event) => {
+      event.stopPropagation();
+      if (!clicked[newRef.getAttribute("id")]) {
+        if (!isShowing) {
+          newRef.hidden = false;
+          isShowing = true;
+          showedRef = newRef;
+          newRef.style.top = event.pageY - 10 + "px"; //or whatever
+          newRef.style.left = event.pageX - 10 + "px"; // or whatever
+          console.log(event.clientX + "px" + " " + event.clientY + "px");
+        }
+      }
+    };
 
     el.addEventListener(
       "mouseleave",
@@ -174,17 +190,27 @@ async function getData() {
       false
     );
 
-    newRef.addEventListener(
-      "mouseleave",
-      function (event) {
-        if (clicked[newRef.getAttribute("id")]) {
-          newRef.hidden = false;
-        } else {
-          newRef.hidden = true;
-        }
-      },
-      false
-    );
+    // newRef.addEventListener(
+    //   "mouseleave",
+    //   function (event) {
+    //     if (clicked[newRef.getAttribute("id")]) {
+    //       newRef.hidden = false;
+    //     } else {
+    //       newRef.hidden = true;
+    //     }
+    //   },
+    //   false
+    // );
+
+    newRef.onclick = (e) => {
+      e.stopPropagation();
+    };
+
+    document.onclick = () => {
+      if (isShowing) showedRef.hidden = true;
+      isShowing = false;
+    };
+
     clicked[i] = false;
   }
   NOTEWIDTH = $(".draggable").width();
@@ -235,8 +261,30 @@ function toDOM(input) {
   return node;
 }
 
-function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
-  var myWindow = window.open("", "", "");
+function openWindow(
+  id,
+  startOffset,
+  endOffset,
+  startIndex,
+  endIndex,
+  yPosition
+) {
+  var left = (screen.width - 700) / 2;
+  var top = (screen.height - 1000) / 4;
+
+  var myWindow = window.open(
+    "",
+    "",
+    "resizable=yes, width=" +
+      700 +
+      ", height=" +
+      1000 +
+      ", top=" +
+      top +
+      ", left=" +
+      left
+  );
+
   var element = document.createElement("div");
   element.setAttribute("id", "document");
   element.appendChild(files[id]);
@@ -259,6 +307,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
     endOffset: endOffset,
     startIndex: startIndex,
     endIndex: endIndex,
+    yPosition: yPosition,
   };
   reselect(myWindow, object);
 }
@@ -289,7 +338,10 @@ function reselect(window, selectionObject) {
   console.log(selectionObject.endOffset);
 
   //scroll to the position
-  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
+  window.document
+    .getElementById("document")
+    .scrollTo(0, selectionObject.yPosition);
+  console.log(selectionObject.yPosition);
 
   console.log(selectionObject);
 
