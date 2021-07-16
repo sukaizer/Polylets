@@ -33,9 +33,9 @@
                     <div id="content" class="document" @mouseover="setDisable"></div>
                     <div id="container" class="annotationBar" style="user-select: none;">
                         <button id="createPassage" class="button" @click="addAnnotation()">Pass-It</button>
-                        <template v-if="this.notes.length > 0">
+                        <!-- <template v-if="this.notes.length > 0">
                             <button class="button" @click="sendToServer">SAVE</button>
-                        </template>
+                        </template> -->
                         <span class="saved" :disable="true"> {{ savedProperty }} </span>
                     
                         <!-- here goes the template -->
