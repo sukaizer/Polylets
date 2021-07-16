@@ -38,10 +38,9 @@ button {
   background-color: #f8f8f8;
   width: 90%;
   height: 85%;
-  margin: 10px 10px;
   float: left;
   font-size: 15px;
-  padding: 10px 20px 5px 0px;
+  padding: 10px 20px 5px 30px;
   border-radius: 10px;
   overflow: scroll;
   scroll-behavior: smooth;
