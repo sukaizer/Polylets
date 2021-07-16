@@ -4,6 +4,8 @@ const files = [];
 var scrollPositions = [];
 var displayIsAll = true; //true if all notes are displayed currently
 var el = undefined;
+var fileNames = [];
+var list = [];
 
 getData();
 getSavedQuillData();
@@ -124,13 +126,13 @@ async function getSavedQuillData() {
   const savedData = await rs.json();
 
   for (item of savedData) {
-    console.log("item", ``)
+    console.log("item", ``);
     const obj = {
-      passageId : `${item.passageId}`,
-      id : `${item.id}`,
-      scrollPos : `${item.scrollPos}`
-    }
-    scrollPositions.push(obj)
+      passageId: `${item.passageId}`,
+      id: `${item.id}`,
+      scrollPos: `${item.scrollPos}`,
+    };
+    scrollPositions.push(obj);
   }
 }
 
@@ -138,19 +140,19 @@ async function getSavedQuill() {
   const rs = await fetch("/save-quill");
   const savedData = await rs.json();
 
-  console.log("saved", savedData)
+  console.log("saved", savedData);
   quill.setSelection(0, 0);
   for (item of savedData) {
-    document.getElementsByClassName("ql-editor")[0].innerHTML = `${item.txt}`
-    console.log("savedDATASS", `${item.saveData}`)
+    document.getElementsByClassName("ql-editor")[0].innerHTML = `${item.txt}`;
+    console.log("savedDATASS", `${item.saveData}`);
   }
 }
 
 async function saveQuill() {
   const text = document.getElementsByClassName("ql-editor")[0].innerHTML;
   const save = {
-    txt : text,
-  }
+    txt: text,
+  };
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   console.log("data", save);
@@ -165,14 +167,14 @@ async function saveQuill() {
   fetch("/save-quill", options);
 
   //saveData
-  const saveData = []
-  for(i = 0 ; i < scrollPositions.length ; i++) {
+  const saveData = [];
+  for (i = 0; i < scrollPositions.length; i++) {
     const elemData = {
-      passageId : scrollPositions[i].passageId,
-      id : scrollPositions[i].id,
-      scrollPos : scrollPositions[i].scrollPos
-    }
-    saveData.push(elemData); 
+      passageId: scrollPositions[i].passageId,
+      id: scrollPositions[i].id,
+      scrollPos: scrollPositions[i].scrollPos,
+    };
+    saveData.push(elemData);
   }
   const options2 = {
     method: "POST",
@@ -183,7 +185,6 @@ async function saveQuill() {
   };
   console.log("option2", options2);
   fetch("/save-quill-data", options2);
-
 }
 
 // create a passage object which will be added to the sidebar and sets the listeners
@@ -403,9 +404,29 @@ function showAllPassages() {
   displayIsAll = true;
   const annotationList = document.getElementById("sidebar");
   annotationList.innerHTML = "";
+  for (i in list) {
+    if (list[i] != null) {
+      const newDoc = document.createElement("div");
+      newDoc.setAttribute("id", "docFolder" + i);
+      const h3 = document.createElement("h3");
+      h3.setAttribute("id", "Document" + i);
+      const h3FDecoy = document.createElement("span");
+      h3FDecoy.innerText = fileNames[i];
+      h3.appendChild(h3FDecoy);
+      const h3SDecoy = document.createElement("span");
+
+      const h3SSDecoy = document.createElement("span");
+      h3SDecoy.appendChild(h3SSDecoy);
+      h3.appendChild(h3SDecoy);
+      newDoc.appendChild(h3);
+      annotationList.append(newDoc);
+    }
+  }
 
   allPassages.forEach((element) => {
-    annotationList.appendChild(element);
+    document
+      .getElementById("docFolder" + element.getAttribute("data-fileid"))
+      .append(element);
   });
 }
 
@@ -427,8 +448,29 @@ function ShowNotesWithSameTag(color) {
   const annotationList = document.getElementById("sidebar");
   annotationList.innerHTML = "";
 
+  for (i in list) {
+    if (list[i] != null) {
+      const newDoc = document.createElement("div");
+      newDoc.setAttribute("id", "docFolder" + i);
+      const h3 = document.createElement("h3");
+      h3.setAttribute("id", "Document" + i);
+      const h3FDecoy = document.createElement("span");
+      h3FDecoy.innerText = fileNames[i];
+      h3.appendChild(h3FDecoy);
+      const h3SDecoy = document.createElement("span");
+
+      const h3SSDecoy = document.createElement("span");
+      h3SDecoy.appendChild(h3SSDecoy);
+      h3.appendChild(h3SDecoy);
+      newDoc.appendChild(h3);
+      annotationList.append(newDoc);
+    }
+  }
   notesWithSameTag.forEach((element) => {
     annotationList.appendChild(element);
+    document
+      .getElementById("docFolder" + element.getAttribute("data-fileid"))
+      .append(element);
   });
 }
 
@@ -460,9 +502,9 @@ class HighlightBlot extends Inline {
       document.getElementById(id).attributes[10].value
     );
 
-    node.setAttribute("onmouseenter", "highlight("+ id + ")");
+    node.setAttribute("onmouseenter", "highlight(" + id + ")");
 
-    node.setAttribute("onmouseout", "unhighlight(" + id + ")")
+    node.setAttribute("onmouseout", "unhighlight(" + id + ")");
 
     // node.addEventListener("mouseenter", function (event) {
     //   highlight(id);
@@ -519,14 +561,14 @@ $("#save-button").click(function () {
 
 setTimeout(() => {
   $(".navigationBar a").hover(
-    function() {
+    function () {
       saveQuill();
-    }, function() {
+    },
+    function () {
       console.log("saved");
     }
-  )
+  );
 }, 600);
-
 
 const saver = document.querySelector(".save-button");
 
@@ -607,10 +649,10 @@ function toDOM(input) {
 
 //when hovering over the note in editor, sidebar is scrolled and the right passage is shown
 function highlight(id) {
-  console.log("highlighting")
+  console.log("highlighting");
   if (displayIsAll) {
     scrollPositions.forEach((sp) => {
-      console.log("sp", sp)
+      console.log("sp", sp);
       if (sp.passageId == id) {
         document.getElementById("sidebar").scrollTo(0, sp.scrollPos);
         $("#" + id).css({ transform: "scale(1.2)" });
@@ -681,13 +723,43 @@ async function getData() {
     var element = toDOM(filesData[index].file);
     element.setAttribute("id", "document");
     files[index] = element;
+    fileNames[index] = filesData[index].fileName;
   }
 
   const res = await fetch("/notes");
   const data = await res.json();
-  var i = 100;
+
+  for (i in data) {
+    const id = data[i].fileId;
+    if (list[id] == null) {
+      list[id] = [];
+    }
+    list[id].push(data[i]);
+  }
+
+  //add div per document
+  for (i in list) {
+    if (list[i] != null) {
+      const newDoc = document.createElement("div");
+      newDoc.setAttribute("id", "docFolder" + i);
+      const h3 = document.createElement("h3");
+      h3.setAttribute("id", "Document" + i);
+      const h3FDecoy = document.createElement("span");
+      h3FDecoy.innerText = fileNames[i];
+      h3.appendChild(h3FDecoy);
+      const h3SDecoy = document.createElement("span");
+
+      const h3SSDecoy = document.createElement("span");
+      h3SDecoy.appendChild(h3SSDecoy);
+      h3.appendChild(h3SDecoy);
+      newDoc.appendChild(h3);
+      document.getElementById("sidebar").append(newDoc);
+    }
+  }
   for (item of data) {
-    document.getElementById("sidebar").append(createPassage(item));
+    document
+      .getElementById("docFolder" + `${item.fileId}`)
+      .append(createPassage(item));
     i += 10;
   }
 }

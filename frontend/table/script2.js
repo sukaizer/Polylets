@@ -42,16 +42,12 @@ function iterId() {
   iter += 1;
 }
 
-
-
-
 getData();
 async function getData() {
   //html files
   const rf = await fetch("/files");
   const filesData = await rf.json();
 
-  
   filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
 
   for (let index = 0; index < filesData.length; index++) {
@@ -206,19 +202,18 @@ async function getSavedTable() {
   if (tbl.length != 0) {
     document.getElementById("tbl").remove();
     for (item of tbl) {
-      const doc = document.createElement("div")
-      doc.innerHTML = `${item.table}`
+      const doc = document.createElement("div");
+      doc.innerHTML = `${item.table}`;
       document.getElementById("table-line").append(doc);
     }
   }
 }
 
-
 async function saveTable() {
   const tbl = document.getElementById("tbl").outerHTML;
   const save = {
-    table : tbl,
-  }
+    table: tbl,
+  };
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   console.log("data", save);
@@ -239,7 +234,6 @@ async function saveTable() {
 //   const rs = await fetch("/save-tbl");
 //   const tbl = await rs.json();
 // }
-
 
 //open window when double click
 function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
@@ -657,14 +651,14 @@ function autoFill(doc, startPosition, offset) {
   $(document).trigger("changetext");
 }
 
-
-
-$("a").hover( function() {
-  saveTable();
-}, function() {
-  console.log("saved")
-});
-
+$("a").hover(
+  function () {
+    saveTable();
+  },
+  function () {
+    console.log("saved");
+  }
+);
 
 $("td").each(function () {
   $(this).append(document.createElement("textarea"));
@@ -673,13 +667,12 @@ $("td").each(function () {
 //add delete column
 $(".tbl tr:nth-child(2) td").each(function (index) {
   //columns
-    const buttCol = document.createElement("button");
-    buttCol.innerHTML = "✕";
-    buttCol.setAttribute("class", "del-col");
-    buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
-    $(".document").append(buttCol);
-    $(".tbl colgroup").append(document.createElement("col"));
-  
+  const buttCol = document.createElement("button");
+  buttCol.innerHTML = "✕";
+  buttCol.setAttribute("class", "del-col");
+  buttCol.setAttribute("onclick", "deleteCol(" + index + ")");
+  $(".document").append(buttCol);
+  $(".tbl colgroup").append(document.createElement("col"));
 });
 
 //add delete rows
@@ -753,57 +746,60 @@ $(document).on("changetext", function () {
 
   //update col
   $(".del-col").each(function (id) {
-      $(this).off()
-      $(this).attr("onclick", "deleteCol(" + (id+1) + ")");
-      const i = id + 2 ;
-      const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position().left;
-      const cstLeft = document.getElementsByTagName("td")[id].offsetWidth*0.75;
-      $(this).css({
-        top: 2.5  + "%",
-        left: pos + cstLeft + "px",
-        position: "absolute",
-      });
-      //highlight deleted cells on hover
-      $(this).hover(
-        function() {
-          for (j = 1 ; j < row ; j++) {
-            var cell = getCell(id+1, j);
-            cell.style.backgroundColor = "lightblue";
-            cell.firstElementChild.style.backgroundColor = "lightblue";
-          }
-        }, function() {
-          for (j = 1 ; j < row ; j++) {
-            var cell = getCell(id+1, j)
-            cell.style.backgroundColor = "white";
-            cell.firstElementChild.style.backgroundColor = "white";
-          }
-        },
+    $(this).off();
+    $(this).attr("onclick", "deleteCol(" + (id + 1) + ")");
+    const i = id + 2;
+    const pos = $(".tbl tr:nth-child(2) td:nth-child(" + i + ")").position()
+      .left;
+    const cstLeft = document.getElementsByTagName("td")[id].offsetWidth * 0.75;
+    $(this).css({
+      top: 2.5 + "%",
+      left: pos + cstLeft + "px",
+      position: "absolute",
+    });
+    //highlight deleted cells on hover
+    $(this).hover(
+      function () {
+        for (j = 1; j < row; j++) {
+          var cell = getCell(id + 1, j);
+          cell.style.backgroundColor = "lightblue";
+          cell.firstElementChild.style.backgroundColor = "lightblue";
+        }
+      },
+      function () {
+        for (j = 1; j < row; j++) {
+          var cell = getCell(id + 1, j);
+          cell.style.backgroundColor = "white";
+          cell.firstElementChild.style.backgroundColor = "white";
+        }
+      }
     );
   });
 
   //update rows
   $(".del-row").each(function (id) {
-      $(this).off()
-      const tds = document.getElementsByTagName("tr");
-      const h = tds[id+1].getBoundingClientRect().top;
-      const cst = document.getElementsByTagName("tr")[id+1].offsetHeight;
-      $(this).attr("onclick", "deleteRow(" + (id+1) + ")");
-      $(this).css({ top: (h - cst/4) + "px", left: "3%", position: "absolute" });
-      //highlight deleted cells on hover
-      $(this).hover(
-        function() {
-          for (j = 1 ; j < col ; j++) {
-            var cell = getCell(j, id+1)
-            cell.style.backgroundColor = "lightblue";
-            cell.firstElementChild.style.backgroundColor = "lightblue";
-          }
-        }, function() {
-          for (j = 1 ; j < col ; j++) {
-            var cell = getCell(j, id+1)
-            cell.style.backgroundColor = "white";
-            cell.firstElementChild.style.backgroundColor = "white";
-          }
+    $(this).off();
+    const tds = document.getElementsByTagName("tr");
+    const h = tds[id + 1].getBoundingClientRect().top;
+    const cst = document.getElementsByTagName("tr")[id + 1].offsetHeight;
+    $(this).attr("onclick", "deleteRow(" + (id + 1) + ")");
+    $(this).css({ top: h - cst / 4 + "px", left: "3%", position: "absolute" });
+    //highlight deleted cells on hover
+    $(this).hover(
+      function () {
+        for (j = 1; j < col; j++) {
+          var cell = getCell(j, id + 1);
+          cell.style.backgroundColor = "lightblue";
+          cell.firstElementChild.style.backgroundColor = "lightblue";
         }
+      },
+      function () {
+        for (j = 1; j < col; j++) {
+          var cell = getCell(j, id + 1);
+          cell.style.backgroundColor = "white";
+          cell.firstElementChild.style.backgroundColor = "white";
+        }
+      }
     );
   });
 
@@ -973,8 +969,6 @@ function copyNoteToElement(xferData, dropZone, ev, tis) {
   dropZone.append(createPassage(xferData));
 }
 
-
-
 // Global holding the current drag-and-drop interaction, if any
 let dnd = null;
 
@@ -1022,7 +1016,7 @@ class DragAndDropInteraction {
 
     this.crt = null;
     this.crt =
-    this.draggedElem.firstElementChild.nextElementSibling.cloneNode(true);
+      this.draggedElem.firstElementChild.nextElementSibling.cloneNode(true);
     this.crt.style.height = "80px";
     this.crt.style.width = "80px";
     document.body.appendChild(this.crt);

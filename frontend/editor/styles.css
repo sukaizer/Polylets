@@ -210,3 +210,16 @@ button {
   width: 75px;
   border-radius: 50%;
 }
+
+.switcher {
+  border: 1px solid #0066cc00;
+  background-color: #008fbe;
+  color: #ffffff;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 5px 10px 5px;
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 14px;
+}

@@ -9,12 +9,22 @@
             body {
                 margin: 0;
             }
-        
             .icon {
                 width: 100px;
                 font-family: Helvetica;
                 text-align: center;
                 cursor: default;
+                margin-left: 15px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                border:  thick inset #0075a3;
+                border-radius: 20%;
+                cursor: pointer;
+            }
+
+            .icon:hover {
+                border-color: rgb(0, 238, 255);
+                font-weight: bold;
             }
         
             .icon img {
@@ -30,12 +40,12 @@
 </head>
 <body>
 
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../viewer','',1200,600)" src="/icons/viewer.png"><span>Viewer</span></div>
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../editor','',1200,600)" src="/icons/edit.png"><span>Editor</span></div>
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../reader','',1200,600)" src="/icons/reader.png"><span>Reader</span></div>
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../table','',1200,600)" src="/icons/table.png"><span>Table</span></div>
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../canvas','',1200,600)" src="/icons/canvas.png"><span>Canvas</span></div>
-        <div id="thefolder" class="icon"><img style="cursor: pointer;" onclick="createPopupWin('../searcher','',1200,600)" src="/icons/searcher.png"><span>Searcher</span></div>
+        <div id="thefolder" onclick="createPopupWin('../viewer','',1200,600)" class="icon"><img src="/icons/viewer.png"><span>Viewer</span></div>
+        <div id="thefolder" onclick="createPopupWin('../editor','',1200,600)" class="icon"><img src="/icons/edit.png"><span>Editor</span></div>
+        <div id="thefolder" onclick="createPopupWin('../reader','',1200,600)" class="icon"><img src="/icons/reader.png"><span>Reader</span></div>
+        <div id="thefolder" onclick="createPopupWin('../table','',1200,600)" class="icon"><img src="/icons/table.png"><span>Table</span></div>
+        <div id="thefolder" onclick="createPopupWin('../canvas','',1200,600)" class="icon"><img src="/icons/canvas.png"><span>Canvas</span></div>
+        <div id="thefolder" onclick="createPopupWin('../searcher','',1200,600)" class="icon"><img src="/icons/searcher.png"><span>Searcher</span></div>
 
     </body>
 
