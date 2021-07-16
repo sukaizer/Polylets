@@ -10,7 +10,7 @@ function refresh() {
 
 $("#refresh-button").click(function () {
   console.log("hello");
-  refresh();
+  getNewData();
 });
 
 $(document).on("input", function () {
@@ -208,6 +208,67 @@ async function getData() {
   //initialize table
   $(document).trigger("changetext");
 }
+
+
+//refresh only for the new data
+async function getNewData() {
+  const res = await fetch("/notes");
+  const data = await res.json();
+
+  //getAllIds
+  const newIds = []
+  for (item of data) {
+    const id = parseInt(`${item.id}`, 10)
+    newIds.push(id);
+    
+  }
+
+  const existingIds = []
+  //delete unwanted passages
+  for (item of document.getElementsByClassName("element draggable")) {
+    const id2 = parseInt(item.id, 10)
+    if (!newIds.includes(id2)) {
+      item.remove();
+    }
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+    await delay(50);
+    existingIds.push(id2);
+  }
+
+  //adding new passages
+  for (item of data) {
+    console.log("newIds",item);
+    console.log("existingIds", existingIds);
+    console.log("exist", existingIds.includes(parseInt(`${item.id}`,10)));
+    if(!existingIds.includes(parseInt(`${item.id}`,10))) {
+      if(document.getElementById("docFolder" + `${item.fileId}`) == null) {
+        const newDoc = document.createElement("div");
+        newDoc.setAttribute("id", "docFolder" + `${item.fileId}`);
+        const h3 = document.createElement("h3");
+        h3.setAttribute("id", "Document" + i);
+        const h3FDecoy = document.createElement("span");
+        h3FDecoy.innerText = fileNames[i];
+        h3.appendChild(h3FDecoy);
+        const h3SDecoy = document.createElement("span");
+
+        const h3SSDecoy = document.createElement("span");
+        h3SDecoy.appendChild(h3SSDecoy);
+        h3.appendChild(h3SDecoy);
+        newDoc.appendChild(h3);
+        document.getElementById("annotations").append(newDoc);
+      }
+      document
+        .getElementById("docFolder" + `${item.fileId}`)
+        .append(createPassage(item));
+      i += 10;
+    }
+    
+  }
+
+}
+
+
+
 
 function remove(annot) {
   document.getElementById(annot).remove();
