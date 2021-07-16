@@ -67,7 +67,7 @@ a {
 
 .document {
   width: 60%;
-  height: 1000px;
+  height: 500px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
   float: left;
@@ -79,7 +79,7 @@ a {
   margin: 0;
   background-color: #f8f8f8;
   width: 20%;
-  height: 1000px;
+  height: 500px;
   float: left;
   padding: 20px 0px 20px 40px;
   border-radius: 6px;

@@ -25,7 +25,7 @@ app.component("files-switcher", {
                 <button v-else class="button-bar" @click="onAction(i)"> {{names[i]}} </button>
             </div>
             <br>
-                        <br/>
+            <br/>
             <br/>
             <br/>
         </div>

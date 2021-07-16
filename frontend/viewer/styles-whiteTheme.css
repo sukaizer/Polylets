@@ -29,7 +29,7 @@ body {
 .document {
   position: relative;
   width: 700px;
-  height: 1000px;
+  height: 440px;
   border: 1px solid #d8d8d8;
   overflow-y: auto; /* this makes the div scrollable  */
   float: left;
@@ -49,7 +49,7 @@ body {
   background-color: #f8f8f8;
   width: 20%;
   max-width: 300px;
-  height: 1000px;
+  height: 440px;
   float: none;
   padding: 20px 0px 20px 0px;
   border-radius: 6px;

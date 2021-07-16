@@ -23,7 +23,7 @@ button {
 
 .document {
   width: 75%;
-  height: 1000px;
+  height: 500px;
   margin: 40px 0px;
   border: 1px solid #d8d8d8;
   overflow-x: scroll;
@@ -39,7 +39,7 @@ button {
   background-color: #f8f8f8;
   color: #333;
   width: 15%;
-  height: 1030px;
+  height: 530px;
   float: left;
   font-size: 15px;
   padding: 10px 20px 5px 5px;
@@ -205,19 +205,18 @@ button {
 }
 
 .table-line {
-  float : left;
-  min-width : 100%;
+  float: left;
+  min-width: 100%;
   min-height: 30%;
   margin-left: 4%;
   margin-top: 1%;
 }
 
-
 .new-column {
-  position :relative;
+  position: relative;
   background-color: yellowgreen;
   color: white;
-  border: white ;
+  border: white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
   top: 0.5%;
   left: 7%;
@@ -231,8 +230,8 @@ button {
   color: white;
   border: white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-  top : 6%;
-  left : -3%;
+  top: 6%;
+  left: -3%;
   border-radius: 10px;
   text-align: center;
   transform: rotate(90deg);
@@ -241,7 +240,6 @@ button {
 .tbl {
   empty-cells: show;
 }
-
 
 th {
   background: rgb(194, 186, 186);
@@ -268,18 +266,18 @@ table td.highlighted {
 }
 
 textarea {
-  width : 97%;
+  width: 97%;
   max-height: 70%;
   max-width: 300px;
   background-color: white;
-  border :1px solid rgb(88, 88, 88);
+  border: 1px solid rgb(88, 88, 88);
 }
 
 .del-col {
   border-radius: 10px;
   color: white;
   background-color: red;
-  border :1px solid white;
+  border: 1px solid white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
 
@@ -287,6 +285,6 @@ textarea {
   border-radius: 10px;
   color: white;
   background-color: red;
-  border :1px solid white;
+  border: 1px solid white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 }
