@@ -4,6 +4,20 @@ var fileNames = [];
 var row = 3;
 var col = 4;
 
+
+function refresh() {
+  document.location.reload();
+}
+
+$("#refresh-button").click(function() {
+  console.log("hello")
+  refresh();
+})
+
+$(document).on("input", function() {
+  saveTable();
+})
+
 //drop single element
 function moveNote(dragElem, dropZone, dropevent, tis) {
   // const note = document.getElementById(dropevent.dataTransfer.getData("text"));
@@ -43,8 +57,6 @@ function iterId() {
 }
 
 
-
-
 getData();
 async function getData() {
   //html files
@@ -64,6 +76,12 @@ async function getData() {
   //passages
   const res = await fetch("/notes");
   const data = await res.json();
+
+  //the passages in the saved table we mustn't display in the left bar
+  const rs = await fetch("/save-tbl");
+  const tbl = await rs.json();
+
+
 
   var list = [];
 
@@ -125,9 +143,9 @@ async function getData() {
       document.createTextNode(String.fromCharCode(10005))
     );
 
-    draghandlebutton.onclick = () => {
-      newAnnot.remove();
-    };
+
+    draghandlebutton.setAttribute("onclick", "remove(" + `${item.id}` + ")");
+    
 
     draghandlebutton.onmouseover = () => {
       draghandlebutton.style.color = "red";
@@ -136,6 +154,8 @@ async function getData() {
     draghandlebutton.onmouseleave = () => {
       draghandlebutton.style.color = "black";
     };
+
+
 
     draghandle.appendChild(draghandlebutton);
 
@@ -198,6 +218,10 @@ async function getData() {
   $(document).trigger("changetext");
 }
 
+function remove(annot) {
+  document.getElementById(annot).remove();
+}
+
 getSavedTable();
 async function getSavedTable() {
   const rs = await fetch("/save-tbl");
@@ -205,11 +229,15 @@ async function getSavedTable() {
 
   if (tbl.length != 0) {
     document.getElementById("tbl").remove();
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
     for (item of tbl) {
+      
       const doc = document.createElement("div")
       doc.innerHTML = `${item.table}`
       document.getElementById("table-line").append(doc);
     }
+    await delay(100);
+    $("table .draghandle-button").trigger("click");
   }
 }
 
@@ -234,11 +262,7 @@ async function saveTable() {
   await delay(1000);
 }
 
-// getSavedTable();
-// async function getSavedTable() {
-//   const rs = await fetch("/save-tbl");
-//   const tbl = await rs.json();
-// }
+
 
 
 //open window when double click
@@ -659,11 +683,7 @@ function autoFill(doc, startPosition, offset) {
 
 
 
-$("a").hover( function() {
-  saveTable();
-}, function() {
-  console.log("saved")
-});
+
 
 
 $("td").each(function () {
@@ -827,6 +847,8 @@ $(document).on("changetext", function () {
   $("td").on("dragenter", function (event) {
     $(this).css({ backgroundColor: "#ADD8E6" });
   });
+
+  saveTable();
 });
 
 //disable highlight
@@ -837,15 +859,15 @@ $(document).mouseup(function () {
 //export button
 $(".exportColumn").on("click", function (event) {
   exportColumn();
-  var href = $("a[href='../editor']").attr("href");
-  window.location.href = href;
+  // var href = $("a[href='../editor']").attr("href");
+  // window.location.href = href;
 });
 
 //export button
 $(".exportRows").on("click", function (event) {
   exportRows();
-  var href = $("a[href='../editor']").attr("href");
-  window.location.href = href;
+  // var href = $("a[href='../editor']").attr("href");
+  // window.location.href = href;
 });
 
 // This name will be passed to the destination window during drag-and-drop
@@ -1137,7 +1159,9 @@ class DragAndDropInteraction {
     this.crt = null;
     ev.preventDefault();
     $(document).trigger("changetext");
+    saveTable();
   }
+
 }
 
 // Singleton class holding the state for a drag-and-drop interaction
@@ -1207,7 +1231,6 @@ class DropInteraction {
     switch (movement) {
       case "->hydrated": // copy remote note to sidebar
         // remove note from content and append it to sidebar
-        console.log("hey");
         copyNoteToElement(
           data,
           document.getElementById("docFolder" + data.fileId),

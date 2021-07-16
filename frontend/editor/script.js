@@ -16,6 +16,7 @@ setTimeout(() => {
   getSavedQuill();
 }, 500);
 
+
 document.getElementById("save-button").onclick = () => {
   var num = document.getElementById("editor").querySelectorAll("a").length - 3;
   let object = {
@@ -31,6 +32,12 @@ document.getElementById("save-button").onclick = () => {
 
   fetch("/citate", options);
 };
+
+
+function refresh() {
+  document.location.reload();
+}
+
 
 //fill quill with database
 async function fillQuill() {
@@ -147,6 +154,7 @@ async function getSavedQuill() {
 }
 
 async function saveQuill() {
+  console.log("Save Quill content")
   const text = document.getElementsByClassName("ql-editor")[0].innerHTML;
   const save = {
     txt : text,
@@ -496,6 +504,12 @@ const quill = new Quill("#editor", {
   theme: "snow",
 });
 
+quill.on('text-change', function(delta, oldDelta, source) {
+  saveQuill()
+})
+
+
+
 function downloadInnerHtml(filename, elId, mimeType) {
   var elHtml = document.getElementById(elId).firstElementChild.innerHTML;
   var link = document.createElement("a");
@@ -516,6 +530,13 @@ $("#save-button").click(function () {
   downloadInnerHtml(fileName, "editor", "text/html");
   zipFile();
 });
+
+
+$("#refresh-button").click(function() {
+  console.log("hello")
+  refresh();
+})
+
 
 setTimeout(() => {
   $(".navigationBar a").hover(
@@ -1000,7 +1021,9 @@ class DragAndDropInteraction {
       default:
         console.log("unknown/unsupported movement ");
     }
+    saveQuill();
   }
+
 }
 
 // Singleton class holding the state for a drag-and-drop interaction

@@ -128,6 +128,25 @@ const app = Vue.createApp({
       return node;
     },
 
+    // send the entire passage object to the server
+    async sendToServer() {
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.notes),
+      };
+
+      fetch("/api", options);
+      this.savedProperty = "Saved !";
+      await delay(1000);
+      this.savedProperty = "";
+    },
+
+
     async addAnnotation() {
       const delay = (ms) => new Promise((res) => setTimeout(res, ms));
       const scroll = async () => {
@@ -168,6 +187,8 @@ const app = Vue.createApp({
       for (let i = 0; i < this.notes.length; i++) {
         this.notes[i].locId = i;
       }
+      await delay(400);
+      this.sendToServer();
     },
 
     refElement(elem) {
@@ -283,23 +304,7 @@ const app = Vue.createApp({
       selection.addRange(newRange);
     },
 
-    // send the entire passage object to the server
-    async sendToServer() {
-      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.notes),
-      };
-
-      fetch("/api", options);
-      this.savedProperty = "Saved !";
-      await delay(1000);
-      this.savedProperty = "";
-    },
+    
 
     async getData() {
       const res = await fetch("/notes");
@@ -336,11 +341,11 @@ const app = Vue.createApp({
 
     //delete the passage object at index
     deletePassage(index) {
-      console.log(index);
       this.notes.splice(index, 1);
       for (let i = 0; i < this.notes.length; i++) {
         this.notes[i].locId = i;
       }
+      this.sendToServer();
     },
 
     //sets the dragged passage data
