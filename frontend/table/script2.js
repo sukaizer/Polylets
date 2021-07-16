@@ -1056,6 +1056,22 @@ function createPassage(data) {
   return newAnnot;
 }
 
+
+async function createFromDatabase(xferData) {
+  console.log("xferData", xferData);
+  //passages
+  const res = await fetch("/notes");
+  const data = await res.json();
+
+  for (item of data) {
+    console.log("item", item);
+    if (item.id == xferData.id.slice(-1)) {
+
+    }
+  }
+}
+
+
 function copyNoteToElement(xferData, dropZone, ev, tis) {
   // Copy note and append it to sidebar
   dropZone.append(createPassage(xferData));

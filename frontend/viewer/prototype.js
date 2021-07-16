@@ -141,9 +141,12 @@ const app = Vue.createApp({
       };
 
       fetch("/api", options);
-      this.savedProperty = "Saved !";
-      await delay(1000);
-      this.savedProperty = "";
+
+      //pop up "Saved !"
+      // this.savedProperty = "Saved !";
+      // await delay(1000);
+      // this.savedProperty = "";
+      console.log("Saved !");
     },
 
 
@@ -332,6 +335,7 @@ const app = Vue.createApp({
       const annotation = noteObject.note;
       const index = noteObject.i;
       this.notes[index].annotation = annotation;
+      this.sendToServer();
     },
 
     //sets the current file's id

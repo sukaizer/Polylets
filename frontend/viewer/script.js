@@ -175,7 +175,7 @@ class DragAndDropInteraction {
       windowId: windowId,
       passage: note.passage,
       annotation: note.annotation,
-      id: "a" + getNumber(),
+      id: "pass" + note.id,
       fileId: note.fileId,
       startIndex: note.startIndex,
       endIndex: note.endIndex,
