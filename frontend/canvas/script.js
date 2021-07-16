@@ -18,6 +18,7 @@ function createPassage(data) {
   passage.setAttribute("data-endOffset", data.endOffset);
   passage.setAttribute("data-startIndex", data.startIndex);
   passage.setAttribute("data-endIndex", data.endIndex);
+  passage.setAttribute("data-yPosition", data.yPosition);
 
   const draghandle = document.createElement("div");
   draghandle.setAttribute("class", "draghandle");
@@ -58,7 +59,8 @@ function createPassage(data) {
       passage.getAttribute("data-startOffset"),
       passage.getAttribute("data-endOffset"),
       passage.getAttribute("data-startIndex"),
-      passage.getAttribute("data-endIndex")
+      passage.getAttribute("data-endIndex"),
+      passage.getAttribute("data-yPosition")
     );
   };
   quote.appendChild(quoteA);
@@ -227,7 +229,14 @@ async function getData() {
 }
 
 //open window when double click
-function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
+function openWindow(
+  id,
+  startOffset,
+  endOffset,
+  startIndex,
+  endIndex,
+  yPosition
+) {
   var left = (screen.width - 700) / 2;
   var top = (screen.height - 1000) / 4;
 
@@ -265,6 +274,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
     endOffset: endOffset,
     startIndex: startIndex,
     endIndex: endIndex,
+    yPosition: yPosition,
   };
   reselect(myWindow, object);
 }
@@ -294,8 +304,10 @@ function reselect(window, selectionObject) {
   console.log(selectionObject.startOffset);
   console.log(selectionObject.endOffset);
 
-  //scroll to the position
-  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
+  setTimeout(() => {
+    window.document.documentElement.style = "scroll-behavior: smooth";
+    window.window.scroll(0, selectionObject.yPosition);
+  }, 200);
 
   console.log(selectionObject);
 

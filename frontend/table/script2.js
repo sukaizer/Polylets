@@ -128,6 +128,7 @@ async function getData() {
     newAnnot.setAttribute("data-endOffset", `${item.endOffset}`);
     newAnnot.setAttribute("data-startIndex", `${item.startIndex}`);
     newAnnot.setAttribute("data-endIndex", `${item.endIndex}`);
+    newAnnot.setAttribute("data-yPosition", `${item.yPosition}`);
 
     const draghandle = document.createElement("div");
     draghandle.setAttribute("class", "draghandle");
@@ -198,7 +199,8 @@ async function getData() {
         newAnnot.getAttribute("data-startOffset"),
         newAnnot.getAttribute("data-endOffset"),
         newAnnot.getAttribute("data-startIndex"),
-        newAnnot.getAttribute("data-endIndex")
+        newAnnot.getAttribute("data-endIndex"),
+        newAnnot.getAttribute("data-yPosition")
       );
     };
 
@@ -209,24 +211,22 @@ async function getData() {
   $(document).trigger("changetext");
 }
 
-
 //refresh only for the new data
 async function getNewData() {
   const res = await fetch("/notes");
   const data = await res.json();
 
   //getAllIds
-  const newIds = []
+  const newIds = [];
   for (item of data) {
-    const id = parseInt(`${item.id}`, 10)
+    const id = parseInt(`${item.id}`, 10);
     newIds.push(id);
-    
   }
 
-  const existingIds = []
+  const existingIds = [];
   //delete unwanted passages
   for (item of document.getElementsByClassName("element draggable")) {
-    const id2 = parseInt(item.id, 10)
+    const id2 = parseInt(item.id, 10);
     if (!newIds.includes(id2)) {
       item.remove();
     }
@@ -237,11 +237,11 @@ async function getNewData() {
 
   //adding new passages
   for (item of data) {
-    console.log("newIds",item);
+    console.log("newIds", item);
     console.log("existingIds", existingIds);
-    console.log("exist", existingIds.includes(parseInt(`${item.id}`,10)));
-    if(!existingIds.includes(parseInt(`${item.id}`,10))) {
-      if(document.getElementById("docFolder" + `${item.fileId}`) == null) {
+    console.log("exist", existingIds.includes(parseInt(`${item.id}`, 10)));
+    if (!existingIds.includes(parseInt(`${item.id}`, 10))) {
+      if (document.getElementById("docFolder" + `${item.fileId}`) == null) {
         const newDoc = document.createElement("div");
         newDoc.setAttribute("id", "docFolder" + `${item.fileId}`);
         const h3 = document.createElement("h3");
@@ -262,13 +262,8 @@ async function getNewData() {
         .append(createPassage(item));
       i += 10;
     }
-    
   }
-
 }
-
-
-
 
 function remove(annot) {
   document.getElementById(annot).remove();
@@ -313,7 +308,14 @@ async function saveTable() {
 }
 
 //open window when double click
-function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
+function openWindow(
+  id,
+  startOffset,
+  endOffset,
+  startIndex,
+  endIndex,
+  yPosition
+) {
   var left = (screen.width - 700) / 2;
   var top = (screen.height - 1000) / 4;
 
@@ -351,6 +353,7 @@ function openWindow(id, startOffset, endOffset, startIndex, endIndex) {
     endOffset: endOffset,
     startIndex: startIndex,
     endIndex: endIndex,
+    yPosition: yPosition,
   };
   reselect(myWindow, object);
 }
@@ -380,9 +383,10 @@ function reselect(window, selectionObject) {
   console.log(selectionObject.startOffset);
   console.log(selectionObject.endOffset);
 
-  //scroll to the position
-  //window.getElementById("content").scrollTo(0, selectionObject.yPosition);
-
+  setTimeout(() => {
+    window.document.documentElement.style = "scroll-behavior: smooth";
+    window.window.scroll(0, selectionObject.yPosition);
+  }, 200);
   console.log(selectionObject);
 
   console.log(selectionObject.startIndex);
@@ -973,6 +977,7 @@ function createPassage(data) {
   newAnnot.setAttribute("data-endoffset", data.endOffset);
   newAnnot.setAttribute("data-startindex", data.startIndex);
   newAnnot.setAttribute("data-endindex", data.endIndex);
+  newAnnot.setAttribute("data-yPosition", data.yPosition);
   newAnnot.setAttribute("class", "element draggable");
 
   const draghandle = document.createElement("div");
@@ -1050,7 +1055,8 @@ function createPassage(data) {
       newAnnot.getAttribute("data-startOffset"),
       newAnnot.getAttribute("data-endOffset"),
       newAnnot.getAttribute("data-startIndex"),
-      newAnnot.getAttribute("data-endIndex")
+      newAnnot.getAttribute("data-endIndex"),
+      newAnnot.getAttribute("data-yPosition")
     );
   };
 

@@ -338,9 +338,11 @@ function reselect(window, selectionObject) {
   console.log(selectionObject.endOffset);
 
   //scroll to the position
-  window.document
-    .getElementById("document")
-    .scrollTo(0, selectionObject.yPosition);
+  setTimeout(() => {
+    window.document.documentElement.style = "scroll-behavior: smooth";
+    window.window.scroll(0, selectionObject.yPosition);
+  }, 200);
+
   console.log(selectionObject.yPosition);
 
   console.log(selectionObject);
