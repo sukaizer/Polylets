@@ -72,6 +72,7 @@ createButton.on("click", () => {
   const textArea = document.createElement("textarea");
   const separator = document.createElement("hr");
   const passageContainer = document.createElement("div");
+  passageContainer.setAttribute("class", "passage-container");
 
   keyObject.ondragover = (ev) => {
     ev.preventDefault();
