@@ -74,6 +74,7 @@ async function fillQuill() {
   iter = 0;
   //any item in /tbl
   quill.setSelection(0, 0);
+  console.log("element draggable", document.getElementsByClassName("passage draggable"))
   for (item of data) {
     for (elem of item) {
       const cursor = getCursorPosition();
@@ -93,6 +94,7 @@ async function fillQuill() {
         var highlength = 0;
 
         quill.insertText(getCursorPosition(), " [");
+        console.log("docById", document.getElementById(id))
         quill.insertText(
           getCursorPosition(),
           document.getElementById(id).lastElementChild.lastElementChild

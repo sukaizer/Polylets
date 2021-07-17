@@ -175,13 +175,15 @@ class DragAndDropInteraction {
       windowId: windowId,
       passage: note.passage,
       annotation: note.annotation,
-      id: "pass" + note.id,
+      id: note.id,
       fileId: note.fileId,
       startIndex: note.startIndex,
       endIndex: note.endIndex,
       startOffset: note.startOffset,
       endOffset: note.endOffset,
+      yPosition: note.yPosition,
     };
+    console.log("xferData", xferData)
     ev.originalEvent.dataTransfer.setData(
       "text/plain",
       JSON.stringify(xferData)

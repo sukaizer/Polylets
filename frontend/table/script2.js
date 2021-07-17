@@ -576,8 +576,8 @@ async function exportColumn() {
         endOffset: tis.attributes[5].value,
         startIndex: tis.attributes[6].value,
         endIndex: tis.attributes[7].value,
-        nth: tis.attributes[8].value,
-        group: tis.attributes[9].value,
+        nth: tis.attributes[9].value,
+        group: tis.attributes[10].value,
         // export: "col",
       };
       data.push(note);
@@ -612,8 +612,8 @@ async function exportRows() {
         endOffset: tis.attributes[5].value,
         startIndex: tis.attributes[6].value,
         endIndex: tis.attributes[7].value,
-        group: tis.attributes[8].value,
-        nth: tis.attributes[9].value,
+        nth: tis.attributes[10].value,
+        group: tis.attributes[9].value,
         // export: "row",
       };
       data.push(note);
@@ -1288,7 +1288,7 @@ class DropInteraction {
 
     // Parse transfer data
     let xferData = ev.originalEvent.dataTransfer.getData("text/plain");
-    console.log(xferData);
+    console.log("xferData",xferData);
     let data = null;
     data = JSON.parse(xferData);
     if (!data) {
