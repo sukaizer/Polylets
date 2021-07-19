@@ -87,7 +87,7 @@ async function fillQuill() {
         scrollPositions.push({
           passageId: elem.docId,
           id: iter,
-          scrollPos: document.getElementById(iter).offsetTop - 148,
+          scrollPos: document.getElementById(elem.docId).offsetTop - document.getElementById("sidebar").offsetTop,
         });
 
         var id = elem.docId;
@@ -395,6 +395,29 @@ function createPassage(data) {
   };
   const edit = document.createElement("div");
   edit.setAttribute("class", "edit-area");
+  
+  
+
+  fetchNewFile(data);
+  const folder = document.getElementById("docFolder" + data.fileId);
+  if (folder == null) {
+    console.log("gotta new folder")
+    const newDoc = document.createElement("div");
+    newDoc.setAttribute("id", "docFolder" + data.fileId);
+    const h3 = document.createElement("h3");
+    h3.setAttribute("id", "Document" + data.fileId);
+    const h3FDecoy = document.createElement("span");
+    h3FDecoy.innerText = fileNames[data.fileId-1];
+    h3.appendChild(h3FDecoy);
+    const h3SDecoy = document.createElement("span");
+
+    const h3SSDecoy = document.createElement("span");
+    h3SDecoy.appendChild(h3SSDecoy);
+    h3.appendChild(h3SDecoy);
+    newDoc.appendChild(h3);
+    document.getElementById("sidebar").append(newDoc);
+  }
+
   const textarea = document.createElement("p");
   textarea.appendChild(document.createTextNode(data.annotation));
   edit.appendChild(textarea);
@@ -406,8 +429,38 @@ function createPassage(data) {
   passage.appendChild(quote);
   passage.appendChild(annotationArea);
   allPassages.push(passage);
+
+  console.log("pass", passage)
+  console.log("allpass", allPassages)
+
+  
+  if (document.getElementById("docFolder" + data.fileId) != null) {
+    document.getElementById("docFolder" + data.fileId).appendChild(passage)
+  }
+
   return passage;
 }
+
+
+async function fetchNewFile(data) {
+  console.log("gottafetch", data.fileId)
+  if (data.fileId >= files.length) {
+    const rf = await fetch("/files");
+    const filesData = await rf.json();
+    filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
+    
+      console.log("datàaaaaa",  data.fileId + " " + filesData[data.fileId].fileName);
+      console.log(filesData[data.fileId]);
+      var element = toDOM(filesData[data.fileId].file);
+      element.setAttribute("id", "document");
+      files[data.fileId] = element;
+      fileNames[data.fileId] = filesData[data.fileId].fileName;
+    
+      console.log("fnames", fileNames)
+  }
+
+}
+
 
 //display all passages
 function showAllPassages() {
@@ -685,8 +738,10 @@ function highlight(id) {
   console.log("highlighting");
   if (displayIsAll) {
     scrollPositions.forEach((sp) => {
-      console.log("sp", sp);
       if (sp.passageId == id) {
+        console.log("passId", sp.passageId)
+        console.log("id", sp.id)
+        console.log("sp", sp.scrollPos);
         document.getElementById("sidebar").scrollTo(0, sp.scrollPos);
         $("#" + id).css({ transform: "scale(1.2)" });
         $("#" + id).css({ transition: "transform .2s" });
@@ -747,7 +802,6 @@ function iterId() {
 async function getData() {
   const rf = await fetch("/files");
   const filesData = await rf.json();
-  console.log(filesData);
   filesData.sort((a, b) => parseFloat(a.index) - parseFloat(b.index));
   console.log(filesData);
   for (let index = 0; index < filesData.length; index++) {
@@ -823,19 +877,22 @@ async function getNewData() {
     existingIds.push(id2);
   }
 
+  
+
   //adding new passages
   for (item of data) {
     console.log("newIds", item);
     console.log("existingIds", existingIds);
     console.log("exist", existingIds.includes(parseInt(`${item.id}`, 10)));
+    const fileID = parseInt(`${item.fileId}`, 10)
     if (!existingIds.includes(parseInt(`${item.id}`, 10))) {
-      if (document.getElementById("docFolder" + `${item.fileId}`) == null) {
+      if (document.getElementById("docFolder" + fileID) == null) {
         const newDoc = document.createElement("div");
-        newDoc.setAttribute("id", "docFolder" + `${item.fileId}`);
+        newDoc.setAttribute("id", "docFolder" + fileID);
         const h3 = document.createElement("h3");
-        h3.setAttribute("id", "Document" + i);
+        h3.setAttribute("id", "Document" + fileID);
         const h3FDecoy = document.createElement("span");
-        h3FDecoy.innerText = fileNames[i];
+        h3FDecoy.innerText = fileNames[fileID - 1];
         h3.appendChild(h3FDecoy);
         const h3SDecoy = document.createElement("span");
 
@@ -1051,7 +1108,7 @@ function moveNoteToEditor(note, sidebar, ev, dnd) {
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
-  $("#sidebar").append(createPassage(xferData));
+  createPassage(xferData);
 }
 
 // Global holding the current drag-and-drop interaction, if any
@@ -1257,6 +1314,7 @@ class DropInteraction {
       case "->sidebar": // copy remote note to sidebar
         // remove note from content and append it to sidebar
         console.log("hey");
+        console.log("data", data)
         copyNoteToSidebar(data, this.dropZone, ev, this);
         break;
 
